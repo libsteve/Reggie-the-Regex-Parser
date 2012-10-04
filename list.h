@@ -12,7 +12,7 @@ typedef struct list_node {
 typedef struct list {
 	struct list_node* head; // the head node in the linked list
 	struct list_node* tail; // the tail node in the linked list
-	struct list_node* connecting_node; // a node to connect the head and tail node in the linked list
+	struct list_node* connecting_node; // a node to connect the head and tail node in the linked list. the value will be a pointer to the list
 } *list;
 
 // create a linked list structure
@@ -46,5 +46,12 @@ void* list_removeFrom(list l, int index);
 
 // get the value from the index in the list
 void* list_getFrom(list l, int index);
+
+// get the index of the given pointer value from the list
+// returns -1 if the pointer value was not found
+int list_getIndex(list l, void* val);
+
+// remove the given pointer value from the list
+void list_removeValue(list l, void* val);
 
 #endif

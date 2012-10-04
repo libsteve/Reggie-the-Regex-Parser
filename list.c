@@ -9,6 +9,8 @@ list list_create() {
 	l->connecting_node->value = l;
 	l->connecting_node->next = l->connecting_node;
 	l->connecting_node->prev = l->connecting_node;
+	l->head = l->connecting_node;
+	l->tail = l->connecting_node;
 
 	return l;
 }
@@ -122,4 +124,23 @@ void* list_getFrom(list l, int index) {
 		n = n->next;
 	}
 	return n->value;
+}
+
+int list_getIndex(list l, void* val) {
+	list_node n = l->head;
+	int index = 0;
+	while (n->value != l) {
+		if (n->value == val)
+			return index;
+		index++;
+		n = n->next;
+	}
+	return -1;
+}
+
+void list_removeValue(list l, void* val) {
+	int index = list_getIndex(l, val);
+	if (index != -1) {
+		list_removeFrom(l, index);
+	}
 }
