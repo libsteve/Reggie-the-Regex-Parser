@@ -54,4 +54,22 @@ int list_getIndex(list l, void* val);
 // remove the given pointer value from the list
 void list_removeValue(list l, void* val);
 
+// the function type to use with list_find()
+// takes a pointer to some sort of state (determined by you)
+// and a pointer to the value at that part in the list.
+// returns 1 if the value passed is the desired value,
+// returns 0 otherwise.
+typedef int (*find_func)(void* state, void* value);
+
+// an index-value pair struct that packages the 
+// index of a pointer value with the pointer value
+typedef struct index_value {
+	int index;
+	void* value;
+} index_value_pair;
+
+// find the index and pointer value of the pointer value that satisfies
+// the given find_func function that used the given state
+index_value_pair list_find(list l, find_func func, void* state);
+
 #endif

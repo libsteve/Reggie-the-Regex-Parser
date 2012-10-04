@@ -144,3 +144,15 @@ void list_removeValue(list l, void* val) {
 		list_removeFrom(l, index);
 	}
 }
+
+index_value_pair list_find(list l, find_func func, void* state) {
+	list_node n = l->head;
+	int index = 0;
+	while (n->value != l) {
+		list_node next = n-> next;
+		func(state, n->value);
+		n = next;
+		index++;
+	}
+	return (index_value_pair){index, n->value};
+}
