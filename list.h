@@ -35,6 +35,16 @@ void* list_pop(list l);
 // takes a pointer value
 typedef void (*foreach_func)(void* value);
 
+// for each item in the list, execute the given function
+void list_foreach(list l, foreach_func func);
+
+// the function type to use with list_foreachWithState()
+// takes a state pointer and a pointer value
+typedef void (*foreachWithState_func)(void* state, void* value);
+
+// for each item in the list, execute the given function with the given state
+void list_foreachWithState(list l, foreachWithState_func func, void* state);
+
 // get the length of the list
 int list_len(list l);
 

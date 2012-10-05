@@ -61,6 +61,15 @@ void list_foreach(list l, foreach_func func) {
 	}
 }
 
+void list_foreachWithState(list l, foreachWithState_func func, void* state) {
+	list_node n = l->head;
+	while (n->value != l) {
+		list_node next = n-> next;
+		func(state, n->value);
+		n = next;
+	}
+}
+
 int list_len(list l) {
 	list_node n = l->head;
 	int result = 0;
