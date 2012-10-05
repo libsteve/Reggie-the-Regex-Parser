@@ -24,6 +24,8 @@ typedef struct nfa {
 } *NFA;
 
 // create a new nfa object
+// all nfa's begin with an initial state named "q0"
+// "q0" is initially a non-terminal state with no transitions
 NFA nfa_create();
 
 // destroy an nfa object and all states within
@@ -37,14 +39,21 @@ State state_create();
 // you free the name string if dynamically allcoated
 void state_setName(State s, char* name);
 
-// get a state as being a terminal state
+// set a state as being a terminal state
 void state_makeTerminal(State s);
+
+// set a state as being a non-terminal state
+void state_makeNonTerminal(State s);
 
 // destroy a state and all transitions from it
 // use this instead of free
 void state_destroy(State s);
 
 // add a transition from one state to another through the transition string
+// you free the transition_string string if dynamically allocated
 void state_addTransition(State s, char* transition_string, State dest);
+
+// remove a transition from one state to another through the transition string
+void state_removeTransition(State s, char* transition_string, State dest);
 
 #endif
