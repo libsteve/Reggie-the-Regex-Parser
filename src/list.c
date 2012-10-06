@@ -163,5 +163,7 @@ index_value_pair list_find(list l, find_func func, void* state) {
 		n = next;
 		index++;
 	}
+	if (n->value == l)
+		return (index_value_pair){-1, 0};
 	return (index_value_pair){index, n->value};
 }

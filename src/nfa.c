@@ -72,8 +72,10 @@ struct state_removeTransition_find_func_state {
 // this is the find function needed to iterate
 // through each transition and find the one to remove
 int state_removeTransition_find_func(void* state, void* value) {
-	if (state->dest == value->dest) {
-		return string_equals(state->transition_string, value->transition_string);
+	struct state_removeTransition_find_func_state* s = (struct state_removeTransition_find_func_state*)state;
+	Transition t = (Transition)value;
+	if (s->dest == t->dest) {
+		return string_equals(s->transition_string, t->transition_string);
 	}
 	return 0;
 }

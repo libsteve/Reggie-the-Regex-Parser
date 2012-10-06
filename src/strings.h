@@ -12,6 +12,7 @@ int string_length(char* str);
 int string_equals(char* s1, char* s2);
 
 // find if string little is a substring of string big
+// return 1 if little is a substring, 0 otherwise
 int string_substring(char* big, char* little);
 
 #endif
