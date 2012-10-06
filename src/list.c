@@ -1,3 +1,4 @@
+#include <stdlib.h>
 #include "list.h"
 
 list list_create() {
@@ -104,10 +105,10 @@ void list_insertAt(list l, int index, void* val) {
 }
 
 void* list_removeFrom(list l, int index) {
-	int list_len = list_len(l);
-	if (list_len == 0) return 0;
+	int len = list_len(l);
+	if (len == 0) return 0;
 
-	if (index >= list_len-1) 
+	if (index >= len-1) 
 		return list_pop(l);
 	int curr_index = 0;
 	list_node n = l->head;
@@ -121,10 +122,10 @@ void* list_removeFrom(list l, int index) {
 }
 
 void* list_getFrom(list l, int index) {
-	int list_len = list_len(l);
-	if (list_len == 0) return 0;
+	int len = list_len(l);
+	if (len == 0) return 0;
 
-	if (index >= list_len-1) 
+	if (index >= len-1) 
 		return list_peek(l);
 	int curr_index = 0;
 	list_node n = l->head;

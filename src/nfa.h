@@ -7,7 +7,7 @@
 typedef struct transition {
 	char* transition_string; // a string to transition through when encountered
 	struct state* source; // the source state for the transition
-	struct state* destination; // the destination state for the transition
+	struct state* dest; // the destination state for the transition
 } *Transition;
 
 // a state in an nfa

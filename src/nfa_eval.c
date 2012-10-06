@@ -1,4 +1,4 @@
-#include "nfa_traversal.h"
+#include "nfa_eval.h"
 #include "strings.h"
 #include "list.h"
 
@@ -17,7 +17,7 @@ struct state_eval_foreachWithState_state {
 // a list of all transitions that apply to the input string
 void state_eval_foreachWithState_func(void* state, void* value) {
 	Transition t = (Transition)value;
-	struct state_eval_foreachWithState_state* s = (struct state_eval_foreachWithState_state state*)state;
+	struct state_eval_foreachWithState_state* s = (struct state_eval_foreachWithState_state*)state;
 
 	if (string_substring(s->input, t->transition_string))
 		list_push(s->transitions, t);

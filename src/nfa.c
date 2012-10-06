@@ -1,3 +1,4 @@
+#include <stdlib.h>
 #include "nfa.h"
 #include "strings.h"
 
@@ -32,7 +33,7 @@ State state_create() {
 }
 
 void state_setName(State s, char* name) {
-	s->name;
+	s->name = name;
 }
 
 void state_makeTerminal(State s) {
@@ -60,7 +61,7 @@ void state_addTransition(State s, char* transition_string, State dest) {
 	Transition t = calloc(1, sizeof(struct transition));
 	t->transition_string = transition_string;
 	t->source = s;
-	t->destination = dest;
+	t->dest = dest;
 	list_push(s->transitions, t);
 }
 

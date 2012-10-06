@@ -1,5 +1,5 @@
-#ifndef NFA_TRAVERSAL_H
-#define NFA_TRAVERSAL_H
+#ifndef NFA_EVAL_H
+#define NFA_EVAL_H
 
 #include "nfa.h"
 
