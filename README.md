@@ -1,7 +1,7 @@
-Regex
-=====
+Reggie the Regex Parser
+=======================
 
-This project shall be known as "Regex" until the time where a more suitable name can be found.
+Reggie the Regex Parser (RRP) is a regualr expression parser that will have the ability to identify strings that match the regular expression.
 
 Purpose
 -------
