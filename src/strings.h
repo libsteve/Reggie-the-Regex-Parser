@@ -4,6 +4,8 @@
 // a collection of string-rlated functions
 // because why not implement everything for fun?
 
+// if any string function encounters a NULL pointer, it returns -1
+
 // get the length of the string
 int string_length(char* str);
 
@@ -12,7 +14,9 @@ int string_length(char* str);
 int string_equals(char* s1, char* s2);
 
 // find if string little is a substring of string big
-// return 1 if little is a substring, 0 otherwise
+// return 1 if little is a substring, 0 otherwise.
+// this only works if the substring starts with the 
+// first cahracter of the superstring.
 int string_substring(char* big, char* little);
 
 #endif
