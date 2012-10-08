@@ -22,8 +22,8 @@ int string_equals(char* s1, char* s2) {
 int string_substring(char* big, char* little) {
 	if (big == 0 || little == 0)
 		return 0;
-	if (string_length(big) < string_length(little));
-	for (int i = 0; little[i] != '\0'; i++) {
+	if (string_length(big) < string_length(little)) return 0;
+	for (int i = 0; little[i] != '\0' && big[i] != '\0'; i++) {
 		if (big[i] != little[i])
 			return 0;
 	}
