@@ -7,14 +7,10 @@ void run_tests(tests ts) {
 	for (int i = 0; ts[i] != 0; i++) {
 		result r = ts[i]();
 
-		printf("TEST %s:\n", r.name);
-		printf("\tPASSED:\t%d\n", r.passed);
-		printf("\tFAILED:\t%s\n", r.total - r.passed);
-		printf("\tTOTAL:\t%d\n", r.total);
-		printf("\n");
+		printf("%s : TEST %s", (r.passed ? "PASSED" : "FAILED"), r.description);
 
 		test_counter++;
-		if (r.passed == r.total) passed_counter++;
+		if (r.passed) passed_counter++;
 	}
 
 	// unnecessary ternary statement, but i was 

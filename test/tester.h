@@ -4,9 +4,8 @@
 // a data structure to return when testing
 // functions complete.
 typedef struct {
-	int pass; // the number of tests within the function that passed
-	int total; // the total number of tests within the function
-	char* name; // the name of the test resulting from the function
+	int passed; // 1 if the test passed, 0 otherwise
+	char* description; // a description of the test
 } result;
 
 // the signature of testign functions
