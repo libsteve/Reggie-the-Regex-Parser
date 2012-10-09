@@ -38,10 +38,15 @@ void list_push(list l, void* val) {
 }
 
 void* list_peek(list l) {
+	if (l->tail->value == l)
+		return 0;
 	return l->tail->value;
 }
 
 void* list_pop(list l) {
+	if (l->tail->value == l)
+		return 0;
+	
 	list_node tail = l->tail->prev;
 	list_node n = l->tail;
 

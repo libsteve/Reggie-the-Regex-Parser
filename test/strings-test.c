@@ -5,38 +5,38 @@
 
 result test_string_length_EmptyString() {
 	int passed = 0;
-	char* description = "string_length(char*) : EmptyString CASE"
+	char* description = "string_length(char*) : EmptyString CASE":
 
 	passed = is_equal(string_length(""),0);
 
-	return (result){passed, description}
+	return (result){passed, description};
 }
 
 result test_string_length_NULL() {
 	int passed = 0;
-	char* description = "string_length(char*) : NULL CASE"
+	char* description = "string_length(char*) : NULL CASE";
 
 	passed = is_equal(string_length(0), 0);
 
-	return (result){passed, description}
+	return (result){passed, description};
 }
 
 result test_string_length_Len1() {
 	int passed = 0;
-	char* description = "string_length(char*) : Length==1 CASE"
+	char* description = "string_length(char*) : Length==1 CASE";
 
 	passed = is_equal(string_length("1"), 1);
 
-	return (result){passed, description}
+	return (result){passed, description};
 }
 
 result test_string_length_Len5() {
 	int passed = 0;
-	char* description = "string_length(char*) : Length==5 CASE"
+	char* description = "string_length(char*) : Length==5 CASE";
 
 	passed = is_equal(string_length("12345"), 5);
 
-	return (result){passed, description}
+	return (result){passed, description};
 }
 
 ////
@@ -44,56 +44,56 @@ result test_string_length_Len5() {
 
 result test_string_equals_EmptyStrings() {
 	int passed = 0;
-	char* description = "string_equals(char*, char*) : 2EmptyString CASE"
+	char* description = "string_equals(char*, char*) : 2EmptyString CASE";
 
 	passed = is_true(string_equals("", ""));
 
-	return (result){passed, description}
+	return (result){passed, description};
 }
 
 result test_string_equals_EmptyStringNULL() {
 	int passed = 0;
-	char* description = "string_equals(char*, char*) : EmptyStringNULL CASE"
+	char* description = "string_equals(char*, char*) : EmptyStringNULL CASE";
 
 	passed = is_false(string_equals("", 0));
 
-	return (result){passed, description}
+	return (result){passed, description};
 }
 
 result test_string_equals_NULL() {
 	int passed = 0;
-	char* description = "string_equals(char*, char*) : NULL CASE"
+	char* description = "string_equals(char*, char*) : NULL CASE";
 
 	passed = is_false(string_equals(0, 0));
 
-	return (result){passed, description}
+	return (result){passed, description};
 }
 
 result test_string_equals_StringWithEmpty() {
 	int passed = 0;
-	char* description = "string_equals(char*, char*) : StringWithEmpty CASE"
+	char* description = "string_equals(char*, char*) : StringWithEmpty CASE";
 
 	passed = is_false(string_equals("abc", ""));
 
-	return (result){passed, description}
+	return (result){passed, description};
 }
 
 result test_string_equals_StringWithOtherString() {
 	int passed = 0;
-	char* description = "string_equals(char*, char*) : StringWithOtherString CASE"
+	char* description = "string_equals(char*, char*) : StringWithOtherString CASE";
 
 	passed = is_false(string_equals("abc", "efg"));
 
-	return (result){passed, description}
+	return (result){passed, description};
 }
 
 result test_string_equals_StringWithSameString() {
 	int passed = 0;
-	char* description = "string_equals(char*, char*) : StringWithSameString CASE"
+	char* description = "string_equals(char*, char*) : StringWithSameString CASE";
 
 	passed = is_false(string_equals("abc", "abc"));
 
-	return (result){passed, description}
+	return (result){passed, description};
 }
 
 ////
@@ -101,83 +101,83 @@ result test_string_equals_StringWithSameString() {
 
 result test_string_substring_EmptyStrings() {
 	int passed = 0;
-	char* description = "string_substring(char*, char*) : 2EmptyString CASE"
+	char* description = "string_substring(char*, char*) : 2EmptyString CASE";
 
 	passed = is_true(string_substring("", ""));
 
-	return (result){passed, description}
+	return (result){passed, description};
 }
 
 result test_string_substring_EmptyStringNULL() {
 	int passed = 0;
-	char* description = "string_substring(char*, char*) : EmptyStringNULL CASE"
+	char* description = "string_substring(char*, char*) : EmptyStringNULL CASE";
 
 	passed = is_false(string_substring("", 0));
 
-	return (result){passed, description}
+	return (result){passed, description};
 }
 
 result test_string_substring_NULL() {
 	int passed = 0;
-	char* description = "string_substring(char*, char*) : NULL CASE"
+	char* description = "string_substring(char*, char*) : NULL CASE";
 
 	passed = is_false(string_substring(0, 0));
 
-	return (result){passed, description}
+	return (result){passed, description};
 }
 
 result test_string_substring_StringWithOtherString() {
 	int passed = 0;
-	char* description = "string_substring(char*, char*) : StringWithOtherString CASE"
+	char* description = "string_substring(char*, char*) : StringWithOtherString CASE";
 
 	passed = is_false(string_substring("abc", "efg"));
 
-	return (result){passed, description}
+	return (result){passed, description};
 }
 
 result test_string_substring_StringWithEmptyString() {
 	int passed = 0;
-	char* description = "string_substring(char*, char*) : StringWithEmptyString CASE"
+	char* description = "string_substring(char*, char*) : StringWithEmptyString CASE";
 
 	passed = is_true(string_substring("abc", ""));
 
-	return (result){passed, description}
+	return (result){passed, description};
 }
 
 result test_string_substring_StringWithSubstring() {
 	int passed = 0;
-	char* description = "string_substring(char*, char*) : StringWithSubstring CASE"
+	char* description = "string_substring(char*, char*) : StringWithSubstring CASE";
 
 	passed = is_true(string_substring("abc", "ab"));
 
-	return (result){passed, description}
+	return (result){passed, description};
 }
 
 result test_string_substring_StringWithEmptyString() {
 	int passed = 0;
-	char* description = "string_substring(char*, char*) : StringWithEmptyString CASE"
+	char* description = "string_substring(char*, char*) : StringWithEmptyString CASE";
 
 	passed = is_true(string_substring("abc", ""));
 
-	return (result){passed, description}
+	return (result){passed, description};
 }
 
 result test_string_substring_StringWithBiggerString() {
 	int passed = 0;
-	char* description = "string_substring(char*, char*) : StringWithBiggerString CASE"
+	char* description = "string_substring(char*, char*) : StringWithBiggerString CASE";
 
 	passed = is_false(string_substring("abc", "efghi"));
 
-	return (result){passed, description}
+	return (result){passed, description};
 }
 
 result test_string_substring_StringWithBiggerSuperstring() {
 	int passed = 0;
-	char* description = "string_substring(char*, char*) : StringWithBiggerSuperstring CASE"
+	char* description = "string_substring(char*, char*) : StringWithBiggerSuperstring CASE";
 
 	passed = is_false(string_substring("abc", "abcdefg"));
 
-	return (result){passed, description}
+	return (result){passed, description};
 }
 
 ////
