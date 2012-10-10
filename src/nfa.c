@@ -24,6 +24,10 @@ void nfa_destroy(NFA nfa) {
 	free(nfa);
 }
 
+State nfa_initialState() {
+	return nfa->initialState;
+}
+
 State state_create() {
 	State s = calloc(1, sizeof(struct state));
 	s->transitions = list_create();

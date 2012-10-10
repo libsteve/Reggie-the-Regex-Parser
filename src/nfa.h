@@ -32,6 +32,9 @@ NFA nfa_create();
 // use this instead of free
 void nfa_destroy(NFA nfa);
 
+// get the initial state of the NFA
+State nfa_initialState();
+
 // create a new state object
 State state_create();
 
