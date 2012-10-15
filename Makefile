@@ -76,7 +76,7 @@ $(TESTER_O): $(TESTER)
 
 testbin/list-test: testbin/build $(LIST_TEST) $(LIST_O) $(TESTER_O)
 	$(CC) -c -o $(LIST_TEST_O) test/list-test.c
-	$(CC) -o testbin/list-test $(LIST_TEST_O) $(LIST_O)
+	$(CC) -o testbin/list-test $(LIST_TEST_O) $(LIST_O) $(TESTER_O)
 
 testbin/nfa-test: ;
 # testbin/nfa-test: test/nfa-test.c test/nfa-test.h bin/build/nfa.o testbin/build
@@ -85,11 +85,11 @@ testbin/nfa-test: ;
 
 testbin/strings-test: testbin/build $(STRINGS_TEST) $(STRINGS_O) $(TESTER_O)
 	$(CC) -c -o $(STRINGS_TEST_O) test/strings-test.c
-	$(CC) -o testbin/strings-test $(STRINGS_TEST_O) $(STRINGS_O) $(TESTER_O)
+	$(CC) -o testbin/strings-test $(STRINGS_TEST_O) $(STRINGS_O) $(TESTER_O) $(TESTER_O)
 
 testbin/nfa_eval-test: testbin/build $(NFA_EVAL_TEST) $(NFA_EVAL_O) $(TESTER_O)
 	$(CC) -c -o $(NFA_EVAL_TEST_O) test/nfa_eval-test.c
-	$(CC) -o testbin/nfa_eval-test $(ALL_NFA_O) $(ALL_NFA_O) $(TESTER_O)
+	$(CC) -o testbin/nfa_eval-test $(ALL_NFA_O) $(ALL_NFA_O) $(TESTER_O) $(TESTER_O)
 
 ###
 # Compile and Run Tests
