@@ -8,7 +8,8 @@ result test_list_push() {
 	char* description = "list_push(list, void*)";
 
 	list l = list_create();
-	list_push(l, &42);
+	int val = 42;
+	list_push(l, &val);
 
 	passed = is_equal(list_len(l), 1);
 
@@ -26,7 +27,7 @@ result test_list_len_NoNodes() {
 
 	list l = list_create();
 
-	passed = is_equal(list_len(), 0);
+	passed = is_equal(list_len(l), 0);
 
 	list_destroy(l);
 
@@ -38,7 +39,8 @@ result test_list_len_OnePushed() {
 	char* description = "list_len(list) : OnePushed CASE";
 
 	list l = list_create();
-	list_push(l, &42);
+	int val = 42;
+	list_push(l, &val);
 
 	passed = is_equal(list_len(l), 1);
 
@@ -52,7 +54,8 @@ result test_list_len_OnePushedThenPoped() {
 	char* description = "list_len(list) : OnePushedThenPoped CASE";
 
 	list l = list_create();
-	list_push(l, &42);
+	int val = 42;
+	list_push(l, &val);
 	list_pop(l);
 
 	passed = is_equal(list_len(l), 0);
@@ -67,8 +70,10 @@ result test_list_len_OnePushedThenInsertAt0() {
 	char* description = "list_len(list) : OnePushedThenInsertAt0 CASE";
 
 	list l = list_create();
-	list_push(l, &42);
-	list_insertAt(l, 0, &7);
+	int val = 42;
+	int oval = 7;
+	list_push(l, &val);
+	list_insertAt(l, 0, &oval);
 
 	passed = is_equal(list_len(l), 2);
 
@@ -86,7 +91,7 @@ result test_list_peek_EmptyList() {
 
 	list l = list_create();
 
-	passed = is_equal(list_peek(l), 0);
+	passed = is_equal((int)list_peek(l), 0);
 
 	list_destroy(l);
 
@@ -98,10 +103,10 @@ result test_list_peek_OnePushed() {
 	char* description = "list_peek(list) : OnePushed CASE";
 
 	list l = list_create();
-	int* value = &42;
-	list_push(l, value);
+	int value = 42;
+	list_push(l, &value);
 
-	passed = is_equal(list_peek(l), value);
+	passed = is_equal((int)list_peek(l), (int)&value);
 
 	list_destroy(l);
 
@@ -113,11 +118,12 @@ result test_list_peek_TwoPushed() {
 	char* description = "list_peek(list) : TwoPushed CASE";
 
 	list l = list_create();
-	int* value = &42;
-	list_push(l, &7);
-	list_push(l, value);
+	int value = 42;
+	int oval = 7;
+	list_push(l, &oval);
+	list_push(l, &value);
 
-	passed = is_equal(list_peek(l), value);
+	passed = is_equal((int)list_peek(l), (int)&value);
 
 	list_destroy(l);
 
@@ -129,12 +135,13 @@ result test_list_peek_TwoPushedOnePoped() {
 	char* description = "list_peek(list) : TwoPushedOnePoped CASE";
 
 	list l = list_create();
-	int* value = &42;
-	list_push(l, value);
-	list_push(l, &7);
+	int value = 42;
+	int oval = 7;
+	list_push(l, &value);
+	list_push(l, &oval);
 	list_pop(l);
 
-	passed = is_equal(list_peek(l), value);
+	passed = is_equal((int)list_peek(l), (int)&value);
 
 	list_destroy(l);
 
@@ -146,11 +153,12 @@ result test_list_peek_OnePushedOnePoped() {
 	char* description = "list_peek(list) : OnePushedOnePoped CASE";
 
 	list l = list_create();
-	list_push(l, &42);
+	int val = 42;
+	list_push(l, &val);
 	list_pop(l);
 
 
-	passed = is_equal(list_peek(l), 0);
+	passed = is_equal((int)list_peek(l), 0);
 
 	list_destroy(l);
 
@@ -167,7 +175,7 @@ result test_list_pop_EmptyList() {
 	list l = list_create();
 	list_pop(l);
 
-	passed = is_equal(list_peek(l), 0) && is_equal(list_len(l), 0);
+	passed = is_equal((int)list_peek(l), 0) && is_equal(list_len(l), 0);
 
 	list_destroy(l);
 
@@ -179,10 +187,11 @@ result test_list_pop_PopOne() {
 	char* description = "list_pop(list) : PopOne CASE";
 
 	list l = list_create();
-	list_push(l, &42);
+	int val = 42;
+	list_push(l, &val);
 	list_pop(l);
 
-	passed = is_equal(list_peek(l), 0);
+	passed = is_equal((int)list_peek(l), 0);
 
 	list_destroy(l);
 
@@ -197,10 +206,10 @@ result test_list_insertAt_InsertAt1WithLen0() {
 	char* description = "list_insertAt(list, int, void*) : InsertAt1WithLen0 CASE";
 
 	list l = list_create();
-	int* value = &42;
-	list_insertAt(l, 1, value);
+	int value = 42;
+	list_insertAt(l, 1, &value);
 
-	passed = is_equal(list_peek(l), value) && is_equal(list_len(l), 1);
+	passed = is_equal((int)list_peek(l), (int)(int)&value) && is_equal(list_len(l), 1);
 
 	list_destroy(l);
 
@@ -212,10 +221,10 @@ result test_list_insertAt_InsertAtNegative1WithLen0() {
 	char* description = "list_insertAt(list, int, void*) : InsertAtNegative1WithLen0 CASE";
 
 	list l = list_create();
-	int* value = &42;
-	list_insertAt(l, -1, value);
+	int value = 42;
+	list_insertAt(l, -1, &value);
 
-	passed = is_equal(list_peek(l), value) && is_equal(list_len(l), 1);
+	passed = is_equal((int)list_peek(l), (int)&value) && is_equal(list_len(l), 1);
 
 	list_destroy(l);
 
@@ -227,14 +236,14 @@ result test_list_insertAt_InsertAt1WithLen1() {
 	char* description = "list_insertAt(list, int, void*) : InsertAt1WithLen1 CASE";
 
 	list l = list_create();
-	int* value0 = &42;
-	int* value1 = &7;
-	list_push(l, value0);
-	list_insertAt(l, 1, value1);
+	int value0 = 42;
+	int value1 = 7;
+	list_push(l, &value0);
+	list_insertAt(l, 1, &value1);
 
-	passed = is_equal(list_peek(l), value1) && 
-			 is_equal(list->head->value, value0) && 
-			 is_equal(list_len(l), 2);
+	passed = (	is_equal((int)list_peek(l), (int)&value1) 			&& 
+			 	is_equal((int)(l->head->value), (int)&value0) 	&& 
+			 	is_equal(list_len(l), 2)							);
 
 	list_destroy(l);
 
@@ -246,13 +255,13 @@ result test_list_insertAt_InsertAtNegative1WithLen1() {
 	char* description = "list_insertAt(list, int, void*) : InsertAtNegative1WithLen1 CASE";
 
 	list l = list_create();
-	int* value0 = &42;
-	int* value1 = &7;
-	list_push(l, value0);
-	list_insertAt(l, -1, value1);
+	int value0 = 42;
+	int value1 = 7;
+	list_push(l, &value0);
+	list_insertAt(l, -1, &value1);
 
-	passed = is_equal(list_peek(l), value0) && 
-			 is_equal(list->head->value, value1) && 
+	passed = is_equal((int)list_peek(l), (int)&value0) && 
+			 is_equal((int)(l->head->value), (int)&value1) && 
 			 is_equal(list_len(l), 2);
 
 	list_destroy(l);
@@ -265,13 +274,13 @@ result test_list_insertAt_InsertAt0WithLen1() {
 	char* description = "list_insertAt(list, int, void*) : InsertAt0WithLen1 CASE";
 
 	list l = list_create();
-	int* value0 = &42;
-	int* value1 = &7;
-	list_push(l, value0);
-	list_insertAt(l, 0, value1);
+	int value0 = 42;
+	int value1 = 7;
+	list_push(l, &value0);
+	list_insertAt(l, 0, &value1);
 
-	passed = is_equal(list_peek(l), value0) && 
-			 is_equal(list->head->value, value1) && 
+	passed = is_equal((int)list_peek(l), (int)&value0) && 
+			 is_equal((int)(l->head->value), (int)&value1) && 
 			 is_equal(list_len(l), 2);
 
 	list_destroy(l);
@@ -288,7 +297,7 @@ result test_list_removeFrom_RemoveFrom0WithLen0() {
 
 	list l = list_create();
 
-	passed = is_equal(list_removeFrom(l, 0), 0);
+	passed = is_equal((int)list_removeFrom(l, 0), 0);
 
 	list_destroy(l);
 
@@ -301,7 +310,7 @@ result test_list_removeFrom_RemoveFrom1WithLen0() {
 
 	list l = list_create();
 
-	passed = is_equal(list_removeFrom(l, 1), 0);
+	passed = is_equal((int)list_removeFrom(l, 1), 0);
 
 	list_destroy(l);
 
@@ -313,10 +322,10 @@ result test_list_removeFrom_RemoveFrom0WithLen1() {
 	char* description = "list_removeFrom(list, int) : RemoveFrom0WithLen1 CASE";
 
 	list l = list_create();
-	int* value = &42;
-	list_push(l, value);
+	int value = 42;
+	list_push(l, &value);
 
-	passed = is_equal(list_removeFrom(l, 0), value) &&
+	passed = is_equal((int)list_removeFrom(l, 0), (int)&value) &&
 			 is_equal(list_len(l), 0);
 
 	list_destroy(l);
@@ -329,14 +338,14 @@ result test_list_removeFrom_RemoveFrom0WithLen2() {
 	char* description = "list_removeFrom(list, int) : RemoveFrom0WithLen2 CASE";
 
 	list l = list_create();
-	int* value1 = &42;
-	int* value0 = &7;
-	list_push(l, value0);
-	list_push(l, value1);
+	int value1 = 42;
+	int value0 = 7;
+	list_push(l, &value0);
+	list_push(l, &value1);
 
-	passed = is_equal(list_removeFrom(l, 0), value0) &&
+	passed = is_equal((int)list_removeFrom(l, 0), (int)&value0) &&
 			 is_equal(list_len(l), 1) &&
-			 is_equal(list_peek(l), value1);
+			 is_equal((int)list_peek(l), (int)&value1);
 
 	list_destroy(l);
 
