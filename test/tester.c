@@ -18,7 +18,7 @@ void run_tests(tests ts) {
 	printf("ALL TESTS: %s\n", (test_counter == passed_counter ? "PASSED" : ""));
 	if (test_counter != passed_counter) {
 		printf("\tPASSED:\t%d\n", passed_counter);
-		printf("\tFAILED:\t%s\n", test_counter - passed_counter);
+		printf("\tFAILED:\t%d\n", test_counter - passed_counter);
 		printf("\tTOTAL:\t%d\n", test_counter);
 	}
 }

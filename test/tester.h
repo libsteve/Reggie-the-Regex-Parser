@@ -12,7 +12,7 @@ typedef struct {
 typedef result (*testing_func)();
 
 // short-hand for a c-array of testing functions
-typedef testing_func* tests;
+typedef testing_func tests[];
 
 // execute a list of tests and print out how many passed
 // out of how many total tests were run from each testing function.
@@ -28,4 +28,4 @@ int is_false(int value);
 // a more readable way of writing x == y
 int is_equal(int x, int y);
 
-#end
+#endif
