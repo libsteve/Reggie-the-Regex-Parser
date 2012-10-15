@@ -24,7 +24,7 @@ void nfa_destroy(NFA nfa) {
 	free(nfa);
 }
 
-State nfa_initialState() {
+State nfa_initialState(NFA nfa) {
 	return nfa->initialState;
 }
 
