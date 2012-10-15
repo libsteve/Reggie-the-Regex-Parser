@@ -52,6 +52,8 @@ $(NFA_EVAL_O): $(NFA_EVAL) bin/build
 
 ###
 # Target Test Sources
+TESTER 			= test/tester.c 		test/tester.h
+
 LIST_TEST 		= test/list-test.c 		test/list-test.h
 STRINGS_TEST 	= test/strings-test.c 	test/strings-test.h
 NFA_TEST 		= test/nfa-test.c 		test/nfa-test.h
@@ -59,15 +61,20 @@ NFA_EVAL_TEST 	= test/nfa_eval-test.c 	test/nfa_eval-test.h
 
 ###
 # Target Test Objects
-LIST_TEST_O		= testbin/build/list.o
-STRINGS_TEST_O 	= testbin/build/strings.o
-NFA_TEST_O 		= testbin/build/nfa.o
-NFA_EVAL_TEST_O = testbin/build/nfa_eval.o
+TESTER_O		= testbin/build/tester.o
+
+LIST_TEST_O		= testbin/build/list-test.o
+STRINGS_TEST_O 	= testbin/build/strings-test.o
+NFA_TEST_O 		= testbin/build/nfa-test.o
+NFA_EVAL_TEST_O = testbin/build/nfa_eval-test.o
 
 ###
 # Compile Tests
 
-testbin/list-test: testbin/build $(LIST_TEST) $(LIST_O)
+$(TESTER_O): $(TESTER)
+	$(CC) -c -o $(TESTER_O) test/tester.c
+
+testbin/list-test: testbin/build $(LIST_TEST) $(LIST_O) $(TESTER_O)
 	$(CC) -c -o $(LIST_TEST_O) test/list-test.c
 	$(CC) -o testbin/list-test $(LIST_TEST_O) $(LIST_O)
 
@@ -76,13 +83,13 @@ testbin/nfa-test: ;
 # 	clang -c -o testbin/build/nfa-test.o test/nfa-test.c
 # 	clang -o testbin/nfa-test testbin/build/nfa-test.o bin/build/nfa.o
 
-testbin/strings-test: testbin/build $(STRINGS_TEST) $(STRINGS_O)
+testbin/strings-test: testbin/build $(STRINGS_TEST) $(STRINGS_O) $(TESTER_O)
 	$(CC) -c -o $(STRINGS_TEST_O) test/strings-test.c
-	$(CC) -o testbin/strings-test $(STRINGS_TEST_O) $(STRINGS_O)
+	$(CC) -o testbin/strings-test $(STRINGS_TEST_O) $(STRINGS_O) $(TESTER_O)
 
-testbin/nfa_eval-test: testbin/build $(NFA_EVAL_TEST) $(NFA_EVAL_O)
+testbin/nfa_eval-test: testbin/build $(NFA_EVAL_TEST) $(NFA_EVAL_O) $(TESTER_O)
 	$(CC) -c -o $(NFA_EVAL_TEST_O) test/nfa_eval-test.c
-	$(CC) -o testbin/nfa_eval-test $(ALL_NFA_O) $(ALL_NFA_O)
+	$(CC) -o testbin/nfa_eval-test $(ALL_NFA_O) $(ALL_NFA_O) $(TESTER_O)
 
 ###
 # Compile and Run Tests
