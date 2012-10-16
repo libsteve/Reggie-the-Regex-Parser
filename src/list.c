@@ -1,6 +1,9 @@
 #include <stdlib.h>
 #include "list.h"
 
+#define HEAD connecting_node->next
+#define TAIL connecting_node->prev
+
 list list_create() {
 	// create the list
 	list l = calloc(1, sizeof(struct list));
@@ -10,14 +13,13 @@ list list_create() {
 	l->connecting_node->value = l;
 	l->connecting_node->next = l->connecting_node;
 	l->connecting_node->prev = l->connecting_node;
-	l->head = l->connecting_node;
-	l->tail = l->connecting_node;
+	l->len = 0;
 
 	return l;
 }
 
 void list_destroy(list l) {
-	list_node n = l->head;
+	list_node n = l->HEAD;
 	while (n->value != l) {
 		list_node next = n->next;
 		free(n);
@@ -27,114 +29,89 @@ void list_destroy(list l) {
 	free(l);
 }
 
-// private function
-// insert the given node a before the given node b
-// the list is circularly and doubbly linked, so we have access to the node before b
-void __node_insertBefore(list_node a, list_node b) {
-	b->prev->next = a;
-	a->prev = b->prev;
-	a->next = b;
-	b->prev = a;
+// private
+// put n between a and b
+// a -> b  :=>  a -> n -> b
+void __node_insertBetween(list_node n, list_node a, list_node b) {
+	n->prev = a;
+	n->next = b;
+
+	a->next = n;
+	b->prev = n;
 }
 
-// private function
-// insert the given node a after the given node b
-// the list is circularly and doubbly linked, so we have access to the node after b
-void __node_insertAfter(list_node a, list_node b) {
-	a->next = b->next;
-	b->next->prev = a;
-	b->next = a;
-	a->prev = b;
+// private
+// remove n
+// n must have an n->prev and n->next
+// x -> n -> y  :=>  x -> y
+void __node_remove(list_node n) {
+	list_node prev = n->prev;
+	list_node next = n->next;
+
+	prev->next = next;
+	next->prev = prev;
 }
 
-// private function
-// remove the node before the given node
-list_node __node_removeBefore(list_node a) {
-	list_node removed = a->prev;
-
-	a->prev->prev->next = a;
-	a->prev = a->prev->prev;
-
-	return removed;
-}
-
-// private function
-// remove the node after the given node
-list_node __node_removeAfter(list_node a) {
-	list_node removed = a->next;
-
-	a->next->next->prev = a;
-	a->next = a->next->next;
-
-	return removed;
-}
-
-void list_push(list l, void* val) {
+void list_push(list l, void* value) {
 	list_node n = calloc(1, sizeof(struct list_node));
-
-	__node_insertAfter(n, l->tail);
-	l->tail = n;
+	__node_insertBetween(n, l->TAIL, l->TAIL->next);
+	n->value = value;
 	l->len += 1;
-
-	if (l->len == 0) l->head = n;
-}
-
-void list_rpush(list l, void* val) {
-	list_node n = calloc(1, sizeof(struct list_node));
-
-	__node_insertBefore(n, l->head);
-	l->head = n;
-	l->len += 1;
-
-	if (l->len == 0) l->tail = n;
 }
 
 void* list_peek(list l) {
-	if (l->tail->value == l)
-		return 0;
-	return l->tail->value;
-}
-
-void* list_rpeek(list l) {
-	if (l->head->value == l)
-		return 0;
-	return l->head->value;
+	if (l->TAIL->value == l) return 0;
+	return l->TAIL->value;
 }
 
 void* list_pop(list l) {
-	if (l->tail->value == l)
+	if (l->TAIL->value == l)
 		return 0;
-	
-	list_node n = __node_removeAfter(l->tail->prev);
-	l->tail = n->prev;
-	l->len -= 1;
 
-	if (l->len <= 1)
-		l->head = l->tail;
+	list_node n = l->TAIL;
+	__node_remove(n);
+	l->len -= 1;
 
 	void* value = n->value;
 	free(n);
 	return value;
+}
+
+void list_rpush(list l, void* value) {
+	list_node n = calloc(1, sizeof(struct list_node));
+	__node_insertBetween(n, l->HEAD->prev, l->HEAD);
+	n->value = value;
+	l->len += 1;
+}
+
+void* list_rpeek(list l) {
+	if (l->HEAD->value == l) return 0;
+	return l->HEAD->value;
 }
 
 void* list_rpop(list l) {
-	if (l->head->value == l)
+	if (l->HEAD->value == l)
 		return 0;
-	
-	list_node n = __node_removeBefore(l->head->next);
-	l->head = n->next;
+
+	list_node n = l->HEAD;
+	__node_remove(n);
 	l->len -= 1;
-
-	if (l->len <= 1)
-		l->tail = l->head;
-
+	
 	void* value = n->value;
 	free(n);
 	return value;
 }
 
+void list_enqueue(list l, void* value) {
+	list_rpush(l, value);
+}
+
+void* list_dequeue(list l) {
+	return list_pop(l);
+}
+
 void list_foreach(list l, foreach_func func) {
-	list_node n = l->head;
+	list_node n = l->HEAD;
 	while (n->value != l) {
 		list_node next = n-> next;
 		func(n->value);
@@ -143,7 +120,7 @@ void list_foreach(list l, foreach_func func) {
 }
 
 void list_foreachWithState(list l, foreachWithState_func func, void* state) {
-	list_node n = l->head;
+	list_node n = l->HEAD;
 	while (n->value != l) {
 		list_node next = n-> next;
 		func(state, n->value);
@@ -162,12 +139,12 @@ int list_len(list l) {
 list_node __list_getNthNode(list l, int n) {
 	if (l->len != 0) {
 		if (n <= 0)
-			return l->head;
+			return l->HEAD;
 		else if (n >= l->len - 1)
-			return l->tail;
+			return l->TAIL;
 		else {
 			int curr_index = 0;
-			list_node curr = l->head;
+			list_node curr = l->HEAD;
 			while (curr_index < n) {
 				curr_index++;
 				curr = curr->next;
@@ -181,13 +158,13 @@ list_node __list_getNthNode(list l, int n) {
 
 void list_insertAt(list l, int index, void* val) {
 	list_node i = __list_getNthNode(l, index);
-	if (i == l->head)
+	if (i == l->HEAD)
 		list_rpush(l, val);
-	else if (i == l->tail)
+	else if (i == l->TAIL)
 		list_push(l, val);
 	else {
 		list_node n = calloc(1, sizeof(struct list_node));
-		__node_insertBefore(n, i);
+		__node_insertBetween(n, i->prev, i);
 		n->value = val;
 		l->len += 1;
 	}
@@ -197,12 +174,12 @@ void* list_removeFrom(list l, int index) {
 	if (l->len == 0) return 0;
 
 	list_node n = __list_getNthNode(l, index);
-	if (n == l->head)
+	if (n == l->HEAD)
 		return list_rpop(l);
-	else if (n == l->tail)
+	else if (n == l->TAIL)
 		return list_pop(l);
 	else {
-		__node_removeAfter(n->prev);
+		__node_remove(n);
 		void* val = n->value;
 		free(n);
 		l->len -= 1;
@@ -217,7 +194,7 @@ void* list_getFrom(list l, int index) {
 	if (index >= len-1) 
 		return list_peek(l);
 	int curr_index = 0;
-	list_node n = l->head;
+	list_node n = l->HEAD;
 	while (curr_index < index) {
 		curr_index++;
 		n = n->next;
@@ -226,7 +203,7 @@ void* list_getFrom(list l, int index) {
 }
 
 int list_getIndex(list l, void* val) {
-	list_node n = l->head;
+	list_node n = l->HEAD;
 	int index = 0;
 	while (n->value != l) {
 		if (n->value == val)
@@ -245,7 +222,7 @@ void list_removeValue(list l, void* val) {
 }
 
 index_value_pair list_find(list l, find_func func, void* state) {
-	list_node n = l->head;
+	list_node n = l->HEAD;
 	int index = 0;
 	while (n->value != l) {
 		list_node next = n-> next;
@@ -257,3 +234,6 @@ index_value_pair list_find(list l, find_func func, void* state) {
 		return (index_value_pair){-1, 0};
 	return (index_value_pair){index, n->value};
 }
+
+#undef HEAD
+#undef TAIL

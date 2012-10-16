@@ -1,5 +1,8 @@
 #include "list-test.h"
 
+#define HEAD connecting_node->next
+#define TAIL connecting_node->prev
+
 ////
 // test void list_push(list)
 
@@ -242,7 +245,7 @@ result test_list_insertAt_InsertAt1WithLen1() {
 	list_insertAt(l, 1, &value1);
 
 	passed = (	is_equal((int)list_peek(l), (int)&value1) 			&& 
-			 	is_equal((int)(l->head->value), (int)&value0) 	&& 
+			 	is_equal((int)(l->HEAD->value), (int)&value0) 	&& 
 			 	is_equal(list_len(l), 2)							);
 
 	list_destroy(l);
@@ -261,7 +264,7 @@ result test_list_insertAt_InsertAtNegative1WithLen1() {
 	list_insertAt(l, -1, &value1);
 
 	passed = is_equal((int)list_peek(l), (int)&value0) && 
-			 is_equal((int)(l->head->value), (int)&value1) && 
+			 is_equal((int)(l->HEAD->value), (int)&value1) && 
 			 is_equal(list_len(l), 2);
 
 	list_destroy(l);
@@ -280,7 +283,7 @@ result test_list_insertAt_InsertAt0WithLen1() {
 	list_insertAt(l, 0, &value1);
 
 	passed = is_equal((int)list_peek(l), (int)&value0) && 
-			 is_equal((int)(l->head->value), (int)&value1) && 
+			 is_equal((int)(l->HEAD->value), (int)&value1) && 
 			 is_equal(list_len(l), 2);
 
 	list_destroy(l);
@@ -396,3 +399,6 @@ int main(int argc, char** argv) {
 	run_tests(TESTS);
 	return 0;
 }
+
+#undef HEAD
+#undef TAIL

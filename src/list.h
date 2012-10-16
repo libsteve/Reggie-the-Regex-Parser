@@ -10,9 +10,10 @@ typedef struct list_node {
 
 // a linked list data structure
 typedef struct list {
-	struct list_node* head; // the head node in the linked list
-	struct list_node* tail; // the tail node in the linked list
-	struct list_node* connecting_node; // a node to connect the head and tail node in the linked list. the value will be a pointer to the list
+	struct list_node* connecting_node; 	// a node to connect the head and tail node in the linked list. 
+										// the value will be a pointer to the list.
+										// connecting_node->next is the head.
+										// connecting_node->prev is the tail.
 	int len; // the length of the list
 } *list;
 
@@ -40,6 +41,12 @@ void* list_rpeek(list l);
 
 // remove the head of the list and return the value
 void* list_rpop(list l);
+
+// enqueue a value to the head of the list
+void list_enqueue(list l, void* value);
+
+// dequeue a value from the tail of the list
+void* list_dequeue(list l);
 
 // the function type to use with list_foreach()
 // takes a pointer value
