@@ -13,6 +13,7 @@ typedef struct list {
 	struct list_node* head; // the head node in the linked list
 	struct list_node* tail; // the tail node in the linked list
 	struct list_node* connecting_node; // a node to connect the head and tail node in the linked list. the value will be a pointer to the list
+	int len; // the length of the list
 } *list;
 
 // create a linked list structure
@@ -30,6 +31,15 @@ void* list_peek(list l);
 
 // remove the tail of the list and return the value
 void* list_pop(list l);
+
+// push a pointer to the head of the list
+void* list_rpush(list l, void* val);
+
+// get the value from the head of the list
+void* list_rpeek(list l);
+
+// remove the head of the list and return the value
+void* list_rpop(list l);
 
 // the function type to use with list_foreach()
 // takes a pointer value
