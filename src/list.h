@@ -33,7 +33,7 @@ void* list_peek(list l);
 void* list_pop(list l);
 
 // push a pointer to the head of the list
-void* list_rpush(list l, void* val);
+void list_rpush(list l, void* val);
 
 // get the value from the head of the list
 void* list_rpeek(list l);

@@ -134,7 +134,7 @@ void* list_rpop(list l) {
 }
 
 void list_foreach(list l, foreach_func func) {
-	list_node n = list_head(l);
+	list_node n = l->head;
 	while (n->value != l) {
 		list_node next = n-> next;
 		func(n->value);
@@ -143,7 +143,7 @@ void list_foreach(list l, foreach_func func) {
 }
 
 void list_foreachWithState(list l, foreachWithState_func func, void* state) {
-	list_node n = list_head(l);
+	list_node n = l->head;
 	while (n->value != l) {
 		list_node next = n-> next;
 		func(state, n->value);
@@ -168,11 +168,11 @@ list_node __list_getNthNode(list l, int n) {
 		else {
 			int curr_index = 0;
 			list_node curr = l->head;
-			while (curr_index < index) {
+			while (curr_index < n) {
 				curr_index++;
-				n = n->head;
+				curr = curr->next;
 			}
-			return n;
+			return curr;
 		}
 	} else {
 		return 0;
@@ -186,9 +186,10 @@ void list_insertAt(list l, int index, void* val) {
 	else if (i == l->tail)
 		list_push(l, val);
 	else {
-		list_node n = calloc(1, sieof(struct list_node));
+		list_node n = calloc(1, sizeof(struct list_node));
 		__node_insertBefore(n, i);
 		n->value = val;
+		l->len += 1;
 	}
 }
 
@@ -204,6 +205,7 @@ void* list_removeFrom(list l, int index) {
 		__node_removeAfter(n->prev);
 		void* val = n->value;
 		free(n);
+		l->len -= 1;
 		return val;
 	}
 }
