@@ -10,13 +10,15 @@ NFA aba_nfa() {
 
 	State q1 = state_create();
 	state_setName(q1, "q1");
+
 	State q2 = state_create();
 	state_setName(q2, "q2");
+
 	State q3 = state_create();
 	state_setName(q3, "q3");
 	state_makeTerminal(q3);
 
-	state_addTransition(nfa_initialState(), "a", q1);
+	state_addTransition(nfa_initialState(nfa), "a", q1);
 	state_addTransition(q1, "b", q2);
 	state_addTransition(q2, "a", q3);
 
