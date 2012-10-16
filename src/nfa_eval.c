@@ -44,6 +44,9 @@ int state_eval_find_func(void* state, void* value) {
 }
 
 int state_eval(State s, char* input) {
+	if (s->isTerminalState && string_length(input) == 0)
+		return 1;
+
 	// create a list of acceptable transitions
 	list transition_list = list_create();
 
