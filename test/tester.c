@@ -7,7 +7,7 @@ void run_tests(tests ts) {
 	for (int i = 0; ts[i] != 0; i++) {
 		result r = ts[i]();
 
-		printf("%s : TEST %s", (r.passed ? "PASSED" : "FAILED"), r.description);
+		printf("%s : TEST %s\n", (r.passed ? "PASSED" : "FAILED"), r.description);
 
 		test_counter++;
 		if (r.passed) passed_counter++;
