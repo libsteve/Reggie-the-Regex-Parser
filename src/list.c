@@ -152,17 +152,17 @@ list_node __list_getNthNode(list l, int n) {
 			return curr;
 		}
 	} else {
-		return 0;
+		return l->HEAD;
 	}
 }
 
 void list_insertAt(list l, int index, void* val) {
-	list_node i = __list_getNthNode(l, index);
-	if (i == l->HEAD)
-		list_rpush(l, val);
-	else if (i == l->TAIL)
+	if (l->len <= index)
 		list_push(l, val);
+	else if (index <= 0)
+		list_rpush(l, val);
 	else {
+		list_node i = __list_getNthNode(l, index);
 		list_node n = calloc(1, sizeof(struct list_node));
 		__node_insertBetween(n, i->prev, i);
 		n->value = val;
@@ -188,17 +188,8 @@ void* list_removeFrom(list l, int index) {
 }
 
 void* list_getFrom(list l, int index) {
-	int len = list_len(l);
-	if (len == 0) return 0;
-
-	if (index >= len-1) 
-		return list_peek(l);
-	int curr_index = 0;
-	list_node n = l->HEAD;
-	while (curr_index < index) {
-		curr_index++;
-		n = n->next;
-	}
+	list_node n = __list_getNthNode(l, index);
+	if (n->value == l) return 0;
 	return n->value;
 }
 

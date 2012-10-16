@@ -212,7 +212,7 @@ result test_list_insertAt_InsertAt1WithLen0() {
 	int value = 42;
 	list_insertAt(l, 1, &value);
 
-	passed = is_equal((int)list_peek(l), (int)(int)&value) && is_equal(list_len(l), 1);
+	passed = is_equal((int)list_peek(l), (int)&value) && is_equal(list_len(l), 1);
 
 	list_destroy(l);
 
@@ -244,9 +244,9 @@ result test_list_insertAt_InsertAt1WithLen1() {
 	list_push(l, &value0);
 	list_insertAt(l, 1, &value1);
 
-	passed = (	is_equal((int)list_peek(l), (int)&value1) 			&& 
+	passed = (	is_equal((int)list_peek(l), (int)&value1) 		&& 
 			 	is_equal((int)(l->HEAD->value), (int)&value0) 	&& 
-			 	is_equal(list_len(l), 2)							);
+			 	is_equal(list_len(l), 2)						);
 
 	list_destroy(l);
 
