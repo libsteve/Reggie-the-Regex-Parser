@@ -89,7 +89,7 @@ testbin/strings-test: testbin/build $(STRINGS_TEST) $(STRINGS_O) $(TESTER_O)
 
 testbin/nfa_eval-test: testbin/build $(NFA_EVAL_TEST) $(ALL_NFA_O) $(TESTER_O)
 	$(CC) -c -o $(NFA_EVAL_TEST_O) test/nfa_eval-test.c
-	$(CC) -o testbin/nfa_eval-test $(ALL_NFA_O) $(ALL_NFA_O) $(TESTER_O)
+	$(CC) -o testbin/nfa_eval-test $(NFA_EVAL_TEST_O) $(ALL_NFA_O) $(TESTER_O)
 
 ###
 # Compile and Run Tests
