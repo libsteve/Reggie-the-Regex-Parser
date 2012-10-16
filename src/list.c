@@ -215,7 +215,7 @@ void* list_getFrom(list l, int index) {
 	if (index >= len-1) 
 		return list_peek(l);
 	int curr_index = 0;
-	list_node n = list_head(l);
+	list_node n = l->head;
 	while (curr_index < index) {
 		curr_index++;
 		n = n->next;
@@ -224,7 +224,7 @@ void* list_getFrom(list l, int index) {
 }
 
 int list_getIndex(list l, void* val) {
-	list_node n = list_head(l);
+	list_node n = l->head;
 	int index = 0;
 	while (n->value != l) {
 		if (n->value == val)
@@ -243,7 +243,7 @@ void list_removeValue(list l, void* val) {
 }
 
 index_value_pair list_find(list l, find_func func, void* state) {
-	list_node n = list_head(l);
+	list_node n = l->head;
 	int index = 0;
 	while (n->value != l) {
 		list_node next = n-> next;
