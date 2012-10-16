@@ -5,7 +5,7 @@
 
 result test_string_length_EmptyString() {
 	int passed = 0;
-	char* description = "string_length(char*) : EmptyString CASE":
+	char* description = "string_length(char*) : EmptyString CASE";
 
 	passed = is_equal(string_length(""),0);
 
@@ -149,15 +149,6 @@ result test_string_substring_StringWithSubstring() {
 	char* description = "string_substring(char*, char*) : StringWithSubstring CASE";
 
 	passed = is_true(string_substring("abc", "ab"));
-
-	return (result){passed, description};
-}
-
-result test_string_substring_StringWithEmptyString() {
-	int passed = 0;
-	char* description = "string_substring(char*, char*) : StringWithEmptyString CASE";
-
-	passed = is_true(string_substring("abc", ""));
 
 	return (result){passed, description};
 }

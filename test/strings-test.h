@@ -4,4 +4,4 @@
 #include "tester.h"
 #include "../src/strings.h"
 
-#endif STRINGS_TEST_H
+#endif

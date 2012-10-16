@@ -173,7 +173,7 @@ result test_nfa_eval_ABA_Failing() {
 
 	passed = is_false(nfa_eval(nfa, "aaa"));
 
-	nfa_destroy();
+	nfa_destroy(nfa);
 
 	return (result){passed, description};
 }
