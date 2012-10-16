@@ -3,7 +3,7 @@
 int string_length(char* str) {
 	int index = 0;
 	if (str == 0) return -1;
-	while (str[index] != '\0') ;
+	while (str[index] != '\0') index++;
 	return index;
 }
 

@@ -16,7 +16,7 @@ result test_string_length_NULL() {
 	int passed = 0;
 	char* description = "string_length(char*) : NULL CASE";
 
-	passed = is_equal(string_length(0), 0);
+	passed = is_equal(string_length(0), -1);
 
 	return (result){passed, description};
 }
@@ -91,7 +91,7 @@ result test_string_equals_StringWithSameString() {
 	int passed = 0;
 	char* description = "string_equals(char*, char*) : StringWithSameString CASE";
 
-	passed = is_false(string_equals("abc", "abc"));
+	passed = is_true(string_equals("abc", "abc"));
 
 	return (result){passed, description};
 }
