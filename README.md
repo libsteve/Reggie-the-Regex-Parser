@@ -24,3 +24,18 @@ An NFA is a directed graph with one initial node state (known as "q0") and any n
 This regex parser will take a regualr expression string and create an NFA modeled by that string.
 
 A user can then take the resulting NFA and pass in a string to see if it passes the NFA.
+
+Use
+---
+
+To compile and run tests, run
+
+	make test
+
+To clean the build files, run
+
+	make clean
+
+To clean the build files and binaries, run
+
+	make real-clean
