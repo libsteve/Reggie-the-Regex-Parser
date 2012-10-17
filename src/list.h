@@ -99,4 +99,9 @@ typedef struct index_value {
 // the given find_func function that used the given state
 index_value_pair list_find(list l, find_func func, void* state);
 
+// take the two given lists, append the second to the end of the first,
+// and return the composit of the two lists. 
+// this destroys both given lists.
+list list_merge(list a, list b);
+
 #endif

@@ -226,5 +226,84 @@ index_value_pair list_find(list l, find_func func, void* state) {
 	return (index_value_pair){index, n->value};
 }
 
+list list_merge(list a, list b) {
+	list l = list_create();
+
+	if (a->len > 0 && b->len > 0) /* if neither a nor b are empty */ {
+
+		// set up the length
+		l->len = a->len + b->len;
+
+		// set up the head of the new list with that of a
+		l->HEAD = a->HEAD;
+		l->HEAD->prev = l->connecting_node;
+		l->connecting_node->next = l->HEAD;
+
+		// connect the tail of a to the head of b
+		a->TAIL->next = b->HEAD;
+		b->HEAD->prev = a->TAIL;
+
+		// connect a->connecting_node to itself
+		a->connecting_node->next = a->connecting_node;
+		a->connecting_node->prev = a->connecting_node;
+
+		// set up the tail of the new list with that of b
+		l->TAIL = b->TAIL;
+		l->TAIL->next = l->connecting_node;
+		l->connecting_node->prev = l->TAIL;
+
+		// connect b->connecting_node to itself
+		b->connecting_node->next = b->connecting_node;
+		b->connecting_node->prev = b->connecting_node;
+
+	} else if (a->len > 0 && b->len <= 0) /* if b is empty */ {
+		// this ensures a and b are freed
+		// and their pointers are rendered invalid
+		
+		// set up the length
+		l->len = a->len;
+
+		// set up the head of the new list with that of a
+		l->HEAD = a->HEAD;
+		l->HEAD->prev = l->connecting_node;
+		l->connecting_node->next = l->HEAD;
+
+		// set up the tail of the new list with that of a
+		l->TAIL = a->TAIL;
+		l->TAIL->next = l->connecting_node;
+		l->connecting_node->prev = l->TAIL;
+
+		// connect a->connecting_node to itself
+		a->connecting_node->next = a->connecting_node;
+		a->connecting_node->prev = a->connecting_node;
+
+	} else if (a->len <= 0 && b->len > 0) /* if a is empty */ {
+		// this ensures a and b are freed
+		// and their pointers are rendered invalid
+
+		// set up the length
+		l->len = b->len;
+
+		// set up the head of the new list with that of b
+		l->HEAD = b->HEAD;
+		l->HEAD->prev = l->connecting_node;
+		l->connecting_node->next = l->HEAD;
+
+		// set up the tail of the new list with that of b
+		l->TAIL = b->TAIL;
+		l->TAIL->next = l->connecting_node;
+		l->connecting_node->prev = l->TAIL;
+
+		// connect b->connecting_node to itself
+		b->connecting_node->next = b->connecting_node;
+		b->connecting_node->prev = b->connecting_node;
+
+	} /* return an empty list if both a and b are empty */
+
+	list_destroy(a);
+	list_destroy(b);
+	return l;
+}
+
 #undef HEAD
 #undef TAIL

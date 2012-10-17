@@ -356,6 +356,87 @@ result test_list_removeFrom_RemoveFrom0WithLen2() {
 }
 
 ////
+// test list list_merge(list, list)
+
+result test_list_merge_MergeEmptyLists() {
+	int passed = 0;
+	char* description = "list_merge(list, list) : MergeEmptyLists CASE";
+
+	list a = list_create();
+	list b = list_create();
+
+	list l = list_merge(a, b);
+
+	passed = is_equal(list_len(l), 0);
+
+	list_destroy(l);
+
+	return (result){passed, description};
+}
+
+result test_list_merge_MergeEmptyWithNonEmpty() {
+	int passed = 0;
+	char* description = "list_merge(list, list) : MergeEmptyWithNonEmpty CASE";
+
+	list a = list_create();
+	list b = list_create();
+	int value = 42;
+	list_push(b, &value);
+
+	list l = list_merge(a, b);
+
+	passed = is_equal(list_len(l), 1) && 
+			 is_equal((int)list_peek(l), (int)&value) &&
+			 is_equal((int)list_rpeek(l), (int)&value);
+
+	list_destroy(l);
+
+	return (result){passed, description};
+}
+
+result test_list_merge_MergeNonEmptyWithEmpty() {
+	int passed = 0;
+	char* description = "list_merge(list, list) : MergeNonEmptyWithEmpty CASE";
+
+	list a = list_create();
+	list b = list_create();
+	int value = 42;
+	list_push(a, &value);
+
+	list l = list_merge(a, b);
+
+	passed = is_equal(list_len(l), 1) && 
+			 is_equal((int)list_peek(l), (int)&value) &&
+			 is_equal((int)list_rpeek(l), (int)&value);
+
+	list_destroy(l);
+
+	return (result){passed, description};
+}
+
+result test_list_merge_MergeNonEmptyWithNonEmpty() {
+	int passed = 0;
+	char* description = "list_merge(list, list) : MergeNonEmptyWithNonEmpty CASE";
+
+	list a = list_create();
+	list b = list_create();
+	int value = 42;
+	int val2 = 7;
+	list_push(a, &value);
+	list_push(b, &val2);
+
+	list l = list_merge(a, b);
+
+	passed = is_equal(list_len(l), 2) && 
+			 is_equal((int)list_peek(l), (int)&val2) &&
+			 is_equal((int)list_rpeek(l), (int)&value);
+
+	list_destroy(l);
+
+	return (result){passed, description};
+}
+
+////
 // main function and test list definition
 
 static tests TESTS = {
@@ -391,6 +472,12 @@ static tests TESTS = {
 	&test_list_removeFrom_RemoveFrom1WithLen0,
 	&test_list_removeFrom_RemoveFrom0WithLen1,
 	&test_list_removeFrom_RemoveFrom0WithLen2,
+
+	// test list list_merge(list, list)
+	&test_list_merge_MergeEmptyLists,
+	&test_list_merge_MergeEmptyWithNonEmpty,
+	&test_list_merge_MergeNonEmptyWithEmpty,
+	&test_list_merge_MergeNonEmptyWithNonEmpty,
 	
 	0
 };
