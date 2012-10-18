@@ -106,8 +106,8 @@ result test_nfa_KLEENE_A_KLEENE() {
 // testing chaining
 
 result test_aUb_CONCAT_c() {
-	int passed = 0;(
-		char* description = "(a|b)c";
+	int passed = 0;
+	char* description = "(a|b)c";
 
 	NFA a = gen_A_NFA();
 	NFA b = gen_B_NFA();

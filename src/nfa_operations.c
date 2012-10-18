@@ -77,7 +77,7 @@ NFA nfa_UNION(NFA a, NFA b) {
 }
 
 NFA nfa_KLEENE(NFA a) {
-	NFA nfa = nfa_create()
+	NFA nfa = nfa_create();
 	state_makeTerminal(nfa_initialState(nfa));
 
 	list terminalStates = nfa_getTerminalStates(a);
