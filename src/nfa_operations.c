@@ -22,14 +22,17 @@ list nfa_getTerminalStates(NFA nfa) {
 }
 
 // private
-// for NFA nfa_CONCAT(NFA, NFA)
-// perform this function on every transition state found in a
-void nfa_CONCAT_foreachWithState_func(void* state, void* value) {
-	State b_initialState = (State)state;
-	State terminalState = (State)value;
+// creates an epsilon transition between a start state and a destination state
+// makes the start state non-terminal
+// stateToComeFrom - the start state
+// stateToGoTo - the destination state
+// this conforms to the foreachWithState_func
+void __state_makeEpsilonTransition(void* stateToComeFrom, void* stateToGoTo) {
+	State initialState = (State)stateToComeFrom;
+	State terminalState = (State)stateToGoTo;
 
 	// make an epsilon transition from the terminalState to b's initial
-	state_addTransition(terminalState, "", b_initialState);
+	state_addTransition(terminalState, "", initialState);
 
 	// this state is no longer a terminal state
 	state_makeNonTerminal(terminalState);
@@ -37,13 +40,13 @@ void nfa_CONCAT_foreachWithState_func(void* state, void* value) {
 
 NFA nfa_CONCAT(NFA a, NFA b) {
 	list terminalStates = nfa_getTerminalStates(a);
-	list_foreachWithState(terminalStates, &nfa_CONCAT_foreachWithState_func, nfa_initialState(b));
+	list_foreachWithState(terminalStates, &__state_makeEpsilonTransition, nfa_initialState(b));
 
 	list allStates = list_merge(a->states, b->states);
 	State initialState = nfa_initialState(a);
 
-	a->states = list_create(); // we need a list here to safely destroy
-	b->states = list_create(); // we need a list here to safely destroy
+	a->states = list_create(); // we need a list int the NFA to safely destroy
+	b->states = list_create(); // we need a list int the NFA to safely destroy
 	nfa_destroy(a);
 	nfa_destroy(b);
 
@@ -53,12 +56,40 @@ NFA nfa_CONCAT(NFA a, NFA b) {
 
 	nfa->states = allStates; // use what we have
 	nfa->initialState = initialState; // use what we have
+
+	return nfa;
 }
 
 NFA nfa_UNION(NFA a, NFA b) {
+	NFA nfa = nfa_create();
 
+	state_addTransition(nfa_initialState(nfa), "", nfa_initialState(a));
+	state_addTransition(nfa_initialState(nfa), "", nfa_initialState(b));
+
+	nfa->states = list_merge(list_merge(nfa->states, a->states), b->states);
+
+	a->states = list_create(); // we need a list int the NFA to safely destroy
+	b->states = list_create(); // we need a list int the NFA to safely destroy
+	nfa_destroy(a);
+	nfa_destroy(b);
+
+	return nfa;
 }
 
 NFA nfa_KLEENE(NFA a) {
+	NFA nfa = nfa_create()
+	state_makeTerminal(nfa_initialState(nfa));
 
+	list terminalStates = nfa_getTerminalStates(a);
+	list_foreachWithState(terminalStates, &__state_makeEpsilonTransition, nfa_initialState(nfa));
+
+	list_rpush(a->states, list_pop(nfa->states));
+
+	list temp = nfa->states;
+	nfa->states = a->states;
+	a->states = temp;
+
+	nfa_destroy(a);
+
+	return nfa;
 }
