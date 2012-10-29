@@ -11,6 +11,7 @@ int nfa_parsing_eval(NFA nfa, char* input);
 // recursively evaluates through transitions
 // returns the length of some passing string
 // returns -1 if instant pass without length
+// returns 0 if it fails the state
 int state_parsing_eval(State s, char* input);
 
 // follow and evaluate the transition with the given input string
