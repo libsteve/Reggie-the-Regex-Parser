@@ -39,3 +39,11 @@ To clean the build files, run
 To clean the build files and binaries, run
 
 	make real-clean
+
+NFAs for Use with Parsing
+-------------------------
+
+A strict NFA would not be useful for parsing purposes. If you wanted to tokenize using an NFA, you would need to know how long the string that is accepted by the NFA is, and you would need to be able to deal with anything following the final accept terminal state.
+
+A parsing evaluator needs to be implemented to allow for the length of any accepting substring in an input string, so long as the substring and the input string start together.
+

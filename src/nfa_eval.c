@@ -54,7 +54,7 @@ int state_eval(State s, char* input) {
 	struct state_eval_foreachWithState_state foreachState = (struct state_eval_foreachWithState_state){input, transition_list};
 	list_foreachWithState(s->transitions, &state_eval_foreachWithState_func, &foreachState);
 
-	// try all the transitions until the strign matches or there are no more transitions
+	// try all the transitions until the string matches or there are no more transitions
 	struct state_eval_find_func_state findState = (struct state_eval_find_func_state){input, 0};
 	list_find(transition_list, &state_eval_find_func, &findState);
 
