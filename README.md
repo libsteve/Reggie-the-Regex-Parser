@@ -10,7 +10,7 @@ To learn about and understand regualr expressions and finite automata.
 
 To write awesome things in the C language.
 
-TO become a badass and super-being among mortals.
+To become a badass and super-being among mortals.
 
 To create the foundations for a regex parser for possible future use in attempts at creating compilers.
 
