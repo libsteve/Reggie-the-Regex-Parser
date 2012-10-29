@@ -19,7 +19,7 @@ int state_parsing_eval_find_func(void* state, void* value) {
 	Transition t = (Transition)value;
 
 	// evaluate the transition. if the transition passes, we have "found" our transition
-	s->result_of_transition = transition_eval(t, s->input);
+	s->result_of_transition = transition_parsing_eval(t, s->input);
 	if (s->result_of_transition)
 		return 1;
 	return 0;
