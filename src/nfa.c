@@ -108,7 +108,7 @@ void nfa_print(NFA nfa) {
 
 void state_print(State s) {
 	char* terminal = s->isTerminalState ? "!" : "";
-	printf("%s%s:\n", s->name, terminal);
+	printf("%s:\t%s\n", s->name, terminal);
 	list_foreach(s->transitions, (foreach_func)&transition_print);
 }
 

@@ -68,7 +68,7 @@ result test_nfa_CONCAT_A_CONCAT_B() {
 
 ////
 // test NFA nfa_UNION(NFA, NFA)
-#include <stdio.h>
+
 result test_nfa_UNION_A_UNION_B() {
 	int passed = 0;
 	char* description = "nfa_UNION(NFA, NFA) : a|b";
@@ -77,9 +77,6 @@ result test_nfa_UNION_A_UNION_B() {
 	NFA b = gen_B_NFA();
 
 	NFA nfa = nfa_UNION(a, b);
-
-	// nfa_print(nfa);
-	// printf("%d\n", nfa_eval(nfa, "a"));
 
 	passed = is_true(nfa_eval(nfa, "a")) &&
 			 is_true(nfa_eval(nfa, "b")) &&

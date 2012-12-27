@@ -35,8 +35,6 @@ void __state_makeEpsilonTransition(void* persistantState, void* variableState) {
 	state_makeNonTerminal((State)variableState);
 }
 
-#include <stdio.h>
-
 NFA nfa_CONCAT(NFA a, NFA b) {
 	list terminalStates = nfa_getTerminalStates(a);
 	list_foreachWithState(terminalStates, &__state_makeEpsilonTransition, nfa_initialState(b));

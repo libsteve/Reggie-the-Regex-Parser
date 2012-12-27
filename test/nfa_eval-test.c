@@ -251,6 +251,35 @@ result test_nfa_eval_ABA_PASSINGWithEpsilons() {
 	return (result){passed, description};
 }
 
+result test_nfa_eval_aUb_PASSINGWithEpsilons() {
+	int passed = 0;
+	char* description = "nfa_eval(NFA, char*) : a|b passing with epsilons CASE";
+
+	NFA nfa = nfa_create();
+	State q1 = state_create();
+	State q2 = state_create();
+	State q3 = state_create();
+	State q4 = state_create();
+
+	nfa_addState(nfa, q1);
+	nfa_addState(nfa, q2);
+	nfa_addState(nfa, q3);
+	nfa_addState(nfa, q4);
+
+	state_addTransition(nfa_initialState(nfa), "", q1);
+	state_addTransition(nfa_initialState(nfa), "", q2);
+	state_addTransition(q1, "a", q3);
+	state_addTransition(q2, "b", q4);
+	state_makeTerminal(q3);
+	state_makeTerminal(q4);
+
+	passed = is_true(nfa_eval(nfa, "a")) && is_true(nfa_eval(nfa, "b"));
+
+	nfa_destroy(nfa);
+
+	return (result){passed, description};
+}
+
 result test_nfa_eval_ABA_Failing() {
 	int passed = 0;
 	char* description = "nfa_eval(NFA, char*) : aba failing CASE";
@@ -275,6 +304,7 @@ static tests TESTS = {
 	&test_state_eval_a_PassingWithTransition,
 	&test_state_eval_aa_FailingWithTransition,
 	&test_state_eval_aa_PassingWithEpsilonTransition,
+	&test_nfa_eval_aUb_PASSINGWithEpsilons,
 	&test_state_eval_a_PassingWithSecondTransition,
 	&test_state_eval_aa_FailingWithSecondTransition,
 

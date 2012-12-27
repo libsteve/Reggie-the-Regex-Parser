@@ -56,10 +56,16 @@ int state_eval(State s, char* input) {
 
 	// try all the transitions until the string matches or there are no more transitions
 	struct state_eval_find_func_state findState = (struct state_eval_find_func_state){input, 0};
-	list_find(transition_list, &state_eval_find_func, &findState);
+	index_value_pair ivp = list_find(s->transitions /*transition_list*/, &state_eval_find_func, &findState);
 
 	// destroy the transitions list
 	list_destroy(transition_list);
+
+	// FOREACH(it, s->transitions) {
+	// 	if (transition_eval(VALUE(it), input)) 
+	// 		return 1;
+	// }
+	// return 0;
 
 	return findState.result_of_transition;
 }
