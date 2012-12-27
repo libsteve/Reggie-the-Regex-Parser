@@ -117,7 +117,7 @@ result test_aUb_CONCAT_c() {
 
 	passed = is_true(nfa_eval(nfa, "ac")) &&
 			 is_true(nfa_eval(nfa, "bc")) &&
-			 if_false(nfa_eval(nfa, "c"));
+			 is_false(nfa_eval(nfa, "c"));
 
 	nfa_destroy(nfa);
 
@@ -125,8 +125,8 @@ result test_aUb_CONCAT_c() {
 }
 
 result test_aUbUc() {
-	int passed = 0;(
-		char* description = "(a|b)|c";
+	int passed = 0;
+	char* description = "(a|b)|c";
 
 	NFA a = gen_A_NFA();
 	NFA b = gen_B_NFA();
@@ -136,11 +136,11 @@ result test_aUbUc() {
 
 	passed = is_true(nfa_eval(nfa, "a")) &&
 			 is_true(nfa_eval(nfa, "b")) &&
-			 if_true(nfa_eval(nfa, "c")) &&
-			 if_false(nfa_eval(nfa, "ab")) &&
-			 if_false(nfa_eval(nfa, "bc")) &&
-			 if_false(nfa_eval(nfa, "ac")) &&
-			 if_false(nfa_eval(nfa, "ca"));
+			 is_true(nfa_eval(nfa, "c")) &&
+			 is_false(nfa_eval(nfa, "ab")) &&
+			 is_false(nfa_eval(nfa, "bc")) &&
+			 is_false(nfa_eval(nfa, "ac")) &&
+			 is_false(nfa_eval(nfa, "ca"));
 
 	nfa_destroy(nfa);
 
@@ -148,8 +148,8 @@ result test_aUbUc() {
 }
 
 result test_aUb_KLEENE() {
-	int passed = 0;(
-		char* description = "(a|b)*";
+	int passed = 0;
+	char* description = "(a|b)*";
 
 	NFA a = gen_A_NFA();
 	NFA b = gen_B_NFA();

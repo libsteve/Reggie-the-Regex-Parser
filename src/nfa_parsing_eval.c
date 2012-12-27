@@ -39,8 +39,8 @@ int state_parsing_eval(State s, char* input) {
 	else if (list_len(s->transitions) > 0) {
 
 		// try all the transitions until the string matches or there are no more transitions
-		struct state_eval_find_func_state findState = (struct state_eval_find_func_state){input, 0};
-		list_find(s->transitions, &state_eval_find_func, &findState);
+		struct state_parsing_eval_find_func_state findState = (struct state_parsing_eval_find_func_state){input, 0};
+		list_find(s->transitions, &state_parsing_eval_find_func, &findState);
 
 		// if the string never matched but this is a terminal state, it is a pass, return -1;
 		if (s->isTerminalState && findState.result_of_transition == 0) return -1;

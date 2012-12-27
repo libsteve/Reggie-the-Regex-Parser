@@ -8,7 +8,8 @@ LIST 		= src/list.c 		src/list.h
 STRINGS 	= src/strings.c 	src/strings.h
 NFA 		= src/nfa.c 		src/nfa.h
 NFA_EVAL 	= src/nfa_eval.c 	src/nfa_eval.h
-NFA_OPERATIONS = src/nfa_operations.c src/nfa_operations.h
+NFA_PARSING_EVAL 	= src/nfa_parsing_eval.c 	src/nfa_parsing_eval.h
+NFA_OPERATIONS 		= src/nfa_operations.c 		src/nfa_operations.h
 
 ###
 # Target Objects
@@ -16,10 +17,11 @@ LIST_O		= bin/build/list.o
 STRINGS_O 	= bin/build/strings.o
 NFA_O 		= bin/build/nfa.o
 NFA_EVAL_O 	= bin/build/nfa_eval.o
-NFA_OPERATIONS_O = bin/build/nfa_operations.o
+NFA_PARSING_EVAL_O 	= bin/build/nfa_parsing_eval.o
+NFA_OPERATIONS_O 	= bin/build/nfa_operations.o
 
 # All NFA-Related Objects
-ALL_NFA_O 	= $(LIST_O) $(STRINGS_O) $(NFA_O) $(NFA_EVAL_O) $(NFA_OPERATIONS_O)
+ALL_NFA_O 	= $(LIST_O) $(STRINGS_O) $(NFA_O) $(NFA_EVAL_O) $(NFA_PARSING_EVAL_O) $(NFA_OPERATIONS_O)
 
 ###
 # Suffixes
@@ -52,6 +54,9 @@ $(NFA_O): $(NFA) bin/build
 $(NFA_EVAL_O): $(NFA_EVAL) bin/build
 	$(CC) -c -o $(NFA_EVAL_O) src/nfa_eval.c
 
+$(NFA_PARSING_EVAL_O): $(NFA_PARSING_EVAL) bin/build
+	$(CC) -c -o $(NFA_PARSING_EVAL_O) src/nfa_parsing_eval.c
+
 $(NFA_OPERATIONS_O): $(NFA_OPERATIONS) bin/build
 	$(CC) -c -o $(NFA_OPERATIONS_O) src/nfa_operations.c
 
@@ -63,7 +68,8 @@ LIST_TEST 		= test/list-test.c 		test/list-test.h
 STRINGS_TEST 	= test/strings-test.c 	test/strings-test.h
 NFA_TEST 		= test/nfa-test.c 		test/nfa-test.h
 NFA_EVAL_TEST 	= test/nfa_eval-test.c 	test/nfa_eval-test.h
-NFA_OPERATIONS_TEST = test/nfa_operations-test.c test/nfa_operations-test.h
+NFA_PARSING_EVAL_TEST 	= test/nfa_parsing_eval-test.c 	test/nfa_parsing_eval-test.h
+NFA_OPERATIONS_TEST 	= test/nfa_operations-test.c 	test/nfa_operations-test.h
 
 ###
 # Target Test Objects
@@ -73,7 +79,8 @@ LIST_TEST_O		= testbin/build/list-test.o
 STRINGS_TEST_O 	= testbin/build/strings-test.o
 NFA_TEST_O 		= testbin/build/nfa-test.o
 NFA_EVAL_TEST_O = testbin/build/nfa_eval-test.o
-NFA_OPERATIONS_TEST_O = test/nfa_operations-test.o
+NFA_PARSING_EVAL_TEST_O = testbin/build/nfa_parsing_eval-test.o
+NFA_OPERATIONS_TEST_O 	= testbin/build/nfa_operations-test.o
 
 ###
 # Compile Tests
@@ -98,18 +105,23 @@ testbin/nfa_eval-test: testbin/build $(NFA_EVAL_TEST) $(ALL_NFA_O) $(TESTER_O)
 	$(CC) -c -o $(NFA_EVAL_TEST_O) test/nfa_eval-test.c
 	$(CC) -o testbin/nfa_eval-test $(NFA_EVAL_TEST_O) $(ALL_NFA_O) $(TESTER_O)
 
+testbin/nfa_parsing_eval-test: testbin/build $(NFA_PARSING_EVAL_TEST) $(ALL_NFA_O) $(TESTER_O)
+	$(CC) -c -o $(NFA_PARSING_EVAL_TEST_O) test/nfa_parsing_eval-test.c
+	$(CC) -o testbin/nfa_parsing_eval-test $(NFA_PARSING_EVAL_TEST_O) $(ALL_NFA_O) $(TESTER_O)
+
 testbin/nfa_operations-test: testbin/build $(NFA_OPERATIONS_TEST) $(ALL_NFA_O) $(TESTER_O)
-	$(CC) -c -o $(NFA_OPERATIONS_TEST_O) test/nfa_eval-test.c
-	$(CC) -o testbin/nfa_eval-test $(NFA_OPERATIONS_TEST_O) $(ALL_NFA_O) $(TESTER_O)
+	$(CC) -c -o $(NFA_OPERATIONS_TEST_O) test/nfa_operations-test.c
+	$(CC) -o testbin/nfa_operations-test $(NFA_OPERATIONS_TEST_O) $(ALL_NFA_O) $(TESTER_O)
 
 ###
 # Compile and Run Tests
 
-test: testbin/list-test testbin/nfa-test testbin/strings-test testbin/nfa_eval-test
+test: testbin/list-test testbin/nfa-test testbin/strings-test testbin/nfa_eval-test testbin/nfa_parsing_eval-test testbin/nfa_operations-test
 	./testbin/list-test
 	# ./testbin/nfa-test
 	./testbin/strings-test
 	./testbin/nfa_eval-test
+	./testbin/nfa_parsing_eval-test
 	./testbin/nfa_operations-test
 
 ###

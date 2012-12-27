@@ -33,6 +33,21 @@ int is_false(int value) {
 	return value == 0;
 }
 
+// a more readable way of writing x != 0
+int is_nonfalse(int value) {
+	return value != 0;
+}
+
+// a more readable way of writing x == 0
+int is_zero(int value) {
+	return value == 0;
+}
+
+// a more readable way of writing x != 0
+int is_nonzero(int value) {
+	return value != 0;
+}
+
 // a more readable way of writing x == y
 int is_equal(int x, int y) {
 	return x == y;
