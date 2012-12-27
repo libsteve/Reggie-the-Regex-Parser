@@ -130,6 +130,34 @@ result test_state_parsing_eval_a_PassingWithSecondTransition() {
 	return (result){passed, description};
 }
 
+result test_state_parsing_eval_aa_PassingWithEpsilonTransition() {
+	int passed = 0;
+	char* description = "state_parsing_eval(State, char*) : \"aa\" passing with epsilon transition CASE";
+
+	State q1 = state_create();
+	state_setName(q1, "q1");
+	State q2 = state_create();
+	state_setName(q2, "q2");
+	State q3 = state_create();
+	state_setName(q3, "q3");
+	State q4 = state_create();
+	state_setName(q4, "q4");
+	state_makeTerminal(q4);
+
+	state_addTransition(q1, "a", q2);
+	state_addTransition(q2, "", q3);
+	state_addTransition(q3, "a", q4);
+
+	passed = is_nonfalse(state_parsing_eval(q1, "aa"));
+
+	state_destroy(q1);
+	state_destroy(q2);
+	state_destroy(q3);
+	state_destroy(q4);
+
+	return (result){passed, description};
+}
+
 result test_state_parsing_eval_aa_FailingWithSecondTransition() {
 	int passed = 0;
 	char* description = "state_parsing_eval(State, char*) : \"aa\" failing with second transition CASE";

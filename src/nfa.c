@@ -7,7 +7,7 @@ NFA nfa_create() {
 	nfa->states = list_create();
 	nfa->initialState = state_create();
 	state_setName(nfa->initialState, "q0");
-	list_push(nfa->states, nfa->initialState);
+	nfa_addState(nfa, nfa_initialState(nfa));
 	return nfa;
 }
 
@@ -26,6 +26,10 @@ void nfa_destroy(NFA nfa) {
 
 State nfa_initialState(NFA nfa) {
 	return nfa->initialState;
+}
+
+void nfa_addState(NFA nfa, State s) {
+	list_push(nfa->states, s);
 }
 
 State state_create() {
@@ -93,4 +97,21 @@ void state_removeTransition(State s, char* transition_string, State dest) {
 	int index = result.index;
 
 	list_removeFrom(s->transitions, index);
+}
+
+#include <stdio.h>
+
+void nfa_print(NFA nfa) {
+	printf("Intital: %s\n", nfa_initialState(nfa)->name);
+	list_foreach(nfa->states, (foreach_func)&state_print);
+}
+
+void state_print(State s) {
+	char* terminal = s->isTerminalState ? "!" : "";
+	printf("%s%s:\n", s->name, terminal);
+	list_foreach(s->transitions, (foreach_func)&transition_print);
+}
+
+void transition_print(Transition t) {
+	printf("\t%s --> %s\n", t->source->name, t->dest->name);
 }

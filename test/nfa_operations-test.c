@@ -7,10 +7,12 @@
 
 NFA gen_A_NFA() {
 	NFA a = nfa_create();
+	state_setName(nfa_initialState(a), "Aq0");
 
 	State q1 = state_create();
-	state_setName(q1, "q1");
+	state_setName(q1, "Aq1");
 	state_makeTerminal(q1);
+	nfa_addState(a, q1);
 
 	state_addTransition(nfa_initialState(a), "a", q1);
 
@@ -19,10 +21,12 @@ NFA gen_A_NFA() {
 
 NFA gen_B_NFA() {
 	NFA b = nfa_create();
+	state_setName(nfa_initialState(b), "Bq0");
 
 	State q1 = state_create();
-	state_setName(q1, "q1");
+	state_setName(q1, "Bq1");
 	state_makeTerminal(q1);
+	nfa_addState(b, q1);
 
 	state_addTransition(nfa_initialState(b), "b", q1);
 
@@ -31,10 +35,12 @@ NFA gen_B_NFA() {
 
 NFA gen_C_NFA() {
 	NFA c = nfa_create();
+	state_setName(nfa_initialState(c), "Cq0");
 
 	State q1 = state_create();
-	state_setName(q1, "q1");
+	state_setName(q1, "Cq1");
 	state_makeTerminal(q1);
+	nfa_addState(c, q1);
 
 	state_addTransition(nfa_initialState(c), "c", q1);
 

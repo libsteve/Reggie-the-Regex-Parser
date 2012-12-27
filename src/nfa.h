@@ -35,6 +35,9 @@ void nfa_destroy(NFA nfa);
 // get the initial state of the NFA
 State nfa_initialState();
 
+// add a state to the NFA's state list
+void nfa_addState(NFA nfa, State s);
+
 // create a new state object
 State state_create();
 
@@ -58,5 +61,11 @@ void state_addTransition(State s, char* transition_string, State dest);
 
 // remove a transition from one state to another through the transition string
 void state_removeTransition(State s, char* transition_string, State dest);
+
+void nfa_print(NFA nfa);
+
+void state_print(State s);
+
+void transition_print(Transition t);
 
 #endif
