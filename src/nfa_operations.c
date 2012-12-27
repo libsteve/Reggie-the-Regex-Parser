@@ -33,15 +33,12 @@ void __state_makeEpsilonTransition(void* persistantState, void* variableState) {
 
 	// this state is no longer a terminal state
 	state_makeNonTerminal((State)variableState);
-
-	state_print((State)variableState);
 }
 
 #include <stdio.h>
 
 NFA nfa_CONCAT(NFA a, NFA b) {
 	list terminalStates = nfa_getTerminalStates(a);
-	list_foreach(terminalStates, (foreach_func)&state_print);
 	list_foreachWithState(terminalStates, &__state_makeEpsilonTransition, nfa_initialState(b));
 
 	list allStates = list_merge(a->states, b->states);
@@ -60,8 +57,6 @@ NFA nfa_CONCAT(NFA a, NFA b) {
 	nfa->initialState = initialState; // use what we have
 
 	list_destroy(terminalStates);
-
-	nfa_print(nfa);
 
 	return nfa;
 }
@@ -88,6 +83,8 @@ NFA nfa_KLEENE(NFA a) {
 
 	list terminalStates = nfa_getTerminalStates(a);
 	list_foreachWithState(terminalStates, &__state_makeEpsilonTransition, nfa_initialState(nfa));
+
+	state_addTransition(nfa_initialState(nfa), "", nfa_initialState(a));
 
 	list_rpush(a->states, list_pop(nfa->states));
 

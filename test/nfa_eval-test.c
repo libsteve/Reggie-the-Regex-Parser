@@ -137,6 +137,27 @@ result test_state_eval_aa_PassingWithEpsilonTransition() {
 	return (result){passed, description};
 }
 
+result test_state_eval_a_PassingWithFirstTransition() {
+	int passed = 0;
+	char* description = "state_eval(State, char*) : \"a\" passing with second transition CASE";
+
+	State q2 = state_create();
+	state_setName(q2, "q2");
+	State q3 = state_create();
+	state_setName(q3, "q3");
+	state_makeTerminal(q3);
+
+	state_addTransition(q2, "a", q3);
+	state_addTransition(q2, "b", q3);
+
+	passed = is_true(state_eval(q2, "a"));
+
+	state_destroy(q2);
+	state_destroy(q3);
+
+	return (result){passed, description};
+}
+
 result test_state_eval_a_PassingWithSecondTransition() {
 	int passed = 0;
 	char* description = "state_eval(State, char*) : \"a\" passing with second transition CASE";
@@ -195,6 +216,41 @@ result test_nfa_eval_ABA_PASSING() {
 	return (result){passed, description};
 }
 
+result test_nfa_eval_ABA_PASSINGWithEpsilons() {
+	int passed = 0;
+	char* description = "nfa_eval(NFA, char*) : aba passing with epsilons CASE";
+
+	NFA nfa = nfa_create();
+	State q1 = state_create();
+	State q2 = state_create();
+	State q3 = state_create();
+	State q4 = state_create();
+	State q5 = state_create();
+	State q6 = state_create();
+	State q7 = state_create();
+
+	nfa_addState(nfa, q1);
+	nfa_addState(nfa, q2);
+	nfa_addState(nfa, q3);
+	nfa_addState(nfa, q4);
+	nfa_addState(nfa, q5);
+	nfa_addState(nfa, q6);
+
+	state_addTransition(nfa_initialState(nfa), "", q1);
+	state_addTransition(q1, "", q2);
+	state_addTransition(q2, "", q3);
+	state_addTransition(q3, "a", q4);
+	state_addTransition(q4, "b", q5);
+	state_addTransition(q5, "a", q6);
+	state_makeTerminal(q6);
+
+	passed = is_true(nfa_eval(nfa, "aba"));
+
+	nfa_destroy(nfa);
+
+	return (result){passed, description};
+}
+
 result test_nfa_eval_ABA_Failing() {
 	int passed = 0;
 	char* description = "nfa_eval(NFA, char*) : aba failing CASE";
@@ -224,6 +280,7 @@ static tests TESTS = {
 
 	// test nfa_eval()
 	&test_nfa_eval_ABA_PASSING,
+	&test_nfa_eval_ABA_PASSINGWithEpsilons,
 	&test_nfa_eval_ABA_Failing,
 	
 	0

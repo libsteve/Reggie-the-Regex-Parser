@@ -113,5 +113,5 @@ void state_print(State s) {
 }
 
 void transition_print(Transition t) {
-	printf("\t%s --> %s\n", t->source->name, t->dest->name);
+	printf("\t%s --\"%s\"--> %s\n", t->source->name, t->transition_string, t->dest->name);
 }
