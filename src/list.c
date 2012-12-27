@@ -217,7 +217,8 @@ index_value_pair list_find(list l, find_func func, void* state) {
 	int index = 0;
 	while (n->value != l) {
 		list_node next = n-> next;
-		func(state, n->value);
+		if (func(state, n->value))
+			break;
 		n = next;
 		index++;
 	}

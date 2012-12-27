@@ -104,4 +104,15 @@ index_value_pair list_find(list l, find_func func, void* state);
 // this destroys both given lists.
 list list_merge(list a, list b);
 
+// get the iterator value
+#define VALUE(iterator) ((iterator)->value)
+
+// iterate over each item in a list
+// iterator - a symbol to use as an iterator
+// list - the list to iterate over
+#define FOREACH(iterator, list)	\
+	for (	list_node (iterator) = (list)->connecting_node->next;	\
+			(iterator)->value != (list);	\
+			(iterator) = (iterator)->next	)
+
 #endif
