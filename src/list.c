@@ -111,20 +111,14 @@ void* list_dequeue(list l) {
 }
 
 void list_foreach(list l, foreach_func func) {
-	list_node n = l->HEAD;
-	while (n->value != l) {
-		list_node next = n-> next;
-		func(n->value);
-		n = next;
+	FOREACH(it, l) {
+		func(VALUE(it));
 	}
 }
 
 void list_foreachWithState(list l, foreachWithState_func func, void* state) {
-	list_node n = l->HEAD;
-	while (n->value != l) {
-		list_node next = n-> next;
-		func(state, n->value);
-		n = next;
+	FOREACH(it, l) {
+		func(state, VALUE(it));
 	}
 }
 
@@ -194,13 +188,11 @@ void* list_getFrom(list l, int index) {
 }
 
 int list_getIndex(list l, void* val) {
-	list_node n = l->HEAD;
 	int index = 0;
-	while (n->value != l) {
-		if (n->value == val)
+	FOREACH(it, l) {
+		if(VALUE(it) == val)
 			return index;
 		index++;
-		n = n->next;
 	}
 	return -1;
 }
@@ -213,18 +205,13 @@ void list_removeValue(list l, void* val) {
 }
 
 index_value_pair list_find(list l, find_func func, void* state) {
-	list_node n = l->HEAD;
 	int index = 0;
-	while (n->value != l) {
-		list_node next = n-> next;
-		if (func(state, n->value))
-			break;
-		n = next;
+	FOREACH(it, l) {
+		if (func(state, VALUE(it)))
+			return (index_value_pair){index, VALUE(it)};
 		index++;
 	}
-	if (n->value == l)
-		return (index_value_pair){-1, 0};
-	return (index_value_pair){index, n->value};
+	return (index_value_pair){-1, 0};
 }
 
 list list_merge(list a, list b) {
