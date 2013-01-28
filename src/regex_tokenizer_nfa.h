@@ -1,6 +1,8 @@
 #ifndef REGEX_TOKENIZER_NFA_H
 #define REGEX_TOKENIZER_NFA_H
 
+#include "nfa.h"
+
 NFA token_nfa_leftParen();
 
 NFA token_nfa_rightParen();
@@ -14,7 +16,7 @@ NFA token_nfa_plus();
 NFA token_nfa_escapedChar();
 
 /////////////////////////////////
-/// includes of pre-defined NFAs
+/// classifiers for char classes
 /////////////////////////////////
 
 NFA token_nfa_lowercase();

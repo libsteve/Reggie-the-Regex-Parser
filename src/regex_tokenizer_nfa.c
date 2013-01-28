@@ -73,6 +73,8 @@ NFA token_nfa_escapedChar() {
 	return nfa;
 }
 
+// classifiers for character classes
+
 NFA token_nfa_lowercase() {
 	NFA nfa = nfa_create();
 

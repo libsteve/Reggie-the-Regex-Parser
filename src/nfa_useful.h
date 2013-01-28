@@ -1,7 +1,7 @@
-#include "nfa.h"
-
 #ifndef NFA_USEFUL_H
 #define NFA_USEFUL_H
+
+#include "nfa.h"
 
 // generate an NFA that identifies an upper-case character
 NFA nfa_uppercase();
