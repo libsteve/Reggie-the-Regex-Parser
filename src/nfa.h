@@ -6,6 +6,7 @@
 // a transition to a state
 typedef struct transition {
 	char* transition_string; // a string to transition through when encountered
+							 // this must be an allocated string
 	struct state* source; // the source state for the transition
 	struct state* dest; // the destination state for the transition
 } *Transition;
@@ -14,6 +15,7 @@ typedef struct transition {
 typedef struct state {
 	int isTerminalState; // 1 if the state is terminal, 0 otherwise
 	char* name; // the name of the state
+				// this must be an allocated string
 	list transitions; // a list of transitions that originate from this state
 } *State;
 

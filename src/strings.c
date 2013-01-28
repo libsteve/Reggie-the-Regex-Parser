@@ -1,4 +1,5 @@
 #include "strings.h"
+#include <stdlib.h>
 
 int string_length(char* str) {
 	int index = 0;
@@ -28,4 +29,16 @@ int string_substring(char* big, char* little) {
 			return 0;
 	}
 	return 1;
+}
+
+char* string_copy(char* str) {
+	int len = string_length(str);
+	char* new = calloc(len+1, sizeof(char));
+
+	for (int i = 0; i < len; i++) {
+		new[i] = str[i];
+	}
+	new[len] = '\0';
+
+	return new;
 }

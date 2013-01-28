@@ -19,4 +19,8 @@ int string_equals(char* s1, char* s2);
 // first cahracter of the superstring.
 int string_substring(char* big, char* little);
 
+// copy the null-terminated string into a newly allocated string
+// the resulting string must be freed
+char* string_copy(char* str);
+
 #endif

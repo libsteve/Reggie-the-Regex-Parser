@@ -41,7 +41,9 @@ State state_create() {
 }
 
 void state_setName(State s, char* name) {
-	s->name = name;
+	if (s->name != 0)
+		free(s->name);
+	s->name = string_copy(name);
 }
 
 void state_makeTerminal(State s) {
@@ -67,7 +69,7 @@ void state_destroy(State s) {
 
 void state_addTransition(State s, char* transition_string, State dest) {
 	Transition t = calloc(1, sizeof(struct transition));
-	t->transition_string = transition_string;
+	t->transition_string = string_copy(transition_string);
 	t->source = s;
 	t->dest = dest;
 	list_push(s->transitions, t);
@@ -95,6 +97,10 @@ void state_removeTransition(State s, char* transition_string, State dest) {
 
 	index_value_pair result = list_find(s->transitions, &state_removeTransition_find_func, &state);
 	int index = result.index;
+	Transition t = result.value;
+
+	free(t->transition_string);
+	free(t);
 
 	list_removeFrom(s->transitions, index);
 }

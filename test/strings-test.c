@@ -172,6 +172,23 @@ result test_string_substring_StringWithBiggerSuperstring() {
 }
 
 ////
+// test char* string_copy(char*)
+
+result test_string_copy_String() {
+	int passed = 0;
+	char* description = "string_copy(char*) : String CASE";
+
+	char* str = "abc";
+	char* cpy = string_copy(str);
+
+	passed = is_true(string_equals(str, cpy));
+
+	free(cpy);
+
+	return (result){passed, description};
+}
+
+////
 // main function and test list definition
 
 static tests TESTS = {
@@ -199,6 +216,9 @@ static tests TESTS = {
 	&test_string_substring_StringWithEmptyString,
 	&test_string_substring_StringWithBiggerString,
 	&test_string_substring_StringWithBiggerSuperstring,
+
+	// string_copy(char*)
+	&test_string_copy_String,
 	0
 };
 
