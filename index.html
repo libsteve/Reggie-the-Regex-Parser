@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html>
+
+  <head>
+    <meta charset='utf-8' />
+    <meta http-equiv="X-UA-Compatible" content="chrome=1" />
+    <meta name="description" content="Reggie-the-regex-parser : A regex parser with the ability to match strings to a regular expression." />
+
+    <link rel="stylesheet" type="text/css" media="screen" href="stylesheets/stylesheet.css">
+
+    <title>Reggie-the-regex-parser</title>
+  </head>
+
+  <body>
+
+    <!-- HEADER -->
+    <div id="header_wrap" class="outer">
+        <header class="inner">
+          <a id="forkme_banner" href="https://github.com/Altece/Reggie-the-Regex-Parser">View on GitHub</a>
+
+          <h1 id="project_title">Reggie-the-regex-parser</h1>
+          <h2 id="project_tagline">A regex parser with the ability to match strings to a regular expression.</h2>
+
+            <section id="downloads">
+              <a class="zip_download_link" href="https://github.com/Altece/Reggie-the-Regex-Parser/zipball/master">Download this project as a .zip file</a>
+              <a class="tar_download_link" href="https://github.com/Altece/Reggie-the-Regex-Parser/tarball/master">Download this project as a tar.gz file</a>
+            </section>
+        </header>
+    </div>
+
+    <!-- MAIN CONTENT -->
+    <div id="main_content_wrap" class="outer">
+      <section id="main_content" class="inner">
+        <h1>Reggie the Regex Parser</h1>
+
+<p>Reggie the Regex Parser (RRP) is a regualr expression parser that will have the ability to identify strings that match the regular expression.</p>
+
+<h2>Purpose</h2>
+
+<p>To learn about and understand regualr expressions and finite automata.</p>
+
+<p>To write awesome things in the C language.</p>
+
+<p>To become a badass and super-being among mortals.</p>
+
+<p>To create the foundations for a regex parser for possible future use in attempts at creating compilers.</p>
+
+<h2>Design</h2>
+
+<p>Regualr expressions are written forms of a non-deterministic finite automata (NFA), which represents a machine that matches strings of characters for patterns encoded within the machine.</p>
+
+<p>An NFA is a directed graph with one initial node state (known as "q0") and any number of other states. Any number of states within the NFA can be an accepting state that would signify the acceptance of a string when the string encounters its end. Transitions between states are invoked by encountering specified characters. <a href="http://en.wikipedia.org/wiki/Nondeterministic_finite_automaton">Learn more about NFAs from Wikipedia</a>.</p>
+
+<p>This regex parser will take a regualr expression string and create an NFA modeled by that string.</p>
+
+<p>A user can then take the resulting NFA and pass in a string to see if it passes the NFA.</p>
+
+<h2>Use</h2>
+
+<p>To compile and run tests, run</p>
+
+<pre><code>make test
+</code></pre>
+
+<p>To clean the build files, run</p>
+
+<pre><code>make clean
+</code></pre>
+
+<p>To clean the build files and binaries, run</p>
+
+<pre><code>make real-clean
+</code></pre>
+
+<h2>NFAs for Use with Parsing</h2>
+
+<p>A strict NFA would not be useful for parsing purposes. If you wanted to tokenize using an NFA, you would need to know how long the string that is accepted by the NFA is, and you would need to be able to deal with anything following the final accept terminal state.</p>
+
+<p>A parsing evaluator needs to be implemented to allow for the length of any accepting substring in an input string, so long as the substring and the input string start together.</p>
+      </section>
+    </div>
+
+    <!-- FOOTER  -->
+    <div id="footer_wrap" class="outer">
+      <footer class="inner">
+        <p class="copyright">Reggie-the-regex-parser maintained by <a href="https://github.com/Altece">Altece</a></p>
+        <p>Published with <a href="http://pages.github.com">GitHub Pages</a></p>
+      </footer>
+    </div>
+
+    
+
+  </body>
+</html>
