@@ -1,6 +1,7 @@
 #include "regex_tokenizer.h"
 #include "regex_tokenizer_nfa.h"
 #include "nfa_parsing_eval.h"
+#include "stdlib.h"
 
 // a list of token parsers that can be used to parse a regex into different tokens
 list token_parsers = 0;
@@ -18,6 +19,8 @@ void token_parser_destroy(Token_Parser tp) {
 void setup_token_parsers() {
 	if (token_parsers != 0)
 		return;
+
+	// atexit(&token_parser_destroy);
 	
 	token_parsers = list_create();
 
@@ -33,6 +36,16 @@ void setup_token_parsers() {
 	t = token_parser_create();
 	t->parser = token_nfa_rightParen();
 	t->identifier = ")";
+	list_push(token_parsers, t);
+
+	t = token_parser_create();
+	t->parser = token_nfa_leftSquare();
+	t->identifier = "[";
+	list_push(token_parsers, t);
+
+	t = token_parser_create();
+	t->parser = token_nfa_rightSquare();
+	t->identifier = "]";
 	list_push(token_parsers, t);
 
 	t = token_parser_create();
@@ -94,6 +107,7 @@ void teardown_token_parsers() {
 	}
 
 	list_destroy(token_parsers);
+	token_parsers = 0;
 }
 
 // create a new token instance

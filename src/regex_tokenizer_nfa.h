@@ -7,6 +7,10 @@ NFA token_nfa_leftParen();
 
 NFA token_nfa_rightParen();
 
+NFA token_nfa_leftSquare();
+
+NFA token_nfa_rightSquare();
+
 NFA token_nfa_pipe();
 
 NFA token_nfa_asterisk();

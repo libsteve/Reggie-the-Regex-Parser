@@ -23,6 +23,28 @@ NFA token_nfa_rightParen() {
 	return nfa;
 }
 
+NFA token_nfa_leftSquare() {
+	NFA nfa = nfa_create();
+
+	State s = state_create();
+	State q0 = nfa_initialState();
+
+	state_addTransition(q0, "[", s);
+
+	return nfa;
+}
+
+NFA token_nfa_rightSquare() {
+	NFA nfa = nfa_create();
+
+	State s = state_create();
+	State q0 = nfa_initialState();
+
+	state_addTransition(q0, "]", s);
+
+	return nfa;
+}
+
 NFA token_nfa_pipe() {
 	NFA nfa = nfa_create();
 
@@ -68,6 +90,7 @@ NFA token_nfa_escapedChar() {
 	state_addTransition(q0, "/*", s);
 	state_addTransition(q0, "/+", s);
 	state_addTransition(q0, "/[", s);
+	state_addTransition(q0, "/]", s);
 	state_addTransition(q0, "//", s);
 
 	return nfa;
@@ -81,7 +104,7 @@ NFA token_nfa_lowercase() {
 	State s = state_create();
 	State q0 = nfa_initialState();
 
-	state_addTransition(q0, "[:lower:]", s);
+	state_addTransition(q0, ":lower:", s);
 
 	return nfa;
 }
@@ -92,7 +115,7 @@ NFA token_nfa_uppercase() {
 	State s = state_create();
 	State q0 = nfa_initialState();
 
-	state_addTransition(q0, "[:upper:]", s);
+	state_addTransition(q0, ":upper:", s);
 
 	return nfa;
 }
@@ -103,7 +126,7 @@ NFA token_nfa_letter() {
 	State s = state_create();
 	State q0 = nfa_initialState();
 
-	state_addTransition(q0, "[:letter:]", s);
+	state_addTransition(q0, ":letter:", s);
 
 	return nfa;
 }
@@ -114,7 +137,7 @@ NFA token_nfa_digit() {
 	State s = state_create();
 	State q0 = nfa_initialState();
 
-	state_addTransition(q0, "[:digit:]", s);
+	state_addTransition(q0, ":digit:", s);
 
 	return nfa;
 }
@@ -125,7 +148,7 @@ NFA token_nfa_whitespace() {
 	State s = state_create();
 	State q0 = nfa_initialState();
 
-	state_addTransition(q0, "[:wspace:]", s);
+	state_addTransition(q0, ":wspace:", s);
 
 	return nfa;
 }
