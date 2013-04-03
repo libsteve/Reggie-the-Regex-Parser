@@ -8,7 +8,7 @@
 // a structure for use with parsing a string into a regular expression
 typedef struct regex_parser {
 	TokenList tokens;	// a list of tokens
-	List nfa_list;		// a stack of NFAs for use with recursive-descent parsers
+	List nfa_stack;		// a stack of NFAs for use with recursive-descent parsers
 	NFA result;			// an NFA resulting from the token list
 } *RegexParser;
 
@@ -19,7 +19,7 @@ typedef int (*parse_tokens)(RegexParser);
 
 int parse_union(RegexParser parser);
 
-int parse_concet(RegexParser parser);
+int parse_concat(RegexParser parser);
 
 int parse_term(RegexParser parser);
 
