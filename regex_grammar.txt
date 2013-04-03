@@ -1,0 +1,30 @@
+union 	 	:=	concat
+			|	concat '|' union
+			;
+
+concat 		:=	term
+			|	term concat
+			;
+
+term		:=	atom
+			|	atom meta_character
+			;
+
+atom		:=	character
+			|	'(' union ')'
+			|	'[' character_class ']'
+			;
+
+meta_character	:=	'*'
+				|	'+'
+				;
+
+character 	:=
+			;
+
+character_class	:=	':letter:'
+				|	':upper:'
+				|	':lower:'
+				|	':digit:'
+				|	':whitespace:'
+				;
