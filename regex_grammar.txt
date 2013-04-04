@@ -19,7 +19,7 @@ meta_character	:=	'*'
 				|	'+'
 				;
 
-character 	:=
+character 	:=	<any character>
 			;
 
 character_class	:=	':letter:'
