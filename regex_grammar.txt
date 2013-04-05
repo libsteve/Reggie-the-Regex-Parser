@@ -19,7 +19,8 @@ meta_character	:=	'*'
 				|	'+'
 				;
 
-character 	:=	<any character>
+character 	:=	escaped
+			|	<any character>
 			;
 
 character_class	:=	':letter:'
@@ -28,3 +29,12 @@ character_class	:=	':letter:'
 				|	':digit:'
 				|	':whitespace:'
 				;
+
+escaped		:=	'/('
+			|	'/)'
+			|	'/|'
+			|	'/*'
+			|	'/+'
+			|	'/['
+			|	'/]'
+			;

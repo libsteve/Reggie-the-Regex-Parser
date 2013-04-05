@@ -1,3 +1,4 @@
+#include "regex_tokenizer_nfa.h"
 #include "nfa_useful.h"
 #include "nfa_operatons.h"
 
@@ -91,7 +92,7 @@ NFA token_nfa_escapedChar() {
 	state_addTransition(q0, "/+", s);
 	state_addTransition(q0, "/[", s);
 	state_addTransition(q0, "/]", s);
-	state_addTransition(q0, "//", s);
+	// state_addTransition(q0, "//", s);
 
 	return nfa;
 }

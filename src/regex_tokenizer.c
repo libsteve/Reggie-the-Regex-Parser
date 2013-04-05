@@ -1,7 +1,7 @@
 #include "regex_tokenizer.h"
 #include "regex_tokenizer_nfa.h"
 #include "nfa_parsing_eval.h"
-#include "stdlib.h"
+#include <stdlib.h>
 
 // a list of token parsers that can be used to parse a regex into different tokens
 list token_parsers = 0;
