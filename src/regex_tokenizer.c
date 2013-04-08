@@ -132,6 +132,13 @@ void token_setStringWithLength(Token t, char* string, int length) {
 	t->string = allocated;
 }
 
+int token_is(Token t, char *identifier) {
+	if (t != 0) {
+		return string_equals(t->identifier, identifier);
+	}
+	return 0;
+}
+
 // deallocate the string
 // deallocate the token
 void token_destroy(Token t) {
@@ -181,4 +188,16 @@ void tokenlist_destroy(TokenList tl) {
 	}
 
 	list_destroy(tl);
+}
+
+Token tokenlist_pop(TokenList tokens) {
+	return list_rpop(tokens);
+}
+
+void tokenlist_push(TokenList tokens, Token t) {
+	list_rpush(tokens, t);
+}
+
+Token tokenlist_peek(TokenList tokens) {
+	return list_rpeek(tokens);
 }

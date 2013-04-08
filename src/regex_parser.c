@@ -2,52 +2,63 @@
 #include "nfa_operations.h"
 #include "nfa_useful.h"
 
-// helpers
+RegexParser parser_create() {
+	RegexParser parser = calloc(1, sizeof(struct regex_parser));
+	parser->used = list_create();
+	parser->nfa_stack = list_create();
+	return parser;
+}
 
-int token_is(Token t, char *identifier) {
-	if (t != 0) {
-		return string_equals(t->identifier, identifier);
+void parser_destroy(RegexParser parser) {
+	if (parser->tokens != 0)
+		tokenlist_destroy(parser->tokens);
+	tokenlist_destroy(parser->used);
+	FOREACH(it, parser->nfa_stack) {
+		nfa_destroy(VALUE(it));
 	}
-	return 0;
+	list_destroy(parser->nfa_stack);
+	free(parser);
 }
 
-Token token_pop(TokenList tokens) {
-	return list_rpop(tokens);
+void parser_setTokens(RegexParser parser, TokenList tl) {
+	parser->tokens = tl;
 }
 
-void token_unpop(TokenList tokens, Token t) {
-	list_rpush(tokens, t);
-}
-
-Token token_peek(TokenList tokens) {
-	return list_rpeek(tokens);
+NFA parser_getNFA(RegexParser parser) {
+	return parser_pop(parser);
 }
 
 // rewind the used/tokens lists in the parser 
 // until the used is empty or the token t is on the used
 void parser_rewindTo(RegexParser parser, Token t) {
 	Token c = 0;
-	while (token_peek(parser->used) != t) {
-		c = token_pop(parser->used);
-		token_push(parser->tokens, c);
+	while (tokenlist_peek(parser->used) != t) {
+		c = tokenlist_pop(parser->used);
+		tokenlist_push(parser->tokens, c);
 	}
-}
-
-NFA parser_pop(RegexParser parser) {
-	return list_pop(parser->nfa_stack);
 }
 
 void parser_push(RegexParser parser, NFA nfa) {
 	list_push(parser->nfa_stack, nfa);
 }
 
+NFA parser_pop(RegexParser parser) {
+	return list_pop(parser->nfa_stack);
+}
+
+NFA parser_peek(RegexParser parser) {
+	return list_peek(parser->nfa_stack);
+}
+
+///////////////////////////////////////////////////////
 // recursive-descent
 // based on the grammar defined in regex_grammar.txt
+///////////////////////////////////////////////////////
 
 int parse_union(RegexParser parser) {
 	if (parser_concat(parser)) {
-		Token t = token_pop(parser->tokens);
-		token_push(parser->used, t);
+		Token t = tokenlist_pop(parser->tokens);
+		tokenlist_push(parser->used, t);
 		if (token_is(t, "|")) {
 			if (parse_union(parser)) {
 				NFA a = parser_pop(parser);
@@ -55,13 +66,13 @@ int parse_union(RegexParser parser) {
 				parser_push(parser, nfa_UNION(a, b));
 				return 1;
 			} else {
-				token_pop(parser->used);
-				token_push(parser->tokens, t);
+				tokenlist_pop(parser->used);
+				tokenlist_push(parser->tokens, t);
 				return 0;
 			}
 		} else {
-			token_pop(parser->used);
-			token_push(parser->tokens, t);
+			tokenlist_pop(parser->used);
+			tokenlist_push(parser->tokens, t);
 			return 1;
 		}
 	} else {
@@ -97,13 +108,13 @@ int parse_term(RegexParser parser) {
 }
 
 int parse_atom(RegexParser parser) {
-	Token t = token_pop(parser->tokens);
-	token_push(parser->used, t);
+	Token t = tokenlist_pop(parser->tokens);
+	tokenlist_push(parser->used, t);
 
 	if (token_is(t, "(")) {
 		if (parse_union(parser)) {
-			Token u = token_pop(parser->tokens);
-			token_push(parser->used, u);
+			Token u = tokenlist_pop(parser->tokens);
+			tokenlist_push(parser->used, u);
 			if (token_is(t, ")")) {
 				return 1;
 			} else {
@@ -116,8 +127,8 @@ int parse_atom(RegexParser parser) {
 
 	if (token_is(t, "[")) {
 		if (parse_character_class(parser)) {
-			Token u = token_pop(parser->tokens);
-			token_push(parser->used, u);
+			Token u = tokenlist_pop(parser->tokens);
+			tokenlist_push(parser->used, u);
 			if (token_is(t, "]")) {
 				return 1;
 			} else {
@@ -128,8 +139,8 @@ int parse_atom(RegexParser parser) {
 		parser_rewindTo(parser, t);
 	}
 
-	token_pop(parser->used);
-	token_push(parser->tokens, t);
+	tokenlist_pop(parser->used);
+	tokenlist_push(parser->tokens, t);
 	if (parse_character(parser)) {
 		return 1;
 	}
@@ -138,8 +149,8 @@ int parse_atom(RegexParser parser) {
 }
 
 int parse_meta_character(RegexParser parser) {
-	Token t = token_pop(parser->tokens);
-	token_push(parser->used, t);
+	Token t = tokenlist_pop(parser->tokens);
+	tokenlist_push(parser->used, t);
 
 	if (token_is(t, "*")) {
 		NFA a = parser_pop(parser);
@@ -151,14 +162,14 @@ int parse_meta_character(RegexParser parser) {
 		// return 1;
 	}
 
-	token_push(parser->tokens, t);
-	token_pop(parser->used);
+	tokenlist_push(parser->tokens, t);
+	tokenlist_pop(parser->used);
 	return 0;
 }
 
 int parse_character(RegexParser parser) {
-	Token t = token_pop(parser->tokens);
-	token_push(parser->used, t);
+	Token t = tokenlist_pop(parser->tokens);
+	tokenlist_push(parser->used, t);
 
 	if (token_is(t, "CHAR")) {
 		// create nfa for the char
@@ -172,14 +183,14 @@ int parse_character(RegexParser parser) {
 		return 1;
 	}
 
-	token_push(parser->tokens, t);
-	token_pop(parser->used);
+	tokenlist_push(parser->tokens, t);
+	tokenlist_pop(parser->used);
 	return 0;
 }
 
 int parse_character_class(RegexParser parser) {
-	Token t = token_pop(parser->tokens);
-	token_push(parser->used, t);
+	Token t = tokenlist_pop(parser->tokens);
+	tokenlist_push(parser->used, t);
 
 	if (token_is(t, "_LETTER")) {
 		parser_push(parser, nfa_letter());
@@ -198,14 +209,14 @@ int parse_character_class(RegexParser parser) {
 		return 1;
 	}
 
-	token_push(parser->tokens, t);
-	token_pop(parser->used);
+	tokenlist_push(parser->tokens, t);
+	tokenlist_pop(parser->used);
 	return 0;
 }
 
 int parse_escaped(RegexParser parser) {
-	Token t = token_pop(parser->tokens);
-	token_push(parser->used, t);
+	Token t = tokenlist_pop(parser->tokens);
+	tokenlist_push(parser->used, t);
 	if (token_is(t, "ESCAPED")) {
 		// create nfa for the char
 		char *c = t->string + 1;
@@ -218,7 +229,7 @@ int parse_escaped(RegexParser parser) {
 		parser_push(nfa);
 		return 1;
 	}
-	token_push(parser->tokens, t);
-	token_pop(parser->used);
+	tokenlist_push(parser->tokens, t);
+	tokenlist_pop(parser->used);
 	return 0;
 }
