@@ -33,6 +33,11 @@ Token token_create();
 // set the result to the string attribute of the token
 void token_setStringWithLength(Token t, char* string, int length);
 
+// identify whether or not the given token 
+// is a type of the given identifier string.
+// returns 1 if the identifier and token match, 0 otherwise
+int token_is(Token t, char *identifier);
+
 // deallocate the string
 // deallocate the token
 void token_destroy(Token t);
@@ -46,5 +51,14 @@ TokenList regex_tokenize(char* regex);
 
 // destroy a token list and all it's tokens
 void tokenlist_destroy(TokenList tl);
+
+// push a token onto the beginning of a token list
+void tokenlist_push(TokenList tokens, Token t);
+
+// look at the beginning of a token list
+Token tokenlist_peek(TokenList tokens);
+
+// pop a token off the beginning of a token list
+Token tokenlist_pop(TokenList tokens);
 
 #endif

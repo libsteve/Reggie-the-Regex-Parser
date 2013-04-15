@@ -10,6 +10,10 @@ NFA 		= src/nfa.c 		src/nfa.h
 NFA_EVAL 	= src/nfa_eval.c 	src/nfa_eval.h
 NFA_PARSING_EVAL 	= src/nfa_parsing_eval.c 	src/nfa_parsing_eval.h
 NFA_OPERATIONS 		= src/nfa_operations.c 		src/nfa_operations.h
+NFA_USEFUL	= src/nfa_useful.c 	src/nfa_useful.h
+REGEX_PARSER	= src/regex_parser.c	src/regex_parser.h
+REGEX_TOKENIZER	= src/regex_tokenizer.c	src/regex_tokenizer.h
+REGEX_TOKENIZER_NFA	= src/regex_tokenizer_nfa.c	src/regex_tokenizer_nfa.h
 
 ###
 # Target Objects
@@ -19,9 +23,16 @@ NFA_O 		= bin/build/nfa.o
 NFA_EVAL_O 	= bin/build/nfa_eval.o
 NFA_PARSING_EVAL_O 	= bin/build/nfa_parsing_eval.o
 NFA_OPERATIONS_O 	= bin/build/nfa_operations.o
+NFA_USEFUL_O	= bin/build/nfa_useful.o
+REGEX_PARSER_O	= bin/build/regex_parser.o
+REGEX_TOKENIZER_O	= bin/build/regex_tokenizer.o
+REGEX_TOKENIZER_NFA_O	= bin/build/regex_tokenizer_nfa.o
 
 # All NFA-Related Objects
 ALL_NFA_O 	= $(LIST_O) $(STRINGS_O) $(NFA_O) $(NFA_EVAL_O) $(NFA_PARSING_EVAL_O) $(NFA_OPERATIONS_O)
+
+# All Regex Parsing Related Objects
+ALL_REGEX_O	= $(ALL_NFA_O) $(NFA_USEFUL_O) $(REGEX_PARSER_O) $(REGEX_TOKENIZER_O) $(REGEX_TOKENIZER_NFA_O)
 
 ###
 # Suffixes
@@ -59,6 +70,18 @@ $(NFA_PARSING_EVAL_O): $(NFA_PARSING_EVAL) bin/build
 
 $(NFA_OPERATIONS_O): $(NFA_OPERATIONS) bin/build
 	$(CC) -c -o $(NFA_OPERATIONS_O) src/nfa_operations.c
+
+$(NFA_USEFUL_O): $(NFA_USEFUL) bin/build
+	$(CC) -c -o $(NFA_USEFUL_O) src/nfa_useful.c
+
+$(REGEX_PARSER_O): $(REGEX_PARSER) bin/build
+	$(CC) -c -o $(REGEX_PARSER_O) src/regex_parser.c
+
+$(REGEX_TOKENIZER_O): $(REGEX_TOKENIZER) bin/build
+	$(CC) -c -o $(REGEX_TOKENIZER_O) src/regex_tokenizer.c
+
+$(REGEX_TOKENIZER_NFA_O): $(REGEX_TOKENIZER_NFA) bin/build
+	$(CC) -c -o $(REGEX_TOKENIZER_NFA_O) src/regex_tokenizer_nfa.c
 
 ###
 # Target Test Sources
