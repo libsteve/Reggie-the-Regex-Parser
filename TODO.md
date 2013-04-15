@@ -1,5 +1,9 @@
 TODO
 ====
 
-1. write tests for nfa_parsing_eval
-2. write parser for a regualr expression
+1. Test Regex Parser
+	- test regex_tokenizer
+	- test regex_parser
+	- test nfa_builder
+	- test reggie
+2. Test string_concat() function
