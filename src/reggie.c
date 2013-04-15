@@ -42,19 +42,15 @@ int reggie_first(ReggeiRegex, regex, char *input) {
 ReggieRegex reggie_and(ReggieRegex a, ReggieRegex b) {
 	ReggieRegex r = calloc(1, sizeof(struct reggie_regex));	
 
-	char *x, *y, *z;
-	x = string_concat("(", a->regex);
-	free(a->regex);
-	y = string_concat(x, ")(");
-	free(x);
-	z = string_concat(y, b->regex);
-	free(y);
-	free(b->regex);
+	char *x = string_concat("(", a->regex);
+	char *y = string_concat(x, ")(");
+	char *z = string_concat(y, b->regex);
 	r->regex = string_concat(z, ")");
+	free(x);
+	free(y);
 	free(z);
 
 	r->nfa = nfa_CONCAT(a->nfa, b->nfa);
-
 	regex_destroy(a);
 	regex_destroy(b);
 
@@ -64,11 +60,34 @@ ReggieRegex reggie_and(ReggieRegex a, ReggieRegex b) {
 // generate a regular expression that matches for one the given regular expressions
 // destroys the two given regular expressions
 ReggieRegex reggie_or(ReggieRegex a, ReggieRegex b) {
+	ReggieRegex r = calloc(1, sizeof(struct reggie_regex));	
 
+	char *x = string_concat("(", a->regex);
+	char *y = string_concat(x, ")|(");
+	char *z = string_concat(y, b->regex);
+	r->regex = string_concat(z, ")");
+	free(x);
+	free(y);
+	free(z);
+
+	r->nfa = nfa_UNION(a->nfa, b->nfa);
+	regex_destroy(a);
+	regex_destroy(b);
+
+	return r;
 }
 
 // generate a regular expression that matches for any repeating given regex
 // destroys the given regular expression
 ReggieRegex reggie_repeat(ReggieRegex regex) {
+	ReggieRegex r = calloc(1, sizeof(struct reggie_regex));	
 
+	char *x = string_concat("(", regex->regex);
+	r->regex = string_concat(x, ")*");
+	free(x);
+
+	r->nfa = nfa_KLEENE(regex->nfa);
+	regex_destroy(regex);
+
+	return r;
 }
