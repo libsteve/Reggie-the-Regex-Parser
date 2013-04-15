@@ -23,4 +23,8 @@ int string_substring(char* big, char* little);
 // the resulting string must be freed
 char* string_copy(char* str);
 
+// copy the input strings into one combined larger string
+// the resulting string must be freed
+char* string_concat(char* a, char* b);
+
 #endif

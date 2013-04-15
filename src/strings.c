@@ -42,3 +42,21 @@ char* string_copy(char* str) {
 
 	return new;
 }
+
+char* string_concat(char* a, char* b) {
+	int len_a = string_length(a);
+	int len_b = string_length(b);
+	int len = len_a + len_b;
+	char* new = calloc(len+1, sizeof(char));
+
+	int i = 0;
+	for (; i < len_a; i++) {
+		new[i] = a[i];
+	}
+	for (int y = 0; i < len; i++ && y++) {
+		new[i] = b[y];
+	}
+	new[len] = '\0';
+
+	return new;
+}
