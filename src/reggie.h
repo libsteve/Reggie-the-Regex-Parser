@@ -24,7 +24,7 @@ int reggie_match(ReggieRegex regex, char *input);
 
 // find the first match with a given input string to a regular expression
 // returns the length of the first match with the string to the regular expression
-int reggie_first(ReggeiRegex, regex, char *input);
+int reggie_first(ReggieRegex regex, char *input);
 
 // generate a regular expression that matches for both the given regular expressions
 // destroys the two given regular expressions

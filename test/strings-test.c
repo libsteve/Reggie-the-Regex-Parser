@@ -1,4 +1,5 @@
 #include "strings-test.h"
+#include <stdlib.h>
 
 ////
 // test int string_length(char*)

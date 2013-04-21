@@ -1,6 +1,6 @@
 #include "regex_tokenizer_nfa.h"
 #include "nfa_useful.h"
-#include "nfa_operatons.h"
+#include "nfa_operations.h"
 
 NFA token_nfa_leftParen() {
 	NFA nfa = nfa_create();

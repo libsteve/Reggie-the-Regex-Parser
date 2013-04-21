@@ -5,7 +5,7 @@
 #include "list.h"
 
 // a structure to represent a token parser
-typedef token_parser {
+typedef struct token_parser {
 	NFA 	parser;		// an NFA to parse the tokens
 	char* 	identifier;	// an string to identify the resulting token's type
 } *Token_Parser;

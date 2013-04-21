@@ -14,6 +14,8 @@ NFA_USEFUL	= src/nfa_useful.c 	src/nfa_useful.h
 REGEX_PARSER	= src/regex_parser.c	src/regex_parser.h
 REGEX_TOKENIZER	= src/regex_tokenizer.c	src/regex_tokenizer.h
 REGEX_TOKENIZER_NFA	= src/regex_tokenizer_nfa.c	src/regex_tokenizer_nfa.h
+NFA_BUILDER	= src/nfa_builder.c src/nfa_builder.h
+REGGIE		= src/reggie.c 		src/reggie.h
 
 ###
 # Target Objects
@@ -27,12 +29,14 @@ NFA_USEFUL_O	= bin/build/nfa_useful.o
 REGEX_PARSER_O	= bin/build/regex_parser.o
 REGEX_TOKENIZER_O	= bin/build/regex_tokenizer.o
 REGEX_TOKENIZER_NFA_O	= bin/build/regex_tokenizer_nfa.o
+NFA_BUILDER_O	= bin/build/nfa_builder.o
+REGGIE_O 	= bin/build/reggie.o
 
 # All NFA-Related Objects
 ALL_NFA_O 	= $(LIST_O) $(STRINGS_O) $(NFA_O) $(NFA_EVAL_O) $(NFA_PARSING_EVAL_O) $(NFA_OPERATIONS_O)
 
 # All Regex Parsing Related Objects
-ALL_REGEX_O	= $(ALL_NFA_O) $(NFA_USEFUL_O) $(REGEX_PARSER_O) $(REGEX_TOKENIZER_O) $(REGEX_TOKENIZER_NFA_O)
+ALL_REGEX_O	= $(ALL_NFA_O) $(NFA_USEFUL_O) $(REGEX_PARSER_O) $(REGEX_TOKENIZER_O) $(REGEX_TOKENIZER_NFA_O) $(NFA_BUILDER_O) $(REGGIE_O)
 
 ###
 # Suffixes
@@ -83,6 +87,12 @@ $(REGEX_TOKENIZER_O): $(REGEX_TOKENIZER) bin/build
 $(REGEX_TOKENIZER_NFA_O): $(REGEX_TOKENIZER_NFA) bin/build
 	$(CC) -c -o $(REGEX_TOKENIZER_NFA_O) src/regex_tokenizer_nfa.c
 
+$(NFA_BUILDER_O): $(NFA_BUILDER) bin/build
+	$(CC) -c -o $(NFA_BUILDER_O) src/nfa_builder.c
+
+$(REGGIE_O): $(REGGIE) bin/build
+	$(CC) -c -o $(REGGIE_O) src/reggie.c	
+
 ###
 # Target Test Sources
 TESTER 			= test/tester.c 		test/tester.h
@@ -93,6 +103,7 @@ NFA_TEST 		= test/nfa-test.c 		test/nfa-test.h
 NFA_EVAL_TEST 	= test/nfa_eval-test.c 	test/nfa_eval-test.h
 NFA_PARSING_EVAL_TEST 	= test/nfa_parsing_eval-test.c 	test/nfa_parsing_eval-test.h
 NFA_OPERATIONS_TEST 	= test/nfa_operations-test.c 	test/nfa_operations-test.h
+REGGIE_TEST		= test/reggie-test.c 	test/reggie-test.h
 
 ###
 # Target Test Objects
@@ -104,6 +115,7 @@ NFA_TEST_O 		= testbin/build/nfa-test.o
 NFA_EVAL_TEST_O = testbin/build/nfa_eval-test.o
 NFA_PARSING_EVAL_TEST_O = testbin/build/nfa_parsing_eval-test.o
 NFA_OPERATIONS_TEST_O 	= testbin/build/nfa_operations-test.o
+REGGIE_TEST_O	= testbin/build/reggie-test.o
 
 ###
 # Compile Tests
@@ -136,16 +148,21 @@ testbin/nfa_operations-test: testbin/build $(NFA_OPERATIONS_TEST) $(ALL_NFA_O) $
 	$(CC) -c -o $(NFA_OPERATIONS_TEST_O) test/nfa_operations-test.c
 	$(CC) -o testbin/nfa_operations-test $(NFA_OPERATIONS_TEST_O) $(ALL_NFA_O) $(TESTER_O)
 
+testbin/reggie-test: testbin/build $(REGGIE_TEST) $(ALL_REGEX_O) $(TESTER_O)
+	$(CC) -c -o $(REGGIE_TEST_O) test/reggie-test.c
+	$(CC) -o testbin/reggie-test $(REGGIE_TEST_O) $(ALL_REGEX_O) $(TESTER_O)
+
 ###
 # Compile and Run Tests
 
-test: testbin/list-test testbin/nfa-test testbin/strings-test testbin/nfa_eval-test testbin/nfa_parsing_eval-test testbin/nfa_operations-test
+test: testbin/list-test testbin/nfa-test testbin/strings-test testbin/nfa_eval-test testbin/nfa_parsing_eval-test testbin/nfa_operations-test testbin/reggie-test
 	./testbin/list-test
 	# ./testbin/nfa-test
 	./testbin/strings-test
 	./testbin/nfa_eval-test
 	./testbin/nfa_parsing_eval-test
 	./testbin/nfa_operations-test
+	./testbin/reggie-test
 
 ###
 # Remove build files from 

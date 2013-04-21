@@ -1,6 +1,7 @@
 #include "regex_parser.h"
 #include "nfa_operations.h"
 #include "nfa_useful.h"
+#include <stdlib.h>
 
 RegexParser parser_create() {
 	RegexParser parser = calloc(1, sizeof(struct regex_parser));
@@ -56,7 +57,7 @@ NFA parser_peek(RegexParser parser) {
 ///////////////////////////////////////////////////////
 
 int parse_union(RegexParser parser) {
-	if (parser_concat(parser)) {
+	if (parse_concat(parser)) {
 		Token t = tokenlist_pop(parser->tokens);
 		tokenlist_push(parser->used, t);
 		if (token_is(t, "|")) {
@@ -155,7 +156,7 @@ int parse_meta_character(RegexParser parser) {
 	if (token_is(t, "*")) {
 		NFA a = parser_pop(parser);
 		a = nfa_KLEENE(a);
-		parser_push(a);
+		parser_push(parser, a);
 		return 1;
 	} else if (token_is(t, "+")) {
 		// not implementable due to inability to copy NFAs
@@ -179,7 +180,7 @@ int parse_character(RegexParser parser) {
 		state_addTransition(nfa_initialState(nfa), t->string, s);
 
 		// push the resulting nfa to the parser
-		parser_push(nfa);
+		parser_push(parser, nfa);
 		return 1;
 	}
 
@@ -226,7 +227,7 @@ int parse_escaped(RegexParser parser) {
 		state_addTransition(nfa_initialState(nfa), c, s);
 
 		// push the resulting nfa to the parser
-		parser_push(nfa);
+		parser_push(parser, nfa);
 		return 1;
 	}
 	tokenlist_push(parser->tokens, t);

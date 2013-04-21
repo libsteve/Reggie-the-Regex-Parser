@@ -1,6 +1,7 @@
 #include "regex_tokenizer.h"
 #include "regex_tokenizer_nfa.h"
 #include "nfa_parsing_eval.h"
+#include "strings.h"
 #include <stdlib.h>
 
 // a list of token parsers that can be used to parse a regex into different tokens
@@ -11,7 +12,7 @@ Token_Parser token_parser_create() {
 }
 
 void token_parser_destroy(Token_Parser tp) {
-	nfa_destroy(tp_parser);
+	nfa_destroy(tp->parser);
 	free(tp);
 }
 
@@ -174,7 +175,6 @@ TokenList regex_tokenize(char* regex) {
 		t->identifier = "CHAR";
 		token_setStringWithLength(t, parsable, 1);
 		list_push(tl, t);
-		resulting += 1;
 	}
 
 	return tl;

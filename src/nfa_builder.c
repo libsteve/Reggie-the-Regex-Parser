@@ -9,9 +9,9 @@ NFA nfa_build(char *regex) {
 	parser_setTokens(parser, tokens);
 	int ok = parse_union(parser);
 	if (ok) {
-		NFA result = parse_getNFA(parser);
+		NFA result = parser_getNFA(parser);
 		parser_destroy(parser);
-		return NFA;
+		return result;
 	}
 	parser_destroy(parser);
 	return 0;
