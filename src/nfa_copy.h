@@ -25,6 +25,7 @@ typedef struct state_template {
 typedef struct nfa_template {
 	map states;			// a map of state pointers to a list of state templates
 	map transitions;	// a map of transition pointers to transition templates
+	void *initialState;	// a pointer value of the initial state of the nfa
 } *NFATemplate;
 
 // create an nfa template from a given nfa

@@ -6,7 +6,8 @@
 NFATemplate nfa_template_create(NFA nfa) {
 	NFATemplate t = calloc(1, sizeof(struct nfa_template));
 	t->states = map_create();
-	nfa_template_addStateRecursive(t, nfa_initialState(nfa));
+	t->initialState = nfa_initialState(nfa);
+	nfa_template_addStateRecursive(t, t->initialState);
 	return t;
 }
 
@@ -15,7 +16,11 @@ void nfa_template_destroy(NFATemplate t) {
 	FOREACH_ENTRY(ent, t->states) {
 		state_template_destroy(ENTRY_VALUE(ent));
 	}
+	FOREACH_ENTRY(ent, t->transitions) {
+		transition_template_destroy(ENTRY_VALUE(ent));
+	}
 	map_destroy(t->states);
+	map_destroy(t->transitions);
 	free(t);
 }
 
@@ -76,9 +81,35 @@ void nfa_template_addTransitionRecursive(NFATemplate t, Transition tr) {
 NFA nfa_createFromTemplate(NFATemplate t) {
 	map result_states = map_create();
 
-	// TODO: finish this function
+	NFA nfa = nfa_create();
+	state_destroy(nfa_initialState(nfa));
+
+	// create all new states
+	FOREACH_ENTRY(ent, t->states) {
+		State s = state_create();
+		StateTemplate st = ENTRY_VALUE(ent);
+		state_setName(s, st->name);
+		if (st->isTerminal)
+			state_makeTerminal(s);
+		else 
+			state_MakeNonTerminal(s);
+		map_add(result_states, ENTRY_KEY(ent), s);
+		if (t->initialState == ENTRY_KEY(ent))
+			nfa->initialState = s;
+	}
+
+	// add in all transitions
+	FOREACH_ENTRY(ent, t->transitions) {
+		TransitionTemplate tt = ENTRY_VALUE(ent);
+		State s1 = map_get(result_states, tt->source);
+		State s2 = map_get(result_states, tt->dest);
+		char *str = tt->string;
+		state_addTransition(s1, str, s2);
+	}
 
 	map_destroy(result_states);
+
+	return nfa;
 }
 
 // create a copy of an nfa from a given nfa

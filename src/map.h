@@ -44,6 +44,9 @@ void map_setKeyCompare(map m, key_eq function);
 // set the value for the given key in the map
 void map_set(map m, void *key, void *value);
 
+// an alternative functon name for the map_set() function
+#define map_add(m, k, v) (map_set((m), (k), (v)))
+
 // delete the key and associated value from the map
 void map_delete(map m, void *key);
 
