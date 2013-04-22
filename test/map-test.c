@@ -99,7 +99,7 @@ result test_map_get_1() {
 	map m = map_create();
 	map_set(m, key, &a);
 	int *b = map_get(m, key);
-	passed = is_equal(a, b);
+	passed = is_equal(&a, b);
 	map_destroy(m);
 
 	return (result){passed, description};
@@ -116,7 +116,7 @@ result test_map_get_2() {
 	map_set(m, "def", "123");
 	map_set(m, key, &a);
 	int *b = map_get(m, key);
-	passed = is_equal(a, b);
+	passed = is_equal(&a, b);
 	map_destroy(m);
 
 	return (result){passed, description};
