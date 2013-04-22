@@ -57,17 +57,17 @@ int map_has(map m, void *key);
 int map_size(map m);
 
 // get the entry iterator's key value
-#define ENTRY_KEY(iterator)	((iterator)->value->key)
+#define ENTRY_KEY(iterator)	(((map_entry)((iterator)->value))->key)
 
 // get the entry itarator's value value
-#define ENTRY_VALUE(iterator)	((iterator)->value->value)
+#define ENTRY_VALUE(iterator)	(((map_entry)((iterator)->value))->value)
 
 // loop over every entry within a map
 // iterator - a symbol used as an iterator ove map entries
-// map - the map to iterate over
-#define FOREACH_ENTRY(iterator, map)	\
-	for (	list_node (iterator) = (map->map)->connecting_node->next;	\
-			(iterator)->value != (map->map);	\
+// m - the map to iterate over
+#define FOREACH_ENTRY(iterator, m)	\
+	for (	list_node (iterator) = ((m)->map)->connecting_node->next;	\
+			(iterator)->value != ((m)->map);	\
 			(iterator) = (iterator)->next	)
 
 #endif

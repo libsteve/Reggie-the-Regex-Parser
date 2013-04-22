@@ -1,5 +1,6 @@
 #include "map.h"
 #include "strings.h"
+#include <stdlib.h>
 
 // create a new map_entry instance
 map_entry map_entry_create() {
@@ -59,8 +60,8 @@ map_entry map_findEntry(map m, void *key) {
 
 // set the value for the given key in the map
 void map_set(map m, void *key, void *value) {
-	void *entry = map_findEntry(m, key);
-	if (void == 0) {
+	map_entry entry = map_findEntry(m, key);
+	if (entry == 0) {
 		entry = map_entry_create();
 		entry->key = key;
 		list_push(m->map, entry);
@@ -78,7 +79,7 @@ void map_delete(map m, void *key) {
 
 // get the value from the map for the given key
 void *map_get(map m, void *key) {
-	void *entry = map_findEntry(m, key);
+	map_entry entry = map_findEntry(m, key);
 	if (entry == 0)
 		return 0;
 	return entry->value;
