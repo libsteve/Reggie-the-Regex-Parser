@@ -55,6 +55,32 @@
 
 <p>A user can then take the resulting NFA and pass in a string to see if it passes the NFA.</p>
 
+<h2>NFAs for Use with Parsing</h2>
+
+<p>A strict NFA would not be useful for parsing purposes. If you wanted to tokenize using an NFA, you would need to know how long the string that is accepted by the NFA is, and you would need to be able to deal with anything following the final accept terminal state.</p>
+
+<p>A parsing evaluator needs to be implemented to allow for the length of any accepting substring in an input string, so long as the substring and the input string start together.</p>
+
+<h2>NFA Copying</h2>
+
+<p>The recursive structure of an NFA makes cloning and copying less than arbitrary. A template representing a blueprint for the NFA is created, and then an NFA structure is built from the generated template.</p>
+
+<p>The template is a map of state pointers to state representations, and from transition pointers to transition representations.</p>
+
+<h2>Public Interface</h2>
+
+<p>The <code>reggie.h</code> file reveals the public interface for the regex parser. This file includes function definitions that facilitate the creation, destruction, use for matching, use for parsing, and manipulation of regualr expressions backed by NFAs.</p>
+
+<h2>Possible Future Exploations</h2>
+
+<p>The use of a modified Non-Deterministic Push-Down Automata (PDA) may be useful for implementing a regular-expression parsing machine that could also be used outside the regex parsing to become a general-purpose parser.</p>
+
+<h2>Source Highlights</h2>
+
+<p><code>list.h</code> is a mean C Linked-List Library featuring a <code>FOREACH</code> macro looping construct and more.</p>
+
+<p><code>map.h</code> is a map or dictionary implementation based on the <code>list.h</code> library allowing for primative key-value storying of any pointer data values.</p>
+
 <h2>Use</h2>
 
 <p>To compile and run tests, run</p>
@@ -71,12 +97,6 @@
 
 <pre><code>make real-clean
 </code></pre>
-
-<h2>NFAs for Use with Parsing</h2>
-
-<p>A strict NFA would not be useful for parsing purposes. If you wanted to tokenize using an NFA, you would need to know how long the string that is accepted by the NFA is, and you would need to be able to deal with anything following the final accept terminal state.</p>
-
-<p>A parsing evaluator needs to be implemented to allow for the length of any accepting substring in an input string, so long as the substring and the input string start together.</p>
       </section>
     </div>
 
