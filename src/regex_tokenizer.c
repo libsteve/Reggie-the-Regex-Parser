@@ -149,6 +149,7 @@ void token_destroy(Token t) {
 // tokenize a regular expression
 // returns a list of tokens in the order they appear
 TokenList regex_tokenize(char* regex) {
+	setup_token_parsers();
 	TokenList tl = list_create();
 	char* parsable = regex;
 
