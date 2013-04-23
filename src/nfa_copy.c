@@ -6,6 +6,7 @@
 NFATemplate nfa_template_create(NFA nfa) {
 	NFATemplate t = calloc(1, sizeof(struct nfa_template));
 	t->states = map_create();
+	t->transitions = map_create();
 	t->initialState = nfa_initialState(nfa);
 	nfa_template_addStateRecursive(t, t->initialState);
 	return t;
@@ -27,7 +28,7 @@ void nfa_template_destroy(NFATemplate t) {
 // create a state template from a given state
 StateTemplate state_template_create(State s) {
 	StateTemplate st = calloc(1, sizeof(struct state_template));
-	st->terminal = s->isTerminalState;
+	st->isTerminal = s->isTerminalState;
 	st->name = string_copy(s->name);
 	return st;
 }
@@ -89,13 +90,16 @@ NFA nfa_createFromTemplate(NFATemplate t) {
 		State s = state_create();
 		StateTemplate st = ENTRY_VALUE(ent);
 		state_setName(s, st->name);
-		if (st->isTerminal)
+		nfa_addState(nfa, s);		
+		if (st->isTerminal) {
 			state_makeTerminal(s);
-		else 
-			state_MakeNonTerminal(s);
-		map_add(result_states, ENTRY_KEY(ent), s);
-		if (t->initialState == ENTRY_KEY(ent))
+		} else {
+			state_makeNonTerminal(s);
+		}
+		if (t->initialState == ENTRY_KEY(ent)) {
 			nfa->initialState = s;
+		}
+		map_add(result_states, ENTRY_KEY(ent), s);
 	}
 
 	// add in all transitions
@@ -115,7 +119,7 @@ NFA nfa_createFromTemplate(NFATemplate t) {
 // create a copy of an nfa from a given nfa
 NFA nfa_copy(NFA nfa) {
 	NFATemplate t = nfa_template_create(nfa);
-	NFA result = nfa_createFromTemplate();
+	NFA result = nfa_createFromTemplate(t);
 	nfa_template_destroy(t);
 	return result;
 }

@@ -11,15 +11,11 @@ NFA nfa_create() {
 	return nfa;
 }
 
-// this is the foreach function needed to iterate
-// through each state and destroy it when
-// used within the nfa_destroy() function
-void nfa_destroy_foreach_func(void* value) {
-	state_destroy(value);
-}
-
 void nfa_destroy(NFA nfa) {
-	list_foreach(nfa->states, &nfa_destroy_foreach_func);
+	state_destroy(nfa_initialState(nfa));
+	// FOREACH(it, nfa->states) {
+	// 	state_destroy(VALUE(it));
+	// }
 	list_destroy(nfa->states);
 	free(nfa);
 }
@@ -54,15 +50,20 @@ void state_makeNonTerminal(State s) {
 	s->isTerminalState = 0;
 }
 
-// this is the foreach function needed to iterate
-// through each transition and delete it when
-// used within the state_destroy() function
-void state_destroy_foreach_func(void* value) {
-	free(value);
-}
-
 void state_destroy(State s) {
-	list_foreach(s->transitions, &state_destroy_foreach_func);
+	list l = list_create();
+	FOREACH(it, s->transitions) {
+		Transition t = VALUE(it);
+		free(t->transition_string);
+		list_push(l, t);
+	}
+	list_destroy(s->transitions);
+	s->transitions = list_create();
+	FOREACH(it, l) {
+		Transition t = VALUE(it);
+		state_destroy(t->dest);
+		free(t);
+	}
 	list_destroy(s->transitions);
 	free(s);
 }

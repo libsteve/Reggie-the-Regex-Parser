@@ -50,9 +50,9 @@ void map_setKeyCompare(map m, key_eq function) {
 
 map_entry map_findEntry(map m, void *key) {
 	key_eq fn = m->key_compare;
-	FOREACH_ENTRY(it, m) {
-		if (fn(key, ENTRY_KEY(it))) {
-			return VALUE(it);
+	FOREACH_ENTRY(ent, m) {
+		if (fn(key, ENTRY_KEY(ent))) {
+			return VALUE(ent);
 		}
 	}
 	return 0;

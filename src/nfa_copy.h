@@ -9,7 +9,7 @@ struct state_template;
 struct nfa_template;
 
 // a structure to represent a transition template
-struct transition_template {
+typedef struct transition_template {
 	char *string;	// the transition string
 	void *source;	// the pointer value of the cource states
 	void *dest;		// the pointer value of the destination state

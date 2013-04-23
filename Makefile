@@ -8,6 +8,7 @@ LIST 		= src/list.c 		src/list.h
 MAP			= src/map.c 		src/map.h
 STRINGS 	= src/strings.c 	src/strings.h
 NFA 		= src/nfa.c 		src/nfa.h
+NFA_COPY	= src/nfa_copy.c 	src/nfa_copy.h
 NFA_EVAL 	= src/nfa_eval.c 	src/nfa_eval.h
 NFA_PARSING_EVAL 	= src/nfa_parsing_eval.c 	src/nfa_parsing_eval.h
 NFA_OPERATIONS 		= src/nfa_operations.c 		src/nfa_operations.h
@@ -24,6 +25,7 @@ LIST_O		= bin/build/list.o
 MAP_O		= bin/build/map.o
 STRINGS_O 	= bin/build/strings.o
 NFA_O 		= bin/build/nfa.o
+NFA_COPY_O	= bin/build/nfa_copy.o
 NFA_EVAL_O 	= bin/build/nfa_eval.o
 NFA_PARSING_EVAL_O 	= bin/build/nfa_parsing_eval.o
 NFA_OPERATIONS_O 	= bin/build/nfa_operations.o
@@ -34,8 +36,11 @@ REGEX_TOKENIZER_NFA_O	= bin/build/regex_tokenizer_nfa.o
 NFA_BUILDER_O	= bin/build/nfa_builder.o
 REGGIE_O 	= bin/build/reggie.o
 
+# All Data-Related Objects
+ALL_DATA	= $(LIST_O) $(MAP_O) $(STRINGS_O)
+
 # All NFA-Related Objects
-ALL_NFA_O 	= $(LIST_O) $(MAP_O) $(STRINGS_O) $(NFA_O) $(NFA_EVAL_O) $(NFA_PARSING_EVAL_O) $(NFA_OPERATIONS_O)
+ALL_NFA_O 	= $(ALL_DATA) $(NFA_O) $(NFA_COPY_O) $(NFA_EVAL_O) $(NFA_PARSING_EVAL_O) $(NFA_OPERATIONS_O)
 
 # All Regex Parsing Related Objects
 ALL_REGEX_O	= $(ALL_NFA_O) $(NFA_USEFUL_O) $(REGEX_PARSER_O) $(REGEX_TOKENIZER_O) $(REGEX_TOKENIZER_NFA_O) $(NFA_BUILDER_O) $(REGGIE_O)
@@ -70,6 +75,9 @@ $(STRINGS_O): $(STRINGS) bin/build
 
 $(NFA_O): $(NFA) bin/build
 	$(CC) -c -o $(NFA_O) src/nfa.c
+
+$(NFA_COPY_O): $(NFA_COPY) bin/build
+	$(CC) -c -o $(NFA_COPY_O) src/nfa_copy.c
 
 $(NFA_EVAL_O): $(NFA_EVAL) bin/build
 	$(CC) -c -o $(NFA_EVAL_O) src/nfa_eval.c
@@ -106,6 +114,7 @@ LIST_TEST 		= test/list-test.c 		test/list-test.h
 MAP_TEST 		= test/map-test.c 		test/map-test.h
 STRINGS_TEST 	= test/strings-test.c 	test/strings-test.h
 NFA_TEST 		= test/nfa-test.c 		test/nfa-test.h
+NFA_COPY_TEST	= test/nfa_copy-test.c 	test/nfa_copy-test.h
 NFA_EVAL_TEST 	= test/nfa_eval-test.c 	test/nfa_eval-test.h
 NFA_PARSING_EVAL_TEST 	= test/nfa_parsing_eval-test.c 	test/nfa_parsing_eval-test.h
 NFA_OPERATIONS_TEST 	= test/nfa_operations-test.c 	test/nfa_operations-test.h
@@ -119,6 +128,7 @@ LIST_TEST_O		= testbin/build/list-test.o
 MAP_TEST_O 		= testbin/build/map-test.o
 STRINGS_TEST_O 	= testbin/build/strings-test.o
 NFA_TEST_O 		= testbin/build/nfa-test.o
+NFA_COPY_TEST_O	= testbin/build/nfa_copy-test.o
 NFA_EVAL_TEST_O = testbin/build/nfa_eval-test.o
 NFA_PARSING_EVAL_TEST_O = testbin/build/nfa_parsing_eval-test.o
 NFA_OPERATIONS_TEST_O 	= testbin/build/nfa_operations-test.o
@@ -134,18 +144,22 @@ testbin/list-test: testbin/build $(LIST_TEST) $(LIST_O) $(TESTER_O)
 	$(CC) -c -o $(LIST_TEST_O) test/list-test.c
 	$(CC) -o testbin/list-test $(LIST_TEST_O) $(LIST_O) $(TESTER_O)
 
-testbin/map-test: testbin/build $(MAP_TEST) $(MAP_O) $(LIST_O) $(STRINGS_O) $(TESTER_O)
+testbin/map-test: testbin/build $(MAP_TEST) $(ALL_DATA) $(TESTER_O)
 	$(CC) -c -o $(MAP_TEST_O) test/map-test.c
-	$(CC) -o testbin/map-test $(MAP_TEST_O) $(MAP_O) $(LIST_O) $(STRINGS_O) $(TESTER_O)
+	$(CC) -o testbin/map-test $(MAP_TEST_O) $(ALL_DATA) $(TESTER_O)
+
+testbin/strings-test: testbin/build $(STRINGS_TEST) $(STRINGS_O) $(TESTER_O)
+	$(CC) -c -o $(STRINGS_TEST_O) test/strings-test.c
+	$(CC) -o testbin/strings-test $(STRINGS_TEST_O) $(STRINGS_O) $(TESTER_O)
 
 testbin/nfa-test: ;
 # testbin/nfa-test: test/nfa-test.c test/nfa-test.h bin/build/nfa.o testbin/build
 # 	clang -c -o testbin/build/nfa-test.o test/nfa-test.c
 # 	clang -o testbin/nfa-test testbin/build/nfa-test.o bin/build/nfa.o
 
-testbin/strings-test: testbin/build $(STRINGS_TEST) $(STRINGS_O) $(TESTER_O)
-	$(CC) -c -o $(STRINGS_TEST_O) test/strings-test.c
-	$(CC) -o testbin/strings-test $(STRINGS_TEST_O) $(STRINGS_O) $(TESTER_O)
+testbin/nfa_copy-test: testbin/build $(NFA_COPY_TEST) $(ALL_NFA_O) $(TESTER_O)
+	$(CC) -c -o $(NFA_COPY_TEST_O) test/nfa_copy-test.c
+	$(CC) -o testbin/nfa_copy-test $(NFA_COPY_TEST_O) $(ALL_NFA_O) $(TESTER_O)
 
 testbin/nfa_eval-test: testbin/build $(NFA_EVAL_TEST) $(ALL_NFA_O) $(TESTER_O)
 	$(CC) -c -o $(NFA_EVAL_TEST_O) test/nfa_eval-test.c
@@ -166,11 +180,12 @@ testbin/reggie-test: testbin/build $(REGGIE_TEST) $(ALL_REGEX_O) $(TESTER_O)
 ###
 # Compile and Run Tests
 
-test: testbin/list-test testbin/map-test testbin/nfa-test testbin/strings-test testbin/nfa_eval-test testbin/nfa_parsing_eval-test testbin/nfa_operations-test testbin/reggie-test
+test: testbin/list-test testbin/map-test testbin/strings-test testbin/nfa-test testbin/nfa_copy-test testbin/nfa_eval-test testbin/nfa_parsing_eval-test testbin/nfa_operations-test testbin/reggie-test
 	./testbin/list-test
 	./testbin/map-test
-	# ./testbin/nfa-test
 	./testbin/strings-test
+	# ./testbin/nfa-test
+	./testbin/nfa_copy-test
 	./testbin/nfa_eval-test
 	./testbin/nfa_parsing_eval-test
 	./testbin/nfa_operations-test
