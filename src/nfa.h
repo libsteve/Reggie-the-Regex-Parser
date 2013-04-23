@@ -35,7 +35,7 @@ NFA nfa_create();
 void nfa_destroy(NFA nfa);
 
 // get the initial state of the NFA
-State nfa_initialState();
+State nfa_initialState(NFA nfa);
 
 // add a state to the NFA's state list
 void nfa_addState(NFA nfa, State s);
