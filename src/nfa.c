@@ -6,7 +6,7 @@ NFA nfa_create() {
 	NFA nfa = calloc(1, sizeof(struct nfa));
 	nfa->states = list_create();
 	nfa->initialState = state_create();
-	state_setName(nfa->initialState, "q0");
+	state_setID(nfa->initialState, 0);
 	nfa_addState(nfa, nfa_initialState(nfa));
 	return nfa;
 }
@@ -28,6 +28,19 @@ State nfa_initialState(NFA nfa) {
 	return nfa->initialState;
 }
 
+void nfa_setInitialState(NFA nfa, State s) {
+	state_destroy(nfa->initialState);
+	FOREACH(it, nfa->states) {
+		State is = VALUE(it);
+		if (is == nfa->initialState) {
+			list_removeValue(is);
+			break;
+		}
+	}
+	nfa->initialState = s;
+	list_push(nfa->states, s);
+}
+
 void nfa_addState(NFA nfa, State s) {
 	list_push(nfa->states, s);
 }
@@ -35,15 +48,13 @@ void nfa_addState(NFA nfa, State s) {
 State state_create() {
 	State s = calloc(1, sizeof(struct state));
 	s->transitions = list_create();
-	state_setName(s, "q0");
+	state_setID(s, 0);
 	state_makeNonTerminal(s);
 	return s;
 }
 
-void state_setName(State s, char* name) {
-	if (s->name != 0)
-		free(s->name);
-	s->name = string_copy(name);
+void state_setName(State s, unsigned int id) {
+	s->id = id;
 }
 
 void state_makeTerminal(State s) {
@@ -114,7 +125,7 @@ void nfa_print(NFA nfa) {
 
 void state_print(State s) {
 	char* terminal = s->isTerminalState ? "!" : "";
-	printf("%s:\t%s\n", s->name, terminal);
+	printf("%d:\t%s\n", s->id, terminal);
 	list_foreach(s->transitions, (foreach_func)&transition_print);
 }
 
