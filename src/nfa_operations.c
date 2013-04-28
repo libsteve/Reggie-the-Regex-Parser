@@ -35,10 +35,20 @@ void __state_makeEpsilonTransition(void* persistantState, void* variableState) {
 	state_makeNonTerminal((State)variableState);
 }
 
-NFA nfa_CONCAT(NFA a, NFA b) {
+// private
+// adds a value to each id for all the states in the given list
+void states_addToID(list states, unsigned int i) {
+	FOREACH(it, states) {
+		State s = VALUE(it);
+		s->id += i;
+	}
+}
+
+NFA nfa_CONCAT(NFA a, NFA b) {	
 	list terminalStates = nfa_getTerminalStates(a);
 	list_foreachWithState(terminalStates, &__state_makeEpsilonTransition, nfa_initialState(b));
 
+	states_addToID(b->states, list_len(a->states));
 	list allStates = list_merge(a->states, b->states);
 	State initialState = nfa_initialState(a);
 
@@ -49,10 +59,9 @@ NFA nfa_CONCAT(NFA a, NFA b) {
 
 	NFA nfa = nfa_create();
 	list_destroy(nfa->states); // destroy what is given
-	state_destroy(nfa_initialState(nfa)); // destroy what is given
 
 	nfa->states = allStates; // use what we have
-	nfa->initialState = initialState; // use what we have
+	nfa_setInitialState(nfa, initialState); // use what we have
 
 	list_destroy(terminalStates);
 
@@ -64,6 +73,9 @@ NFA nfa_UNION(NFA a, NFA b) {
 
 	state_addTransition(nfa_initialState(nfa), "", nfa_initialState(a));
 	state_addTransition(nfa_initialState(nfa), "", nfa_initialState(b));
+
+	states_addToID(a->states, 1);
+	states_addToID(b->states, ((unsigned int)list_len(a->states)) + (unsigned int)1);
 
 	nfa->states = list_merge(list_merge(nfa->states, a->states), b->states);
 
@@ -83,6 +95,8 @@ NFA nfa_KLEENE(NFA a) {
 	list_foreachWithState(terminalStates, &__state_makeEpsilonTransition, nfa_initialState(nfa));
 
 	state_addTransition(nfa_initialState(nfa), "", nfa_initialState(a));
+
+	states_addToID(a->states, 1);
 
 	list_rpush(a->states, list_pop(nfa->states));
 

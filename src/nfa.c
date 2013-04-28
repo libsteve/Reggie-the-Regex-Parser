@@ -6,7 +6,7 @@ NFA nfa_create() {
 	NFA nfa = calloc(1, sizeof(struct nfa));
 	nfa->states = list_create();
 	nfa->initialState = state_create();
-	state_setName(nfa->initialState, "q0");
+	state_setID(nfa->initialState, 0);
 	nfa_addState(nfa, nfa_initialState(nfa));
 	return nfa;
 }
@@ -24,6 +24,14 @@ State nfa_initialState(NFA nfa) {
 	return nfa->initialState;
 }
 
+void nfa_setInitialState(NFA nfa, State s) {
+	if (nfa->initialState) {
+		list_removeValue(nfa->states, nfa->initialState);
+		state_destroy(nfa->initialState);
+	}
+	nfa->initialState = s;
+}
+
 void nfa_addState(NFA nfa, State s) {
 	list_push(nfa->states, s);
 }
@@ -31,15 +39,27 @@ void nfa_addState(NFA nfa, State s) {
 State state_create() {
 	State s = calloc(1, sizeof(struct state));
 	s->transitions = list_create();
-	state_setName(s, "q0");
+	state_setID(s, 0);
 	state_makeNonTerminal(s);
 	return s;
+}
+
+void state_setID(State s, unsigned int id) {
+	s->id = id;
+}
+
+unsigned int state_getID(State s) {
+	return s->id;
 }
 
 void state_setName(State s, char* name) {
 	if (s->name != 0)
 		free(s->name);
 	s->name = string_copy(name);
+}
+
+char *state_getName(State s) {
+	return s->name;
 }
 
 void state_makeTerminal(State s) {
@@ -51,18 +71,10 @@ void state_makeNonTerminal(State s) {
 }
 
 void state_destroy(State s) {
-	list l = list_create();
 	FOREACH(it, s->transitions) {
-		Transition t = VALUE(it);
-		free(t->transition_string);
-		list_push(l, t);
-	}
-	list_destroy(s->transitions);
-	s->transitions = list_create();
-	FOREACH(it, l) {
-		Transition t = VALUE(it);
-		state_destroy(t->dest);
-		free(t);
+        Transition t = VALUE(it);
+        free(t->transition_string);
+        free(t);
 	}
 	list_destroy(s->transitions);
 	free(s);
@@ -115,7 +127,11 @@ void nfa_print(NFA nfa) {
 
 void state_print(State s) {
 	char* terminal = s->isTerminalState ? "!" : "";
-	printf("%s:\t%s\n", s->name, terminal);
+	if (s->name != 0) {
+		printf("%s-%d:\t%s\n", s->name, s->id, terminal);
+	} else {
+		printf("%d:\t%s\n", s->id, terminal);
+	}
 	list_foreach(s->transitions, (foreach_func)&transition_print);
 }
 

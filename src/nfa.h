@@ -14,6 +14,7 @@ typedef struct transition {
 // a state in an nfa
 typedef struct state {
 	int isTerminalState; // 1 if the state is terminal, 0 otherwise
+	unsigned int id; // an id number for the state
 	char* name; // the name of the state
 				// this must be an allocated string
 	list transitions; // a list of transitions that originate from this state
@@ -35,7 +36,12 @@ NFA nfa_create();
 void nfa_destroy(NFA nfa);
 
 // get the initial state of the NFA
-State nfa_initialState();
+State nfa_initialState(NFA nfa);
+
+// remove the current initail state from the NFA 
+// and replace it with the given state
+// any transitions that might exist to this state will segfault
+void nfa_setInitialState(NFA nfa, State s);
 
 // add a state to the NFA's state list
 void nfa_addState(NFA nfa, State s);
@@ -43,9 +49,18 @@ void nfa_addState(NFA nfa, State s);
 // create a new state object
 State state_create();
 
+// give an ID to a state
+void state_setID(State s, unsigned int id);
+
+// get the id of the state
+unsigned int state_getID(State s);
+
 // give a name to a state
 // you free the name string if dynamically allcoated
 void state_setName(State s, char* name);
+
+// get the name string of the state
+char *state_getName(State s);
 
 // set a state as being a terminal state
 void state_makeTerminal(State s);

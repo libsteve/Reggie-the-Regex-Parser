@@ -8,6 +8,7 @@ LIST 		= src/list.c 		src/list.h
 MAP			= src/map.c 		src/map.h
 STRINGS 	= src/strings.c 	src/strings.h
 NFA 		= src/nfa.c 		src/nfa.h
+NFA_CREATE	= src/nfa_create.c	src/nfa_create.h
 NFA_COPY	= src/nfa_copy.c 	src/nfa_copy.h
 NFA_EVAL 	= src/nfa_eval.c 	src/nfa_eval.h
 NFA_PARSING_EVAL 	= src/nfa_parsing_eval.c 	src/nfa_parsing_eval.h
@@ -25,6 +26,7 @@ LIST_O		= bin/build/list.o
 MAP_O		= bin/build/map.o
 STRINGS_O 	= bin/build/strings.o
 NFA_O 		= bin/build/nfa.o
+NFA_CREATE_O	= bin/build/nfa_create.o
 NFA_COPY_O	= bin/build/nfa_copy.o
 NFA_EVAL_O 	= bin/build/nfa_eval.o
 NFA_PARSING_EVAL_O 	= bin/build/nfa_parsing_eval.o
@@ -40,7 +42,7 @@ REGGIE_O 	= bin/build/reggie.o
 ALL_DATA	= $(LIST_O) $(MAP_O) $(STRINGS_O)
 
 # All NFA-Related Objects
-ALL_NFA_O 	= $(ALL_DATA) $(NFA_O) $(NFA_COPY_O) $(NFA_EVAL_O) $(NFA_PARSING_EVAL_O) $(NFA_OPERATIONS_O)
+ALL_NFA_O 	= $(LIST_O) $(STRINGS_O) $(NFA_O) $(NFA_CREATE_O) $(NFA_COPY_O) $(NFA_EVAL_O) $(NFA_PARSING_EVAL_O) $(NFA_OPERATIONS_O)
 
 # All Regex Parsing Related Objects
 ALL_REGEX_O	= $(ALL_NFA_O) $(NFA_USEFUL_O) $(REGEX_PARSER_O) $(REGEX_TOKENIZER_O) $(REGEX_TOKENIZER_NFA_O) $(NFA_BUILDER_O) $(REGGIE_O)
@@ -78,6 +80,9 @@ $(NFA_O): $(NFA) bin/build
 
 $(NFA_COPY_O): $(NFA_COPY) bin/build
 	$(CC) -c -o $(NFA_COPY_O) src/nfa_copy.c
+
+$(NFA_CREATE_O): $(NFA_CREATE) bin/build
+	$(CC) -c -o $(NFA_CREATE_O) src/nfa_create.c
 
 $(NFA_EVAL_O): $(NFA_EVAL) bin/build
 	$(CC) -c -o $(NFA_EVAL_O) src/nfa_eval.c
