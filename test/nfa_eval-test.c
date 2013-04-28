@@ -1,26 +1,25 @@
 #include "nfa_eval-test.h"
 #include "../src/nfa.h"
 #include "../src/nfa_eval.h"
+#include "../src/nfa_create.h"
 
 ////
 // set up an NFA for the regex aba
 
 NFA aba_nfa() {
-	NFA nfa = nfa_create();
+	NFAMold mold = nfa_mold_create();
+	unsigned int q0 = nfa_mold_initialState(mold);
+	unsigned int q1 = nfa_mold_addState(mold);
+	unsigned int q2 = nfa_mold_addState(mold);
+	unsigned int q3 = nfa_mold_addState(mold);
+	nfa_mold_makeStateTerminal(mold, q3);
 
-	State q1 = state_create();
-	state_setName(q1, "q1");
+	nfa_mold_addTransition(mold, q0, "a", q1);
+	nfa_mold_addTransition(mold, q1, "b", q2);
+	nfa_mold_addTransition(mold, q2, "a", q3);
 
-	State q2 = state_create();
-	state_setName(q2, "q2");
-
-	State q3 = state_create();
-	state_setName(q3, "q3");
-	state_makeTerminal(q3);
-
-	state_addTransition(nfa_initialState(nfa), "a", q1);
-	state_addTransition(q1, "b", q2);
-	state_addTransition(q2, "a", q3);
+	NFA nfa = nfa_mold_compile(mold);
+	nfa_mold_destroy(mold);
 
 	return nfa;
 }
@@ -74,9 +73,9 @@ result test_state_eval_a_PassingWithTransition() {
 	char* description = "state_eval(State, char*) : \"a\" passing with transition CASE";
 
 	State q2 = state_create();
-	state_setName(q2, "q2");
+	state_setID(q2, 2);
 	State q3 = state_create();
-	state_setName(q3, "q3");
+	state_setID(q3, 3);
 	state_makeTerminal(q3);
 
 	state_addTransition(q2, "a", q3);
@@ -94,9 +93,9 @@ result test_state_eval_aa_FailingWithTransition() {
 	char* description = "state_eval(State, char*) : \"aa\" failing with transition CASE";
 
 	State q2 = state_create();
-	state_setName(q2, "q2");
+	state_setID(q2, 2);
 	State q3 = state_create();
-	state_setName(q3, "q3");
+	state_setID(q3, 3);
 	state_makeTerminal(q3);
 
 	state_addTransition(q2, "a", q3);
@@ -114,13 +113,13 @@ result test_state_eval_aa_PassingWithEpsilonTransition() {
 	char* description = "state_eval(State, char*) : \"aa\" passing with epsilon transition CASE";
 
 	State q1 = state_create();
-	state_setName(q1, "q1");
+	state_setID(q1, 1);
 	State q2 = state_create();
-	state_setName(q2, "q2");
+	state_setID(q2, 2);
 	State q3 = state_create();
-	state_setName(q3, "q3");
+	state_setID(q3, 3);
 	State q4 = state_create();
-	state_setName(q4, "q4");
+	state_setID(q4, 4);
 	state_makeTerminal(q4);
 
 	state_addTransition(q1, "a", q2);
@@ -142,9 +141,9 @@ result test_state_eval_a_PassingWithFirstTransition() {
 	char* description = "state_eval(State, char*) : \"a\" passing with second transition CASE";
 
 	State q2 = state_create();
-	state_setName(q2, "q2");
+	state_setID(q2, 2);
 	State q3 = state_create();
-	state_setName(q3, "q3");
+	state_setID(q3, 3);
 	state_makeTerminal(q3);
 
 	state_addTransition(q2, "a", q3);
@@ -163,9 +162,9 @@ result test_state_eval_a_PassingWithSecondTransition() {
 	char* description = "state_eval(State, char*) : \"a\" passing with second transition CASE";
 
 	State q2 = state_create();
-	state_setName(q2, "q2");
+	state_setID(q2, 2);
 	State q3 = state_create();
-	state_setName(q3, "q3");
+	state_setID(q3, 3);
 	state_makeTerminal(q3);
 
 	state_addTransition(q2, "b", q3);
@@ -184,9 +183,9 @@ result test_state_eval_aa_FailingWithSecondTransition() {
 	char* description = "state_eval(State, char*) : \"aa\" failing with second transition CASE";
 
 	State q2 = state_create();
-	state_setName(q2, "q2");
+	state_setID(q2, 2);
 	State q3 = state_create();
-	state_setName(q3, "q3");
+	state_setID(q3, 3);
 	state_makeTerminal(q3);
 
 	state_addTransition(q2, "b", q3);
@@ -220,29 +219,23 @@ result test_nfa_eval_ABA_PASSINGWithEpsilons() {
 	int passed = 0;
 	char* description = "nfa_eval(NFA, char*) : aba passing with epsilons CASE";
 
-	NFA nfa = nfa_create();
-	State q1 = state_create();
-	State q2 = state_create();
-	State q3 = state_create();
-	State q4 = state_create();
-	State q5 = state_create();
-	State q6 = state_create();
-	State q7 = state_create();
+	NFAMold mold = nfa_mold_create();
+	unsigned int states[8];
+	states[0] = nfa_mold_initialState(mold);
+	for (int i = 1; i < 8; i++) {
+		states[i] = nfa_mold_addState(mold);
+	}
 
-	nfa_addState(nfa, q1);
-	nfa_addState(nfa, q2);
-	nfa_addState(nfa, q3);
-	nfa_addState(nfa, q4);
-	nfa_addState(nfa, q5);
-	nfa_addState(nfa, q6);
+	nfa_mold_addTransition(mold, states[0], "", states[1]);
+	nfa_mold_addTransition(mold, states[1], "", states[2]);
+	nfa_mold_addTransition(mold, states[2], "", states[3]);
+	nfa_mold_addTransition(mold, states[3], "a", states[4]);
+	nfa_mold_addTransition(mold, states[4], "b", states[5]);
+	nfa_mold_addTransition(mold, states[5], "a", states[6]);
+	nfa_mold_makeStateTerminal(mold, states[6]);
 
-	state_addTransition(nfa_initialState(nfa), "", q1);
-	state_addTransition(q1, "", q2);
-	state_addTransition(q2, "", q3);
-	state_addTransition(q3, "a", q4);
-	state_addTransition(q4, "b", q5);
-	state_addTransition(q5, "a", q6);
-	state_makeTerminal(q6);
+	NFA nfa = nfa_mold_compile(mold);
+	nfa_mold_destroy(mold);
 
 	passed = is_true(nfa_eval(nfa, "aba"));
 
@@ -255,23 +248,22 @@ result test_nfa_eval_aUb_PASSINGWithEpsilons() {
 	int passed = 0;
 	char* description = "nfa_eval(NFA, char*) : a|b passing with epsilons CASE";
 
-	NFA nfa = nfa_create();
-	State q1 = state_create();
-	State q2 = state_create();
-	State q3 = state_create();
-	State q4 = state_create();
+	NFAMold mold = nfa_mold_create();
+	unsigned int q0 = nfa_mold_initialState(mold);
+	unsigned int q1 = nfa_mold_addState(mold);
+	unsigned int q2 = nfa_mold_addState(mold);
+	unsigned int q3 = nfa_mold_addState(mold);
+	unsigned int q4 = nfa_mold_addState(mold);
 
-	nfa_addState(nfa, q1);
-	nfa_addState(nfa, q2);
-	nfa_addState(nfa, q3);
-	nfa_addState(nfa, q4);
+	nfa_mold_addTransition(mold, q0, "", q1);
+	nfa_mold_addTransition(mold, q0, "", q2);
+	nfa_mold_addTransition(mold, q1, "a", q3);
+	nfa_mold_addTransition(mold, q2, "b", q4);
+	nfa_mold_makeStateTerminal(mold, q3);
+	nfa_mold_makeStateTerminal(mold, q4);
 
-	state_addTransition(nfa_initialState(nfa), "", q1);
-	state_addTransition(nfa_initialState(nfa), "", q2);
-	state_addTransition(q1, "a", q3);
-	state_addTransition(q2, "b", q4);
-	state_makeTerminal(q3);
-	state_makeTerminal(q4);
+	NFA nfa = nfa_mold_compile(mold);
+	nfa_mold_destroy(mold);
 
 	passed = is_true(nfa_eval(nfa, "a")) && is_true(nfa_eval(nfa, "b"));
 

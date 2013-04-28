@@ -5,6 +5,7 @@ NFA nfa_uppercase() {
 	NFA nfa = nfa_create();
 
 	State s = state_create();
+	state_setID(s, 1);
 	state_makeTerminal(s);
 
 	State q0 = nfa_initialState(nfa);
@@ -15,6 +16,8 @@ NFA nfa_uppercase() {
 		state_addTransition(q0, str, s);
 	}
 
+	nfa_addState(nfa, s);
+
 	return nfa;
 }
 
@@ -22,6 +25,7 @@ NFA nfa_lowercase() {
 	NFA nfa = nfa_create();
 
 	State s = state_create();
+	state_setID(s, 1);
 	state_makeTerminal(s);
 
 	State q0 = nfa_initialState(nfa);
@@ -31,6 +35,8 @@ NFA nfa_lowercase() {
 		char str[] = {c, '\0'};
 		state_addTransition(q0, str, s);
 	}
+
+	nfa_addState(nfa, s);
 
 	return nfa;
 }
@@ -43,6 +49,7 @@ NFA nfa_digit() {
 	NFA nfa = nfa_create();
 
 	State s = state_create();
+	state_setID(s, 1);
 	state_makeTerminal(s);
 
 	State q0 = nfa_initialState(nfa);
@@ -53,6 +60,8 @@ NFA nfa_digit() {
 		state_addTransition(q0, str, s);
 	}
 
+	nfa_addState(nfa, s);
+
 	return nfa;
 }
 
@@ -60,6 +69,7 @@ NFA nfa_whitespace() {
 	NFA nfa = nfa_create();
 
 	State s = state_create();
+	state_setID(s, 1);
 	state_makeTerminal(s);
 
 	State q0 = nfa_initialState(nfa);
@@ -67,6 +77,8 @@ NFA nfa_whitespace() {
 	state_addTransition(q0, " ", s);
 	state_addTransition(q0, "\t", s);
 	state_addTransition(q0, "\n", s);
+
+	nfa_addState(nfa, s);
 
 	return nfa;
 }

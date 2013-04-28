@@ -31,12 +31,17 @@ NFAMold nfa_mold_create();
 // destroy an nfa mold
 void nfa_mold_destroy(NFAMold mold);
 
+#define nfa_mold_initialState(mold) ((unsigned int)0)
+
 // add a state to the given nfa mold
 // returns the id of the created state
 unsigned int nfa_mold_createState(NFAMold mold);
 
+// a conveniencefunction for state creation and addition
+#define nfa_mold_addState(mold) (nfa_mold_createState((mold)))
+
 // return 1 if the given state is terminal in the mold
-void nfa_mold_isStateTerminal(NFAMold mold, unsigned int id);
+int nfa_mold_isStateTerminal(NFAMold mold, unsigned int id);
 
 // make the given state terminal in the mold
 void nfa_mold_makeStateTerminal(NFAMold mold, unsigned int id);

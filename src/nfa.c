@@ -29,16 +29,11 @@ State nfa_initialState(NFA nfa) {
 }
 
 void nfa_setInitialState(NFA nfa, State s) {
-	state_destroy(nfa->initialState);
-	FOREACH(it, nfa->states) {
-		State is = VALUE(it);
-		if (is == nfa->initialState) {
-			list_removeValue(is);
-			break;
-		}
+	if (nfa->initialState) {
+		list_removeValue(nfa->states, nfa->initialState);
+		state_destroy(nfa->initialState);
 	}
 	nfa->initialState = s;
-	list_push(nfa->states, s);
 }
 
 void nfa_addState(NFA nfa, State s) {
@@ -53,8 +48,22 @@ State state_create() {
 	return s;
 }
 
-void state_setName(State s, unsigned int id) {
+void state_setID(State s, unsigned int id) {
 	s->id = id;
+}
+
+unsigned int state_getID(State s) {
+	return s->id;
+}
+
+void state_setName(State s, char* name) {
+	if (s->name != 0)
+		free(s->name);
+	s->name = string_copy(name);
+}
+
+char *state_getName(State s) {
+	return s->name;
 }
 
 void state_makeTerminal(State s) {
@@ -65,15 +74,14 @@ void state_makeNonTerminal(State s) {
 	s->isTerminalState = 0;
 }
 
-// this is the foreach function needed to iterate
-// through each transition and delete it when
-// used within the state_destroy() function
-void state_destroy_foreach_func(void* value) {
-	free(value);
-}
-
 void state_destroy(State s) {
-	list_foreach(s->transitions, &state_destroy_foreach_func);
+    int i = 0;
+	FOREACH(it, s->transitions) {
+		i++;
+        Transition t = VALUE(it);
+        free(t->transition_string);
+        free(t);
+	}
 	list_destroy(s->transitions);
 	free(s);
 }
@@ -125,7 +133,11 @@ void nfa_print(NFA nfa) {
 
 void state_print(State s) {
 	char* terminal = s->isTerminalState ? "!" : "";
-	printf("%d:\t%s\n", s->id, terminal);
+	if (s->name != 0) {
+		printf("%s-%d:\t%s\n", s->name, s->id, terminal);
+	} else {
+		printf("%d:\t%s\n", s->id, terminal);
+	}
 	list_foreach(s->transitions, (foreach_func)&transition_print);
 }
 
