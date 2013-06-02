@@ -131,9 +131,8 @@ NFA nfa_mold_compile(NFAMold mold) {
 		State s = VALUE(it);
 		if (s->id == 0) {
 			nfa_setInitialState(nfa, s);
-		} else {
-			nfa_addState(nfa, s);
 		}
+		nfa_addState(nfa, s);
 		// printf("adding state #%d\n", s->id);
 	}
 	list_destroy(states);

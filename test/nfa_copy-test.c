@@ -1,48 +1,45 @@
 #include "nfa_copy-test.h"
 #include "../src/nfa.h"
 #include "../src/nfa_eval.h"
+#include "../src/nfa_create.h"
 
 ////
 // set up an NFA for the regex aba
 
 NFA aba_nfa() {
-	NFA nfa = nfa_create();
+	NFAMold mold = nfa_mold_create();
+	unsigned int a = nfa_mold_addState(mold);
+	unsigned int b = nfa_mold_addState(mold);
+	unsigned int c = nfa_mold_addState(mold);
+	nfa_mold_makeStateTerminal(mold, c);
 
-	State q1 = state_create();
-	state_setName(q1, "q1");
+	nfa_mold_addTransition(mold, nfa_mold_initialState(mold), "a", a);
+	nfa_mold_addTransition(mold, a, "b", b);
+	nfa_mold_addTransition(mold, b, "a", c);
 
-	State q2 = state_create();
-	state_setName(q2, "q2");
-
-	State q3 = state_create();
-	state_setName(q3, "q3");
-	state_makeTerminal(q3);
-
-	state_addTransition(nfa_initialState(nfa), "a", q1);
-	state_addTransition(q1, "b", q2);
-	state_addTransition(q2, "a", q3);
+	NFA nfa = nfa_mold_compile(mold);
+	nfa_mold_destroy(mold);
 
 	return nfa;
 }
 
 NFA aUb_nfa() {
-	NFA nfa = nfa_create();
-	State q1 = state_create();
-	State q2 = state_create();
-	State q3 = state_create();
-	State q4 = state_create();
+	NFAMold mold = nfa_mold_create();
+	unsigned int a = nfa_mold_addState(mold);
+	unsigned int b = nfa_mold_addState(mold);
+	unsigned int c = nfa_mold_addState(mold);
+	unsigned int d = nfa_mold_addState(mold);
+	nfa_mold_makeStateTerminal(mold, c);
+	nfa_mold_makeStateTerminal(mold, d);
 
-	nfa_addState(nfa, q1);
-	nfa_addState(nfa, q2);
-	nfa_addState(nfa, q3);
-	nfa_addState(nfa, q4);
+	nfa_mold_addTransition(mold, nfa_mold_initialState(mold), "", a);
+	nfa_mold_addTransition(mold, nfa_mold_initialState(mold), "", b);
+	nfa_mold_addTransition(mold, a, "b", c);
+	nfa_mold_addTransition(mold, b, "b", d);
+	nfa_mold_addTransition(mold, b, "a", c);
 
-	state_addTransition(nfa_initialState(nfa), "", q1);
-	state_addTransition(nfa_initialState(nfa), "", q2);
-	state_addTransition(q1, "a", q3);
-	state_addTransition(q2, "b", q4);
-	state_makeTerminal(q3);
-	state_makeTerminal(q4);
+	NFA nfa = nfa_mold_compile(mold);
+	nfa_mold_destroy(mold);
 
 	return nfa;
 }

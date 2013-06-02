@@ -5,6 +5,7 @@ CC	= clang
 ###
 # Target Sources
 LIST 		= src/list.c 		src/list.h
+LIST_SORT	= src/list.c 		src/list.h
 MAP			= src/map.c 		src/map.h
 STRINGS 	= src/strings.c 	src/strings.h
 NFA 		= src/nfa.c 		src/nfa.h
@@ -23,6 +24,7 @@ REGGIE		= src/reggie.c 		src/reggie.h
 ###
 # Target Objects
 LIST_O		= bin/build/list.o
+LIST_SORT_O = bin/build/list_sort.o
 MAP_O		= bin/build/map.o
 STRINGS_O 	= bin/build/strings.o
 NFA_O 		= bin/build/nfa.o
@@ -39,10 +41,10 @@ NFA_BUILDER_O	= bin/build/nfa_builder.o
 REGGIE_O 	= bin/build/reggie.o
 
 # All Data-Related Objects
-ALL_DATA	= $(LIST_O) $(MAP_O) $(STRINGS_O)
+ALL_DATA	= $(LIST_O) $(LIST_SORT_O) $(MAP_O) $(STRINGS_O)
 
 # All NFA-Related Objects
-ALL_NFA_O 	= $(LIST_O) $(STRINGS_O) $(NFA_O) $(NFA_CREATE_O) $(NFA_COPY_O) $(NFA_EVAL_O) $(NFA_PARSING_EVAL_O) $(NFA_OPERATIONS_O)
+ALL_NFA_O 	= $(LIST_O) $(LIST_SORT_O) $(STRINGS_O) $(NFA_O) $(NFA_CREATE_O) $(NFA_COPY_O) $(NFA_EVAL_O) $(NFA_PARSING_EVAL_O) $(NFA_OPERATIONS_O)
 
 # All Regex Parsing Related Objects
 ALL_REGEX_O	= $(ALL_NFA_O) $(NFA_USEFUL_O) $(REGEX_PARSER_O) $(REGEX_TOKENIZER_O) $(REGEX_TOKENIZER_NFA_O) $(NFA_BUILDER_O) $(REGGIE_O)
@@ -68,6 +70,9 @@ testbin/build:
 
 $(LIST_O): $(LIST) bin/build
 	$(CC) -c -o $(LIST_O) src/list.c
+
+$(LIST_SORT_O): $(LIST_SORT) bin/build
+	$(CC) -c -o $(LIST_SORT_O) src/list_sort.c
 
 $(MAP_O): $(MAP) bin/build
 	$(CC) -c -o $(MAP_O) src/map.c

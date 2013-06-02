@@ -121,7 +121,10 @@ void state_removeTransition(State s, char* transition_string, State dest) {
 #include <stdio.h>
 
 void nfa_print(NFA nfa) {
-	printf("Intital: %s\n", nfa_initialState(nfa)->name);
+	if (nfa_initialState(nfa)->name == 0)
+		printf("Intital: %d\n", nfa_initialState(nfa)->id);
+	else
+		printf("Intital: %s\n", nfa_initialState(nfa)->name);
 	list_foreach(nfa->states, (foreach_func)&state_print);
 }
 
@@ -136,5 +139,17 @@ void state_print(State s) {
 }
 
 void transition_print(Transition t) {
-	printf("\t%s --\"%s\"--> %s\n", t->source->name, t->transition_string, t->dest->name);
+	if (t->source->name == 0) {
+		if (t->dest->name == 0) {
+			printf("\t%d --\"%s\"--> %d\n", t->source->id, t->transition_string, t->dest->id);
+		} else {
+			printf("\t%d --\"%s\"--> %s\n", t->source->id, t->transition_string, t->dest->name);
+		}
+	} else {
+		if (t->dest->name == 0) {
+			printf("\t%s --\"%s\"--> %d\n", t->source->name, t->transition_string, t->dest->id);
+		} else {
+			printf("\t%s --\"%s\"--> %s\n", t->source->name, t->transition_string, t->dest->name);
+		}
+	}
 }

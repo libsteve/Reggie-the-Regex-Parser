@@ -62,6 +62,9 @@ void state_setName(State s, char* name);
 // get the name string of the state
 char *state_getName(State s);
 
+// is the state a terminal state?
+#define state_isTerminal(s) (s->isTerminalState)
+
 // set a state as being a terminal state
 void state_makeTerminal(State s);
 
