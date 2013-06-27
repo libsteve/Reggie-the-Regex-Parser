@@ -9,12 +9,12 @@ NFA nfa_CONCAT(NFA a, NFA b) {
 
 	FOREACH(it, mold_b->states) {
 		StateMold sm = VALUE(it);
-		sm->id += a->state_count;
+		sm->id += mold_a->state_count;
 	}
 	FOREACH(it, mold_b->transitions) {
 		TransitionMold tm = VALUE(it);
-		tm->source += a->state_count;
-		tm->dest += a->state_count;
+		tm->source += mold_a->state_count;
+		tm->dest += mold_a->state_count;
 	}
 
 	list states_to_transition = list_create();
@@ -22,7 +22,7 @@ NFA nfa_CONCAT(NFA a, NFA b) {
 	FOREACH(it, mold_a->states) {
 		StateMold sm = VALUE(it);
 		if (sm->isTerminal) {
-			list_push(states_to_transition);
+			list_push(states_to_transition, sm);
 		}
 	}
 
@@ -41,6 +41,7 @@ NFA nfa_CONCAT(NFA a, NFA b) {
 		nfa_mold_addTransition(mold_a, sm->id, "", mold_b_initialState);
 		sm->isTerminal = 0;
 	}
+	list_destroy(states_to_transition);
 
 	NFA result = nfa_mold_compile(mold_a);
 	nfa_mold_destroy(mold_a);
