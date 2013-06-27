@@ -116,11 +116,14 @@ result test_aUb_CONCAT_c() {
 	NFA b = gen_B_NFA();
 	NFA c = gen_C_NFA();
 
-	nfa_destroy(a);
+    NFA u = nfa_UNION(a, b);
+    
+	NFA nfa = nfa_CONCAT(u, c);
+    
+    nfa_destroy(a);
 	nfa_destroy(b);
 	nfa_destroy(c);
-
-	NFA nfa = nfa_CONCAT(nfa_UNION(a, b), c);
+    nfa_destroy(u);
 
 	passed = is_true(nfa_eval(nfa, "ac")) &&
 			 is_true(nfa_eval(nfa, "bc")) &&
