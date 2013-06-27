@@ -1,49 +1,38 @@
 #include "nfa_operations-test.h"
 #include "../src/nfa.h"
 #include "../src/nfa_eval.h"
+#include "../src/nfa_create.h"
 
 ////
 // set up tests
 
 NFA gen_A_NFA() {
-	NFA a = nfa_create();
-	state_setName(nfa_initialState(a), "Aq0");
-
-	State q1 = state_create();
-	state_setName(q1, "Aq1");
-	state_makeTerminal(q1);
-	nfa_addState(a, q1);
-
-	state_addTransition(nfa_initialState(a), "a", q1);
-
+	NFAMold mold = nfa_mold_create();
+	unsigned int q1 = nfa_mold_addState(mold);
+	nfa_mold_addTransition(mold, 0, "a", q1);
+	nfa_mold_makeStateTerminal(mold, q1);
+	NFA a = nfa_mold_compile(mold);
+	nfa_mold_destroy(mold);
 	return a;
 }
 
 NFA gen_B_NFA() {
-	NFA b = nfa_create();
-	state_setName(nfa_initialState(b), "Bq0");
-
-	State q1 = state_create();
-	state_setName(q1, "Bq1");
-	state_makeTerminal(q1);
-	nfa_addState(b, q1);
-
-	state_addTransition(nfa_initialState(b), "b", q1);
-
+	NFAMold mold = nfa_mold_create();
+	unsigned int q1 = nfa_mold_addState(mold);
+	nfa_mold_addTransition(mold, 0, "b", q1);
+	nfa_mold_makeStateTerminal(mold, q1);
+	NFA b = nfa_mold_compile(mold);
+	nfa_mold_destroy(mold);
 	return b;
 }
 
 NFA gen_C_NFA() {
-	NFA c = nfa_create();
-	state_setName(nfa_initialState(c), "Cq0");
-
-	State q1 = state_create();
-	state_setName(q1, "Cq1");
-	state_makeTerminal(q1);
-	nfa_addState(c, q1);
-
-	state_addTransition(nfa_initialState(c), "c", q1);
-
+	NFAMold mold = nfa_mold_create();
+	unsigned int q1 = nfa_mold_addState(mold);
+	nfa_mold_addTransition(mold, 0, "c", q1);
+	nfa_mold_makeStateTerminal(mold, q1);
+	NFA c = nfa_mold_compile(mold);
+	nfa_mold_destroy(mold);
 	return c;
 }
 
@@ -58,6 +47,9 @@ result test_nfa_CONCAT_A_CONCAT_B() {
 	NFA b = gen_B_NFA();
 
 	NFA nfa = nfa_CONCAT(a, b);
+
+	nfa_destroy(a);
+	nfa_destroy(b);
 
 	passed = is_true(nfa_eval(nfa, "ab"));
 
@@ -78,6 +70,9 @@ result test_nfa_UNION_A_UNION_B() {
 
 	NFA nfa = nfa_UNION(a, b);
 
+	nfa_destroy(a);
+	nfa_destroy(b);
+
 	passed = is_true(nfa_eval(nfa, "a")) &&
 			 is_true(nfa_eval(nfa, "b")) &&
 			 is_false(nfa_eval(nfa, "ab"));
@@ -97,6 +92,8 @@ result test_nfa_KLEENE_A_KLEENE() {
 	NFA a = gen_A_NFA();
 
 	NFA nfa = nfa_KLEENE(a);
+
+	nfa_destroy(a);
 
 	passed = is_true(nfa_eval(nfa, "")) &&
 			 is_true(nfa_eval(nfa, "a")) &&
@@ -119,6 +116,10 @@ result test_aUb_CONCAT_c() {
 	NFA b = gen_B_NFA();
 	NFA c = gen_C_NFA();
 
+	nfa_destroy(a);
+	nfa_destroy(b);
+	nfa_destroy(c);
+
 	NFA nfa = nfa_CONCAT(nfa_UNION(a, b), c);
 
 	passed = is_true(nfa_eval(nfa, "ac")) &&
@@ -139,6 +140,10 @@ result test_aUbUc() {
 	NFA c = gen_C_NFA();
 
 	NFA nfa = nfa_UNION(nfa_UNION(a, b), c);
+
+	nfa_destroy(a);
+	nfa_destroy(b);
+	nfa_destroy(c);
 
 	passed = is_true(nfa_eval(nfa, "a")) &&
 			 is_true(nfa_eval(nfa, "b")) &&
@@ -161,6 +166,9 @@ result test_aUb_KLEENE() {
 	NFA b = gen_B_NFA();
 
 	NFA nfa = nfa_KLEENE(nfa_UNION(a, b));
+
+	nfa_destroy(a);
+	nfa_destroy(b);
 
 	passed = is_true(nfa_eval(nfa, "")) &&
 			 is_true(nfa_eval(nfa, "a")) &&
