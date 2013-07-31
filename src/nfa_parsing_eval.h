@@ -3,7 +3,7 @@
 
 #include "nfa.h"
 
-// evaluate the nfa witht the given input string
+// evaluate the nfa with the given input string
 // returns the length of some passing string
 int nfa_parsing_eval(NFA nfa, char* input);
 

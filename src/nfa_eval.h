@@ -3,7 +3,7 @@
 
 #include "nfa.h"
 
-// evaluate the nfa witht the given input string
+// evaluate the nfa with the given input string
 // returns 1 if the input passes the nfa, 0 otherwise
 int nfa_eval(NFA nfa, char* input);
 
