@@ -3,211 +3,65 @@
 CC	= clang
 
 ###
-# Target Sources
-LIST 		= src/list.c 		src/list.h
-LIST_SORT	= src/list.c 		src/list.h
-MAP			= src/map.c 		src/map.h
-STRINGS 	= src/strings.c 	src/strings.h
-NFA 		= src/nfa.c 		src/nfa.h
-NFA_CREATE	= src/nfa_create.c	src/nfa_create.h
-NFA_COPY	= src/nfa_copy.c 	src/nfa_copy.h
-NFA_EVAL 	= src/nfa_eval.c 	src/nfa_eval.h
-NFA_PARSING_EVAL 	= src/nfa_parsing_eval.c 	src/nfa_parsing_eval.h
-NFA_OPERATIONS 		= src/nfa_operations.c 		src/nfa_operations.h
-NFA_USEFUL	= src/nfa_useful.c 	src/nfa_useful.h
-REGEX_PARSER	= src/regex_parser.c	src/regex_parser.h
-REGEX_TOKENIZER	= src/regex_tokenizer.c	src/regex_tokenizer.h
-REGEX_TOKENIZER_NFA	= src/regex_tokenizer_nfa.c	src/regex_tokenizer_nfa.h
-NFA_BUILDER	= src/nfa_builder.c src/nfa_builder.h
-REGGIE		= src/reggie.c 		src/reggie.h
+# Source Files
+
+COLLECTION_SRC = $(wildcard src/Collection/*.c)
+REGGIE_SRC     = $(wildcard src/Reggie/*.c)
+SRC = $(COLLECTION_SRC) $(REGGIE_SRC)
+OBJ = $(addprefix obj/, $(notdir $(SRC:.c=.o)))
 
 ###
-# Target Objects
-LIST_O		= bin/build/list.o
-LIST_SORT_O = bin/build/list_sort.o
-MAP_O		= bin/build/map.o
-STRINGS_O 	= bin/build/strings.o
-NFA_O 		= bin/build/nfa.o
-NFA_CREATE_O	= bin/build/nfa_create.o
-NFA_COPY_O	= bin/build/nfa_copy.o
-NFA_EVAL_O 	= bin/build/nfa_eval.o
-NFA_PARSING_EVAL_O 	= bin/build/nfa_parsing_eval.o
-NFA_OPERATIONS_O 	= bin/build/nfa_operations.o
-NFA_USEFUL_O	= bin/build/nfa_useful.o
-REGEX_PARSER_O	= bin/build/regex_parser.o
-REGEX_TOKENIZER_O	= bin/build/regex_tokenizer.o
-REGEX_TOKENIZER_NFA_O	= bin/build/regex_tokenizer_nfa.o
-NFA_BUILDER_O	= bin/build/nfa_builder.o
-REGGIE_O 	= bin/build/reggie.o
+# Test Files
 
-# All Data-Related Objects
-ALL_DATA	= $(LIST_O) $(LIST_SORT_O) $(MAP_O) $(STRINGS_O)
-
-# All NFA-Related Objects
-ALL_NFA_O 	= $(LIST_O) $(LIST_SORT_O) $(STRINGS_O) $(NFA_O) $(NFA_CREATE_O) $(NFA_COPY_O) $(NFA_EVAL_O) $(NFA_PARSING_EVAL_O) $(NFA_OPERATIONS_O)
-
-# All Regex Parsing Related Objects
-ALL_REGEX_O	= $(ALL_NFA_O) $(NFA_USEFUL_O) $(REGEX_PARSER_O) $(REGEX_TOKENIZER_O) $(REGEX_TOKENIZER_NFA_O) $(NFA_BUILDER_O) $(REGGIE_O)
+TEST_SRC = $(wildcard testsrc/*.c)
+TEST_PRG = $(addprefix test/, $(notdir $(TEST_SRC:.c=)))
 
 ###
-# Suffixes
-# .SUFFIXES: .RESULT .ORIGINAL
-.SUFFIXES: .o .c
+# Compiler Flags
 
-all-object: bin/build $(ALL_O)
-
-###
-# Set up the directories for building
-
-bin/build:
-	mkdir -p bin/build
-
-testbin/build:
-	mkdir -p testbin/build
+CFLAGS = -I ./include -std=c11 -Wall
+LFLAGS = 
 
 ###
-# Build the object files for the source
+# Compile the Libraries
 
-$(LIST_O): $(LIST) bin/build
-	$(CC) -c -o $(LIST_O) src/list.c
+DYNAMIC = Reggie.so
+STATIC  = Reggie.a
 
-$(LIST_SORT_O): $(LIST_SORT) bin/build
-	$(CC) -c -o $(LIST_SORT_O) src/list_sort.c
+all: $(DYNAMIC) $(STATIC)
 
-$(MAP_O): $(MAP) bin/build
-	$(CC) -c -o $(MAP_O) src/map.c
+$(DYNAMIC): $(OBJ)
+	$(CC) $(OBJ) $(LFLAGS) -o $@
 
-$(STRINGS_O): $(STRINGS) bin/build
-	$(CC) -c -o $(STRINGS_O) src/strings.c
+$(STATIC): $(OBJ)
+	$(AR) -rcs $@ $(OBJ)
 
-$(NFA_O): $(NFA) bin/build
-	$(CC) -c -o $(NFA_O) src/nfa.c
+obj/%.o: src/Reggie/%.c | obj
+	$(CC) $< -c $(CFLAGS) -o $@
 
-$(NFA_COPY_O): $(NFA_COPY) bin/build
-	$(CC) -c -o $(NFA_COPY_O) src/nfa_copy.c
+obj/%.o: src/Collection/%.c | obj
+	$(CC) $< -c $(CFLAGS) -o $@
 
-$(NFA_CREATE_O): $(NFA_CREATE) bin/build
-	$(CC) -c -o $(NFA_CREATE_O) src/nfa_create.c
-
-$(NFA_EVAL_O): $(NFA_EVAL) bin/build
-	$(CC) -c -o $(NFA_EVAL_O) src/nfa_eval.c
-
-$(NFA_PARSING_EVAL_O): $(NFA_PARSING_EVAL) bin/build
-	$(CC) -c -o $(NFA_PARSING_EVAL_O) src/nfa_parsing_eval.c
-
-$(NFA_OPERATIONS_O): $(NFA_OPERATIONS) bin/build
-	$(CC) -c -o $(NFA_OPERATIONS_O) src/nfa_operations.c
-
-$(NFA_USEFUL_O): $(NFA_USEFUL) bin/build
-	$(CC) -c -o $(NFA_USEFUL_O) src/nfa_useful.c
-
-$(REGEX_PARSER_O): $(REGEX_PARSER) bin/build
-	$(CC) -c -o $(REGEX_PARSER_O) src/regex_parser.c
-
-$(REGEX_TOKENIZER_O): $(REGEX_TOKENIZER) bin/build
-	$(CC) -c -o $(REGEX_TOKENIZER_O) src/regex_tokenizer.c
-
-$(REGEX_TOKENIZER_NFA_O): $(REGEX_TOKENIZER_NFA) bin/build
-	$(CC) -c -o $(REGEX_TOKENIZER_NFA_O) src/regex_tokenizer_nfa.c
-
-$(NFA_BUILDER_O): $(NFA_BUILDER) bin/build
-	$(CC) -c -o $(NFA_BUILDER_O) src/nfa_builder.c
-
-$(REGGIE_O): $(REGGIE) bin/build
-	$(CC) -c -o $(REGGIE_O) src/reggie.c	
+obj:
+	mkdir -p obj
 
 ###
-# Target Test Sources
-TESTER 			= test/tester.c 		test/tester.h
+# Compile the Tests
 
-LIST_TEST 		= test/list-test.c 		test/list-test.h
-MAP_TEST 		= test/map-test.c 		test/map-test.h
-STRINGS_TEST 	= test/strings-test.c 	test/strings-test.h
-NFA_TEST 		= test/nfa-test.c 		test/nfa-test.h
-NFA_COPY_TEST	= test/nfa_copy-test.c 	test/nfa_copy-test.h
-NFA_EVAL_TEST 	= test/nfa_eval-test.c 	test/nfa_eval-test.h
-NFA_PARSING_EVAL_TEST 	= test/nfa_parsing_eval-test.c 	test/nfa_parsing_eval-test.h
-NFA_OPERATIONS_TEST 	= test/nfa_operations-test.c 	test/nfa_operations-test.h
-REGGIE_TEST		= test/reggie-test.c 	test/reggie-test.h
+test: $(TEST_PRG)
+
+test/%: testsrc/%.c $(STATIC) | test_dir
+	$(CC) $< $(STATIC) $(CFLAGS) $(LIBS) -o $@
+	./$@
+
+test_dir:
+	mkdir -p test
 
 ###
-# Target Test Objects
-TESTER_O		= testbin/build/tester.o
-
-LIST_TEST_O		= testbin/build/list-test.o
-MAP_TEST_O 		= testbin/build/map-test.o
-STRINGS_TEST_O 	= testbin/build/strings-test.o
-NFA_TEST_O 		= testbin/build/nfa-test.o
-NFA_COPY_TEST_O	= testbin/build/nfa_copy-test.o
-NFA_EVAL_TEST_O = testbin/build/nfa_eval-test.o
-NFA_PARSING_EVAL_TEST_O = testbin/build/nfa_parsing_eval-test.o
-NFA_OPERATIONS_TEST_O 	= testbin/build/nfa_operations-test.o
-REGGIE_TEST_O	= testbin/build/reggie-test.o
-
-###
-# Compile Tests
-
-$(TESTER_O): $(TESTER)
-	$(CC) -c -o $(TESTER_O) test/tester.c
-
-testbin/list-test: testbin/build $(LIST_TEST) $(LIST_O) $(TESTER_O)
-	$(CC) -c -o $(LIST_TEST_O) test/list-test.c
-	$(CC) -o testbin/list-test $(LIST_TEST_O) $(LIST_O) $(TESTER_O)
-
-testbin/map-test: testbin/build $(MAP_TEST) $(ALL_DATA) $(TESTER_O)
-	$(CC) -c -o $(MAP_TEST_O) test/map-test.c
-	$(CC) -o testbin/map-test $(MAP_TEST_O) $(ALL_DATA) $(TESTER_O)
-
-testbin/strings-test: testbin/build $(STRINGS_TEST) $(STRINGS_O) $(TESTER_O)
-	$(CC) -c -o $(STRINGS_TEST_O) test/strings-test.c
-	$(CC) -o testbin/strings-test $(STRINGS_TEST_O) $(STRINGS_O) $(TESTER_O)
-
-testbin/nfa-test: ;
-# testbin/nfa-test: test/nfa-test.c test/nfa-test.h bin/build/nfa.o testbin/build
-# 	clang -c -o testbin/build/nfa-test.o test/nfa-test.c
-# 	clang -o testbin/nfa-test testbin/build/nfa-test.o bin/build/nfa.o
-
-testbin/nfa_copy-test: testbin/build $(NFA_COPY_TEST) $(ALL_NFA_O) $(TESTER_O)
-	$(CC) -c -o $(NFA_COPY_TEST_O) test/nfa_copy-test.c
-	$(CC) -o testbin/nfa_copy-test $(NFA_COPY_TEST_O) $(ALL_NFA_O) $(TESTER_O)
-
-testbin/nfa_eval-test: testbin/build $(NFA_EVAL_TEST) $(ALL_NFA_O) $(TESTER_O)
-	$(CC) -c -o $(NFA_EVAL_TEST_O) test/nfa_eval-test.c
-	$(CC) -o testbin/nfa_eval-test $(NFA_EVAL_TEST_O) $(ALL_NFA_O) $(TESTER_O)
-
-testbin/nfa_parsing_eval-test: testbin/build $(NFA_PARSING_EVAL_TEST) $(ALL_NFA_O) $(TESTER_O)
-	$(CC) -c -o $(NFA_PARSING_EVAL_TEST_O) test/nfa_parsing_eval-test.c
-	$(CC) -o testbin/nfa_parsing_eval-test $(NFA_PARSING_EVAL_TEST_O) $(ALL_NFA_O) $(TESTER_O)
-
-testbin/nfa_operations-test: testbin/build $(NFA_OPERATIONS_TEST) $(ALL_NFA_O) $(TESTER_O)
-	$(CC) -c -o $(NFA_OPERATIONS_TEST_O) test/nfa_operations-test.c
-	$(CC) -o testbin/nfa_operations-test $(NFA_OPERATIONS_TEST_O) $(ALL_NFA_O) $(TESTER_O)
-
-testbin/reggie-test: testbin/build $(REGGIE_TEST) $(ALL_REGEX_O) $(TESTER_O)
-	$(CC) -c -o $(REGGIE_TEST_O) test/reggie-test.c
-	$(CC) -o testbin/reggie-test $(REGGIE_TEST_O) $(ALL_REGEX_O) $(TESTER_O)
-
-###
-# Compile and Run Tests
-
-test: testbin/list-test testbin/map-test testbin/strings-test testbin/nfa-test testbin/nfa_copy-test testbin/nfa_eval-test testbin/nfa_parsing_eval-test testbin/nfa_operations-test testbin/reggie-test
-	./testbin/list-test
-	./testbin/map-test
-	./testbin/strings-test
-	# ./testbin/nfa-test
-	./testbin/nfa_copy-test
-	./testbin/nfa_eval-test
-	./testbin/nfa_parsing_eval-test
-	./testbin/nfa_operations-test
-	./testbin/reggie-test
-
-###
-# Remove build files from 
+# Clean
 
 clean:
-	rm -Rf bin/build
-	rm -Rf testbin/build
+	rm -Rf $(OBJ) $(TEST_PRG) $(STATIC) $(DYNAMIC)
 
-real-clean:
-	rm -Rf bin
-	rm -Rf testbin
+realclean: clean
+	rm -Rf ./obj ./test

@@ -56,8 +56,10 @@ Source Highlights
 
 `map.h` is a map or dictionary implementation based on the `list.h` library allowing for primative key-value storying of any pointer data values.
 
-Use
----
+`nfa.h` holds the structure of the Non-Deterministic Finite Automata and it's parts.
+
+Compilation
+-----------
 
 To compile and run tests, run
 
