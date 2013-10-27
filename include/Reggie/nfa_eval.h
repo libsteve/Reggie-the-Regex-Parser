@@ -1,21 +1,14 @@
-#ifndef NFA_EVAL_H
-#define NFA_EVAL_H
+#ifndef REGGIE_NFA_EVAL_H
+#define REGGIE_NFA_EVAL_H
 
-#include "nfa.h"
+#include <Reggie/nfa.h>
 
 // evaluate the nfa with the given input string
-// returns 1 if the input passes the nfa, 0 otherwise
-int nfa_eval(NFA nfa, char* input);
+// returns true if the input string matches the nfa, false otherwise
+bool nfa_eval(NFA nfa, char* input);
 
-// evaluate the state with the given input string
-// recursively evaluates through transitions
-// returns 1 if the input passes the state, 0 otherwise
-int state_eval(State s, char* input);
-
-// follow and evaluate the transition with the given input string
-// remove the transition string from the input
-// evaluates destination state
-// returns 1 if the input passes the transition, 0 otherwise
-int transition_eval(Transition t, char* input);
+// evaluate the nfa with the given input string
+// returns -1 if failure or the length of the first successful substring match
+int nfa_parsing_eval(NFA nfa, char* input);
 
 #endif
