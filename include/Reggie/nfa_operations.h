@@ -1,7 +1,7 @@
 #ifndef NFA_OPERATIONS_H
 #define NFA_OPERATIONS_H
 
-#include "nfa.h"
+#include <Reggie/nfa.h>
 
 // take two NFAs and concatenate them together into a new NFA.
 NFA nfa_CONCAT(NFA a, NFA b);
