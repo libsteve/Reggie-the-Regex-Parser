@@ -59,9 +59,10 @@ void nfa_transition_uninitialize(transition t) {
 	transition_uninitialize(t);
 }
 
-int nfa_transition_func(const struct automata *a, const struct transition *t, const char *input) {
+int nfa_transition_func(const struct automata *a, const struct transition *t, const evalstream *input) {
 	NFATransition nfat = container_of(t, struct nfa_transition, transition);
-	if (string_substring(input, nfat->transition_string)) {
+	struct nfa_evalstream *stream = container_of(input, struct nfa_evalstream, stream);
+	if (string_substring(stream->string, nfat->transition_string)) {
 		return string_length(nfat->transition_string);
 	}
 	return -1;

@@ -4,7 +4,7 @@
 //////
 // total evaluations of automata
 
-bool automata_eval(automata a, char *input) {
+bool automata_eval(automata a, evalstream *input) {
 	FOREACH(it, a->states) {
 		state s = VALUE(it);
 		if (s->id == 0) {
@@ -14,7 +14,7 @@ bool automata_eval(automata a, char *input) {
 	return false;
 }
 
-bool state_eval(automata a, state s, char *input) {
+bool state_eval(automata a, state s, evalstream *input) {
 	if (s->isTerminal && string_length(input) == 0) {
 		return true;
 	}
@@ -27,10 +27,10 @@ bool state_eval(automata a, state s, char *input) {
 	return false;
 }
 
-bool transition_eval(automata a, transition t, char *input) {
+bool transition_eval(automata a, transition t, evalstream *input) {
 	int result = t->func(a, t, input);
 	if (result != -1) {
-		return state_eval(a, s, input + result);
+		return state_eval(a, s, input->fastforward(input, result));
 	}
 	return false;
 }
@@ -38,7 +38,7 @@ bool transition_eval(automata a, transition t, char *input) {
 //////
 // partial parsing evaluations of automata
 
-int automata_parsing_eval(automata a, char *input) {
+int automata_parsing_eval(automata a, evalstream *input) {
 	FOREACH(it, a->states) {
 		state s = VALUE(it);
 		if (s->id == 0) {
@@ -48,7 +48,7 @@ int automata_parsing_eval(automata a, char *input) {
 	return -1;
 }
 
-int state_parsing_eval(automata a, state a, char *input) {
+int state_parsing_eval(automata a, state a, evalstream *input) {
 	if (s->isTerminal) {
 		return 0;
 	}
@@ -62,10 +62,10 @@ int state_parsing_eval(automata a, state a, char *input) {
 	return -1;
 }
 
-int transition_parsing_eval(automata a, transition t, char *input) {
+int transition_parsing_eval(automata a, transition t, evalstream *input) {
 	int result = t->func(a, t, input);
 	if (result != -1) {
-		return state_parsing_eval(a, s, input + result);
+		return state_parsing_eval(a, s, input->fastforward(input, result));
 	}
 	return -1;
 }

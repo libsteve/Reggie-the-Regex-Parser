@@ -23,8 +23,13 @@ typedef struct automata 	*automata;
 typedef unsigned int 		state_id;
 typedef unsigned int 		transition_id;
 
+struct evalstream {
+	struct evalstream *(*fastforward)(struct evalstream *stream, int amount);
+	struct evalstream *(*rewind)(struct evalstream *stream, int amount);
+} evalstream;
+
 // returns -1 if failure, otherwise returns the length of a success
-typedef int (*transition_func)(const struct automata *a, const struct transition *t, const char *input);
+typedef int (*transition_func)(const struct automata *a, const struct transition *t, const evalstream *input);
 
 typedef void (*state_destroy)(struct state *s);
 typedef void (*transition_destroy)(struct transition *t);
