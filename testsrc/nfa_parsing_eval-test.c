@@ -1,27 +1,21 @@
 #include "tester.h"
-#include "Reggie/nfa_parsing_eval.h"
-#include "Reggie/nfa.h"
-#include "Reggie/nfa_parsing_eval.h"
+#include <Reggie/nfa_eval.h>
+#include <Reggie/nfa.h>
 
 ////
 // set up an NFA for the regex aba
 
 NFA aba_nfa() {
 	NFA nfa = nfa_create();
+	state_id q0 = nfa_initialState(nfa);
+	state_id q1 = nfa_addState(nfa);
+	state_id q2 = nfa_addState(nfa);
+	state_id q3 = nfa_addState(nfa);
+	nfa_state_makeTerminal(nfa, q3);
 
-	State q1 = state_create();
-	state_setName(q1, "q1");
-
-	State q2 = state_create();
-	state_setName(q2, "q2");
-
-	State q3 = state_create();
-	state_setName(q3, "q3");
-	state_makeTerminal(q3);
-
-	state_addTransition(nfa_initialState(nfa), "a", q1);
-	state_addTransition(q1, "b", q2);
-	state_addTransition(q2, "a", q3);
+	nfa_addTransition(nfa, nfa_initialState(nfa), q1, "a");
+	nfa_addTransition(nfa, q1, q2, "b");
+	nfa_addTransition(nfa, q2, q3, "a");
 
 	return nfa;
 }
@@ -33,12 +27,12 @@ result test_state_parsing_eval_Empty_PASSING() {
 	int passed = 0;
 	char* description = "state_parsing_eval(State, char*) : \"\" passing terminal CASE";
 
-	State s = state_create();
-	state_makeTerminal(s);
+	NFA s = nfa_create();
+	nfa_state_makeTerminal(nfa_initialState(s));
 
-	passed = is_nonfalse(state_parsing_eval(s, ""));
+	passed = is_nonfalse(nfa_parsing_eval(s, ""));
 
-	state_destroy(s);
+	nfa_destroy(s);
 
 	return (result){passed, description};
 }
@@ -47,12 +41,12 @@ result test_state_parsing_eval_s_PassingOnEmptyStringTerminal() {
 	int passed = 0;
 	char* description = "state_parsing_eval(State, char*) : \"s\" passing on empty string terminal CASE";
 
-	State s = state_create();
-	state_makeTerminal(s);
+	NFA s = nfa_create();
+	nfa_state_makeTerminal(nfa_initialState(s));
 
-	passed = is_nonfalse(state_parsing_eval(s, "s"));
+	passed = is_nonfalse(nfa_parsing_eval(s, "s"));
 
-	state_destroy(s);
+	nfa_destroy(s);
 
 	return (result){passed, description};
 }
@@ -61,11 +55,11 @@ result test_state_parsing_eval_EmptyString_FailingNonTerminal() {
 	int passed = 0;
 	char* description = "state_parsing_eval(State, char*) : \"\" failing non-terminal CASE";
 
-	State s = state_create();
+	NFA s = nfa_create();
 
-	passed = is_false(state_parsing_eval(s, ""));
+	passed = is_false(nfa_parsing_eval(s, ""));
 
-	state_destroy(s);
+	nfa_destroy(s);
 
 	return (result){passed, description};
 }
@@ -74,18 +68,15 @@ result test_state_parsing_eval_a_PassingWithTransition() {
 	int passed = 0;
 	char* description = "state_parsing_eval(State, char*) : \"a\" passing with transition CASE";
 
-	State q2 = state_create();
-	state_setName(q2, "q2");
-	State q3 = state_create();
-	state_setName(q3, "q3");
-	state_makeTerminal(q3);
+	NFA n = nfa_create();
+	state_id s0 = nfa_initialState(n);
+	state_id s1 = nfa_addState(n);
+	nfa_addTransition(n, s0, s1, "a");
+	nfa_state_makeTerminal(n, s1);
 
-	state_addTransition(q2, "a", q3);
+	passed = is_nonfalse(nfa_parsing_eval(n, "a"));
 
-	passed = is_nonfalse(state_parsing_eval(q2, "a"));
-
-	state_destroy(q2);
-	state_destroy(q3);
+	nfa_destroy(n);
 
 	return (result){passed, description};
 }
@@ -94,18 +85,15 @@ result test_state_parsing_eval_aa_PassingLenght1WithTransition() {
 	int passed = 0;
 	char* description = "state_parsing_eval(State, char*) : \"aa\" passing length 1 with transition CASE";
 
-	State q2 = state_create();
-	state_setName(q2, "q2");
-	State q3 = state_create();
-	state_setName(q3, "q3");
-	state_makeTerminal(q3);
+	NFA n = nfa_create();
+	state_id s0 = nfa_initialState(n);
+	state_id s1 = nfa_addState(n);
+	nfa_addTransition(n, s0, s1, "a");
+	nfa_state_makeTerminal(n, s1);
 
-	state_addTransition(q2, "a", q3);
+	passed = is_nonfalse(nfa_parsing_eval(n, "aa"));
 
-	passed = is_nonfalse(state_parsing_eval(q2, "aa"));
-
-	state_destroy(q2);
-	state_destroy(q3);
+	nfa_destroy(n);
 
 	return (result){passed, description};
 }
@@ -114,19 +102,16 @@ result test_state_parsing_eval_a_PassingWithSecondTransition() {
 	int passed = 0;
 	char* description = "state_parsing_eval(State, char*) : \"a\" passing with second transition CASE";
 
-	State q2 = state_create();
-	state_setName(q2, "q2");
-	State q3 = state_create();
-	state_setName(q3, "q3");
-	state_makeTerminal(q3);
+	NFA n = nfa_create();
+	state_id s0 = nfa_initialState(n);
+	state_id s1 = nfa_addState(n);
+	nfa_addTransition(n, s0, s1, "a");
+	nfa_addTransition(n, s0, s1, "b");
+	nfa_state_makeTerminal(n, s1);
 
-	state_addTransition(q2, "b", q3);
-	state_addTransition(q2, "a", q3);
+	passed = is_nonfalse(nfa_parsing_eval(n, "a"));
 
-	passed = is_nonfalse(state_parsing_eval(q2, "a"));
-
-	state_destroy(q2);
-	state_destroy(q3);
+	nfa_destroy(n);
 
 	return (result){passed, description};
 }
@@ -135,26 +120,19 @@ result test_state_parsing_eval_aa_PassingWithEpsilonTransition() {
 	int passed = 0;
 	char* description = "state_parsing_eval(State, char*) : \"aa\" passing with epsilon transition CASE";
 
-	State q1 = state_create();
-	state_setName(q1, "q1");
-	State q2 = state_create();
-	state_setName(q2, "q2");
-	State q3 = state_create();
-	state_setName(q3, "q3");
-	State q4 = state_create();
-	state_setName(q4, "q4");
-	state_makeTerminal(q4);
+	NFA n = nfa_create();
+	state_id s0 = nfa_initialState(n);
+	state_id s1 = nfa_addState(n);
+	state_id s2 = nfa_addState(n);
+	state_id s3 = nfa_addState(n);
+	nfa_state_makeTerminal(n, s3);
+	nfa_addTransition(n, s0, s1, "a");
+	nfa_addTransition(n, s1, s2, "");
+	nfa_addTransition(n, s2, s3, "a");
 
-	state_addTransition(q1, "a", q2);
-	state_addTransition(q2, "", q3);
-	state_addTransition(q3, "a", q4);
+	passed = is_nonfalse(nfa_parsing_eval(q1, "aa"));
 
-	passed = is_nonfalse(state_parsing_eval(q1, "aa"));
-
-	state_destroy(q1);
-	state_destroy(q2);
-	state_destroy(q3);
-	state_destroy(q4);
+	nfa_destroy(n);
 
 	return (result){passed, description};
 }
@@ -163,19 +141,15 @@ result test_state_parsing_eval_aa_FailingWithSecondTransition() {
 	int passed = 0;
 	char* description = "state_parsing_eval(State, char*) : \"aa\" failing with second transition CASE";
 
-	State q2 = state_create();
-	state_setName(q2, "q2");
-	State q3 = state_create();
-	state_setName(q3, "q3");
-	state_makeTerminal(q3);
+	NFA n = nfa_create();
+	state_id s0 = nfa_initialState(n);
+	state_id s1 = nfa_addState(n);
+	nfa_addTransition(n, s0, s1, "b");
+	nfa_addTransition(n, s0, s1, "c");
 
-	state_addTransition(q2, "b", q3);
-	state_addTransition(q2, "c", q3);
+	passed = is_false(state_parsing_eval(n, "aa"));
 
-	passed = is_false(state_parsing_eval(q2, "aa"));
-
-	state_destroy(q2);
-	state_destroy(q3);
+	nfa_destroy(n);
 
 	return (result){passed, description};
 }

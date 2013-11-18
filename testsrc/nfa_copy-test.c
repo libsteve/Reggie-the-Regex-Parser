@@ -1,48 +1,41 @@
 #include "tester.h"
-#include "Reggie/nfa.h"
-#include "Reggie/nfa_copy.h"
-#include "Reggie/nfa_eval.h"
-#include "Reggie/nfa_create.h"
+#include <Reggie/nfa.h>
+#include <Reggie/nfa_copy.h>
+#include <Reggie/nfa_eval.h>
 
 ////
 // set up an NFA for the regex aba
 
 NFA aba_nfa() {
-	NFAMold mold = nfa_mold_create();
-	unsigned int a = nfa_mold_addState(mold);
-	unsigned int b = nfa_mold_addState(mold);
-	unsigned int c = nfa_mold_addState(mold);
-	nfa_mold_makeStateTerminal(mold, c);
+	NFA mold = nfa_create();
+	state_id a = nfa_addState(mold);
+	state_id b = nfa_addState(mold);
+	state_id c = nfa_addState(mold);
+	nfa_state_makeTerminal(mold, c);
 
-	nfa_mold_addTransition(mold, nfa_mold_initialState(mold), "a", a);
-	nfa_mold_addTransition(mold, a, "b", b);
-	nfa_mold_addTransition(mold, b, "a", c);
+	nfa_addTransition(mold, nfa_initialState(mold), a, "a");
+	nfa_addTransition(mold, a, b, "b");
+	nfa_addTransition(mold, b, c, "a");
 
-	NFA nfa = nfa_mold_compile(mold);
-	nfa_mold_destroy(mold);
-
-	return nfa;
+	return mold;
 }
 
 NFA aUb_nfa() {
-	NFAMold mold = nfa_mold_create();
-	unsigned int a = nfa_mold_addState(mold);
-	unsigned int b = nfa_mold_addState(mold);
-	unsigned int c = nfa_mold_addState(mold);
-	unsigned int d = nfa_mold_addState(mold);
-	nfa_mold_makeStateTerminal(mold, c);
-	nfa_mold_makeStateTerminal(mold, d);
+	NFA mold = nfa_create();
+	state_id a = nfa_addState(mold);
+	state_id b = nfa_addState(mold);
+	state_id c = nfa_addState(mold);
+	state_id d = nfa_addState(mold);
+	nfa_state_makeTerminal(mold, c);
+	nfa_state_makeTerminal(mold, d);
 
-	nfa_mold_addTransition(mold, nfa_mold_initialState(mold), "", a);
-	nfa_mold_addTransition(mold, nfa_mold_initialState(mold), "", b);
-	nfa_mold_addTransition(mold, a, "b", c);
-	nfa_mold_addTransition(mold, b, "b", d);
-	nfa_mold_addTransition(mold, b, "a", c);
+	nfa_addTransition(mold, nfa_initialState(mold), "", a);
+	nfa_addTransition(mold, nfa_initialState(mold), "", b);
+	nfa_addTransition(mold, a, "b", c);
+	nfa_addTransition(mold, b, "b", d);
+	nfa_addTransition(mold, b, "a", c);
 
-	NFA nfa = nfa_mold_compile(mold);
-	nfa_mold_destroy(mold);
-
-	return nfa;
+	return mold;
 }
 
 ////

@@ -3,7 +3,7 @@
 
 automata nfa_automata_create() {
 	NFA nfa = nfa_create();
-	return nfa->automata;
+	return &nfa->automata;
 }
 
 state_id nfa_automata_addState(automata a) {
@@ -16,16 +16,16 @@ transition_id nfa_automata_addEpislonTransition(automata a, state_id src, state_
 	return nfa_addTransition(nfa, src, dest, "");
 }
 
-transition_id nfa_automata_copyTransition(automata destination, transition t, state_id newSrcm state_id newDest) {
-	NFA nfa = container_of(a, struct nfa, automata);
-	NFATransition t_nfa = container_of(a, struct nfa_transition, transition);
-	return nfa_addTransition(nfa, src, dest, t_nfa->transition_string);
+transition_id nfa_automata_copyTransition(automata destination, transition t, state_id newSrc, state_id newDest) {
+	NFA nfa = container_of(destination, struct nfa, automata);
+	NFATransition t_nfa = container_of(t, struct nfa_transition, transition);
+	return nfa_addTransition(nfa, newSrc, newDest, t_nfa->transition_string);
 }
 
 automata_creation nfa_creation = { 
 	.create = nfa_automata_create,
 	.addState = nfa_automata_addState,
-	.addEpislonTransition = nfa_automata_addEpislonTransition,
+	.addEpsilonTransition = nfa_automata_addEpislonTransition,
 	.copyTransition = nfa_automata_copyTransition
 };
 

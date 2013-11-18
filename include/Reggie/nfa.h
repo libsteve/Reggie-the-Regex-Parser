@@ -1,7 +1,7 @@
 #ifndef NFA_H
 #define NFA_H
 
-#include <CReggie/automata.h>
+#include <Reggie/automata.h>
 
 // a transition for an nfa
 typedef struct nfa_transition {
@@ -45,7 +45,7 @@ int nfa_transition_func(const struct automata *a, const struct transition *t, co
 
 // evalstream instance for nfa_transition_func
 struct nfa_evalstream {
-	evalstream stream;
+	struct evalstream stream;
 	char *string;
 };
 

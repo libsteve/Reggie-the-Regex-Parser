@@ -2,33 +2,38 @@
 #include <Reggie/nfa.h>
 #include <Collection/strings.h>
 
+void _nfa_destroy(automata a) {
+	nfa_uninitialize(a);
+	free(container_of(a, struct nfa, automata));
+}
+
+void _nfa_state_destroy(state s) {
+	nfa_state_uninitialize(s);
+	free(container_of(s, struct nfa_state, state));
+}
+
+void _nfa_transition_destroy(transition t) {
+	nfa_transition_uninitialize(t);
+	free(container_of(t, struct nfa_transition, transition));
+}
+
 NFA nfa_create() {
-	NFA *nfa = calloc(1, sizeof(struct nfa));
-	return nfa_initialize(nfa, nfa_uninitialize);
+	NFA nfa = calloc(1, sizeof(struct nfa));
+	return nfa_initialize(nfa, _nfa_destroy);
 }
 
 void nfa_destroy(NFA nfa) {
-	nfa_uninitialize(nfa);
+	nfa_uninitialize(&nfa->automata);
 	free(nfa);
-}
-
-void nfa_state_destroy(NFAState s) {
-	nfa_state_uninitialize(s);
-	free(s);
-}
-
-void nfa_transition_destroy(NFATransition t) {
-	nfa_transition_uninitialize(t);
-	free(t);
 }
 
 //////
 // Initialization Functions
 
-NFA nfa_initialize(NFA nfa, automata_uninitialize uninitialize) {
-	nfa = automata_initialize(&nfa->automata, uninitialize);
+NFA nfa_initialize(NFA nfa, automata_destroy destroy) {
+	nfa = container_of(automata_initialize(&nfa->automata, destroy), struct nfa, automata);
 	NFAState s = calloc(1, sizeof(struct nfa_state));
-	nfa_state_initialize(s, false, nfa_destroy);
+	nfa_state_initialize(s, false, _nfa_state_destroy);
 	automata_addState(&nfa->automata, &s->state);
 	return nfa;
 }
@@ -78,7 +83,8 @@ state_id nfa_initialState(NFA nfa) {
 
 state_id nfa_addState(NFA nfa) {
 	NFAState s = calloc(1, sizeof(struct nfa_state));
-	return nfa_state_initialize(s, false, nfa_state_destroy);
+	s = nfa_state_initialize(s, false, _nfa_state_destroy);
+	return s->state.id;
 }
 
 void nfa_removeState(NFA nfa, state_id sid) {
@@ -88,7 +94,7 @@ void nfa_removeState(NFA nfa, state_id sid) {
 			transition t = VALUE(it);
 			nfa_removeTransition(nfa, t->id);
 		}
-		s->uninitialize(s);
+		s->destroy(s);
 		free(container_of(s, struct nfa_state, state));
 	}
 }
@@ -113,7 +119,7 @@ transition_id nfa_addTransition(NFA nfa, state_id sid1, state_id sid2, char *tra
 	state s2 = automata_findState(&nfa->automata, sid2);
 	if (s1 && s2) {
 		NFATransition t = calloc(1, sizeof(struct nfa_transition));
-		nfa_transition_initialize(t, s1, s2, transition_string, nfa_transition_destroy);
+		nfa_transition_initialize(t, s1, s2, transition_string, _nfa_transition_destroy);
 		automata_addTransition(&nfa->automata, &t->transition);
 		return t->transition.id;
 	}
@@ -136,9 +142,9 @@ void nfa_print(NFA a) {
 void state_print(NFAState s) {
 	char* terminal = s->state.isTerminal ? "!" : "";
 	printf("%d:\t%s\n", s->state.id, terminal);
-	list_foreach(s->transitions, (foreach_func)&transition_print);
+	list_foreach(s->state.transitions, (foreach_func)&transition_print);
 }
 
 void transition_print(NFATransition t) {
-	printf("\t%d --\"%s\"--> %d\n", t->transition.src->state.id, t->transition_string, t->transition.dst->state.id);
+	printf("\t%d --\"%s\"--> %d\n", t->transition.src->id, t->transition_string, t->transition.dst->id);
 }

@@ -10,9 +10,8 @@ int state_sorter(state a, state b) {
 // create a copy of an nfa from a given nfa
 NFA nfa_copy(NFA nfa) {
 	NFA copy = nfa_create();
-	list_destroy(nfa->automata.states);
-	nfa->automata.states = list_create();
-	nfa->automata.next_state_id = 0;
+	nfa->automata.next_state_id = 1;
+	state_id initial = 0;
 
 	// for each state in the nfa, copy it
 	// make copies of each transition and attach them to the correct copied states
@@ -20,9 +19,9 @@ NFA nfa_copy(NFA nfa) {
 
 	FOREACH(it, sortedStates) {
 		state s = VALUE(it);
-		if (s != initial) {
-			unsigned int i = nfa_addState(copy);
-			if (s->isTerminal) nfa_state_makeTerminal(copy, s);
+		if (s->id != initial) {
+			state_id i = nfa_addState(copy);
+			if (s->isTerminal) nfa_state_makeTerminal(copy, i);
 		}
 	}
 
@@ -31,8 +30,8 @@ NFA nfa_copy(NFA nfa) {
 		FOREACH(t_it, s->transitions) {
 			transition t = VALUE(t_it);
 			NFATransition nfat = container_of(t, struct nfa_transition, transition);
-			state d = t->dest;
-			nfa_addTransition(mold, s->id, d->id, nfat->transition_string);
+			state d = t->dst;
+			nfa_addTransition(copy, s->id, d->id, nfat->transition_string);
 		}
 	}
 

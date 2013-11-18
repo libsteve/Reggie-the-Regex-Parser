@@ -14,21 +14,21 @@ void copyTransitionsIntoAutomata(automata src, automata dst, map state_map, auto
 	}
 }
 
-state_id placeStatesWithinAutomata(automata src, automata dst, automata_creation creation, map resulting_state_ids, list resulting_states) {
+state_id placeStatesWithinAutomata(automata src, automata dst, automata_creation creation, map resulting_state_ids, list terminal_states) {
 	state_id initialState = 0;
 	state_id resulting_initial = 0;
 
-	FOREACH(it, a->states) {
+	FOREACH(it, src->states) {
 		state s = VALUE(it);
-		state_id sid = creation.addState(concat);
+		state_id sid = creation.addState(dst);
 		if (s->isTerminal && terminal_states != NULL) {
-			list_push(terminal_states, automata_findState(concat, sid));
+			list_push(terminal_states, automata_findState(dst, sid));
 		}
 		if (s->id == initialState) {
-			resulting_initial = sid:
+			resulting_initial = sid;
 		}
 		if (resulting_state_ids != NULL) {
-			map_add(a_states, (void *)s->id, (void *)sid);
+			map_add(resulting_state_ids, (void *)s->id, (void *)sid);
 		}
 	}
 
@@ -103,7 +103,7 @@ automata automata_kleene(automata a, automata_creation creation) {
 	automata kleene = creation.create();
 	state_id initialState = 0;
 	state initial = automata_findState(kleene, initialState);
-	s->isTerminal = true;
+	initial->isTerminal = true;
 
 	map a_states = map_create();
 	list a_terminal_states = list_create();

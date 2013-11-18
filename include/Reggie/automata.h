@@ -2,13 +2,13 @@
 #define REGGIE_AUTOMATA_H
 
 #include <Collection/list.h>
-#include <stdtypes.h>
+#include <stddef.h>
 #include <stdbool.h>
 
-
-#define offsetof(MEMBER, STRUCT) ((size_t) &(((STRUCT *)0)->MEMBER))
-#define container_of(PTR, CONTAINER_STRUCT, CONTAINING_MEMBER) \
-	((CONTAINER_STRUCT *) ((char *)(PTR) - (char *)offsetof(CONTAINING_MEMBER, CONTAINER_STRUCT)))
+#ifndef container_of
+#define container_of(ptr, container_struct, containing_member) \
+	((container_struct *) ((char *)(ptr) - (char *)offsetof(container_struct, containing_member)))
+#endif
 
 
 struct transition;
@@ -23,9 +23,10 @@ typedef struct automata 	*automata;
 typedef unsigned int 		state_id;
 typedef unsigned int 		transition_id;
 
-struct evalstream {
+typedef struct evalstream {
 	struct evalstream *(*fastforward)(struct evalstream *stream, int amount);
 	struct evalstream *(*rewind)(struct evalstream *stream, int amount);
+	bool (*closed)(struct evalstream *stream);
 } evalstream;
 
 // returns -1 if failure, otherwise returns the length of a success
@@ -70,7 +71,7 @@ automata 	automata_initialize(automata a, automata_destroy destroy);
 void 		automata_uninitialize(automata a);
 
 state_id 		automata_addState(automata a, state s);
-transition_id 	automata_addTransition(autamata a, transition t);
+transition_id 	automata_addTransition(automata a, transition t);
 
 void 		automata_removeState(automata a, state_id sid);
 void 		automata_removeTransition(automata a, transition_id tid);

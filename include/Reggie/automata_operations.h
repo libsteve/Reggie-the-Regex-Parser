@@ -6,8 +6,8 @@
 typedef struct {
 	automata (*create)();
 	state_id (*addState)(automata a);
-	transition_id (*addEpislonTransition)(automata a, state_id src, state_id dest);
-	transition_id (*copyTransition)(automata destination, transition t, state_id newSrcm state_id newDest);
+	transition_id (*addEpsilonTransition)(automata a, state_id src, state_id dest);
+	transition_id (*copyTransition)(automata destination, transition t, state_id newSrc, state_id newDest);
 } automata_creation;
 
 automata automata_concat(automata a, automata b, automata_creation creation);

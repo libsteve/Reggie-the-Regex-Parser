@@ -1,6 +1,6 @@
 #include <Reggie/automata.h>
 
-transition transition_initialize(transition t, state src, state dest, transition_func func, transition_destroy destroy) {
+transition transition_initialize(transition t, state src, state dst, transition_func func, transition_destroy destroy) {
 	t->id = 0;
 	t->src = src;
 	t->dst = dst;
@@ -57,7 +57,7 @@ state_id automata_addState(automata a, state s) {
 	return s->id;
 }
 
-transition_id automata_addTransition(autamata a, transition t) {
+transition_id automata_addTransition(automata a, transition t) {
 	t->id = a->next_transition_id;
 	a->next_transition_id += 1;
 	return t->id;
@@ -68,7 +68,7 @@ void automata_removeState(automata a, state_id sid) {
 	FOREACH(it, a->transitions) {
 		transition t = VALUE(it);
 		if (t->src->id == sid || t->dst->id == sid) {
-			automata_removeTransition(a, t);
+			automata_removeTransition(a, t->id);
 		}
 	}
 	list_removeValue(a->states, s);

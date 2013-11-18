@@ -1,40 +1,33 @@
 #include "tester.h"
-#include "Reggie/nfa_operations.h"
-#include "Reggie/nfa.h"
-#include "Reggie/nfa_eval.h"
-#include "Reggie/nfa_create.h"
+#include <Reggie/nfa_operations.h>
+#include <Reggie/nfa.h>
+#include <Reggie/nfa_eval.h>
 
 ////
 // set up tests
 
 NFA gen_A_NFA() {
-	NFAMold mold = nfa_mold_create();
-	unsigned int q1 = nfa_mold_addState(mold);
-	nfa_mold_addTransition(mold, 0, "a", q1);
-	nfa_mold_makeStateTerminal(mold, q1);
-	NFA a = nfa_mold_compile(mold);
-	nfa_mold_destroy(mold);
-	return a;
+	NFA mold = nfa_create();
+	state_id q1 = nfa_addState(mold);
+	nfa_addTransition(mold, nfa_initialState(mold), q1, "a");
+	nfa_state_makeTerminal(mold, q1);
+	return mold;
 }
 
 NFA gen_B_NFA() {
-	NFAMold mold = nfa_mold_create();
-	unsigned int q1 = nfa_mold_addState(mold);
-	nfa_mold_addTransition(mold, 0, "b", q1);
-	nfa_mold_makeStateTerminal(mold, q1);
-	NFA b = nfa_mold_compile(mold);
-	nfa_mold_destroy(mold);
-	return b;
+	NFA mold = nfa_create();
+	state_id q1 = nfa_addState(mold);
+	nfa_addTransition(mold, nfa_initialState(mold), q1, "b");
+	nfa_state_makeTerminal(mold, q1);
+	return mold;
 }
 
 NFA gen_C_NFA() {
-	NFAMold mold = nfa_mold_create();
-	unsigned int q1 = nfa_mold_addState(mold);
-	nfa_mold_addTransition(mold, 0, "c", q1);
-	nfa_mold_makeStateTerminal(mold, q1);
-	NFA c = nfa_mold_compile(mold);
-	nfa_mold_destroy(mold);
-	return c;
+	NFA mold = nfa_create();
+	state_id q1 = nfa_addState(mold);
+	nfa_addTransition(mold, nfa_initialState(mold), q1, "c");
+	nfa_state_makeTerminal(mold, q1);
+	return mold;
 }
 
 ////

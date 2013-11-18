@@ -1,5 +1,4 @@
-#include <Reggie/automata.h>
-#include <Collection/strings.h>
+#include <Reggie/automata_eval.h>
 
 //////
 // total evaluations of automata
@@ -15,7 +14,7 @@ bool automata_eval(automata a, evalstream *input) {
 }
 
 bool state_eval(automata a, state s, evalstream *input) {
-	if (s->isTerminal && string_length(input) == 0) {
+	if (s->isTerminal && input->closed(input)) {
 		return true;
 	}
 	FOREACH(it, s->transitions) {
@@ -30,7 +29,7 @@ bool state_eval(automata a, state s, evalstream *input) {
 bool transition_eval(automata a, transition t, evalstream *input) {
 	int result = t->func(a, t, input);
 	if (result != -1) {
-		return state_eval(a, s, input->fastforward(input, result));
+		return state_eval(a, t->dst, input->fastforward(input, result));
 	}
 	return false;
 }
@@ -48,7 +47,7 @@ int automata_parsing_eval(automata a, evalstream *input) {
 	return -1;
 }
 
-int state_parsing_eval(automata a, state a, evalstream *input) {
+int state_parsing_eval(automata a, state s, evalstream *input) {
 	if (s->isTerminal) {
 		return 0;
 	}
@@ -65,7 +64,7 @@ int state_parsing_eval(automata a, state a, evalstream *input) {
 int transition_parsing_eval(automata a, transition t, evalstream *input) {
 	int result = t->func(a, t, input);
 	if (result != -1) {
-		return state_parsing_eval(a, s, input->fastforward(input, result));
+		return state_parsing_eval(a, t->dst, input->fastforward(input, result));
 	}
 	return -1;
 }
