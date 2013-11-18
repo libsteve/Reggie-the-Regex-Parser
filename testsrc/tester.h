@@ -19,7 +19,7 @@ typedef testing_func tests[];
 // execute a list of tests and print out how many passed
 // out of how many total tests were run from each testing function.
 // the tests passed in must be NULL-terminated.
-void run_tests(tests ts);
+int run_tests(tests ts);
 
 // a more readable way of writing x == 1
 int is_true(int value);
@@ -45,7 +45,7 @@ int is_equal(int x, int y);
 // execute a list of tests and print out how many passed
 // out of how many total tests were run from each testing function.
 // the tests passed in must be NULL-terminated.
-inline void run_tests(tests ts) {
+inline int run_tests(tests ts) {
 	int test_counter = 0;
 	int passed_counter = 0;
 	for (int i = 0; ts[i] != 0; i++) {
@@ -64,7 +64,9 @@ inline void run_tests(tests ts) {
 		printf("\tPASSED:\t%d\n", passed_counter);
 		printf("\tFAILED:\t%d\n", test_counter - passed_counter);
 		printf("\tTOTAL:\t%d\n", test_counter);
+		return -1;
 	}
+	return 0;
 }
 
 // a more readable way of writing x == 1

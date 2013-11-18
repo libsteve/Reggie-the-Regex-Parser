@@ -83,6 +83,5 @@ static tests TESTS = {
 };
 
 int main(int argc, char** argv) {
-	run_tests(TESTS);
-	return 0;
+	return run_tests(TESTS);
 }

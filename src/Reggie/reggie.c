@@ -1,10 +1,9 @@
-#include "Reggie/reggie.h"
-#include "Collection/strings.h"
-#include "Reggie/nfa.h"
-#include "Reggie/nfa_eval.h"
-#include "Reggie/nfa_builder.h"
-#include "Reggie/nfa_operations.h"
-#include "Reggie/nfa_parsing_eval.h"
+#include <Reggie/reggie.h>
+#include <Collection/strings.h>
+#include <Reggie/nfa.h>
+#include <Reggie/nfa_eval.h>
+#include <Reggie/nfa_builder.h>
+#include <Reggie/nfa_operations.h>
 #include <stdlib.h>
 
 // create a Reggie Regular Expression

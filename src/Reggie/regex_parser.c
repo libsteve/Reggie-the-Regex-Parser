@@ -1,6 +1,6 @@
-#include "Reggie/regex_parser.h"
-#include "Reggie/nfa_operations.h"
-#include "Reggie/nfa_useful.h"
+#include <Reggie/regex_parser.h>
+#include <Reggie/nfa_operations.h>
+#include <Reggie/nfa_useful.h>
 #include <stdlib.h>
 
 RegexParser parser_create() {
@@ -174,10 +174,10 @@ int parse_character(RegexParser parser) {
 
 	if (token_is(t, "CHAR")) {
 		// create nfa for the char
-		State s = state_create();
-		state_makeTerminal(s);
 		NFA nfa = nfa_create();
-		state_addTransition(nfa_initialState(nfa), t->string, s);
+		state_id s = nfa_addState(nfa);
+		nfa_state_makeTerminal(nfa, s);
+		nfa_addTransition(nfa, nfa_initialState(nfa), s, t->string);
 
 		// push the resulting nfa to the parser
 		parser_push(parser, nfa);
@@ -221,10 +221,10 @@ int parse_escaped(RegexParser parser) {
 	if (token_is(t, "ESCAPED")) {
 		// create nfa for the char
 		char *c = t->string + 1;
-		State s = state_create();
-		state_makeTerminal(s);
 		NFA nfa = nfa_create();
-		state_addTransition(nfa_initialState(nfa), c, s);
+		state_id s = nfa_addState(nfa);
+		nfa_state_makeTerminal(nfa, s);
+		nfa_addTransition(nfa, nfa_initialState(nfa), s, c);
 
 		// push the resulting nfa to the parser
 		parser_push(parser, nfa);

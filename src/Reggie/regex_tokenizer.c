@@ -1,7 +1,7 @@
-#include "Reggie/regex_tokenizer.h"
-#include "Reggie/regex_tokenizer_nfa.h"
-#include "Reggie/nfa_parsing_eval.h"
-#include "Collection/strings.h"
+#include <Reggie/regex_tokenizer.h>
+#include <Reggie/regex_tokenizer_nfa.h>
+#include <Reggie/nfa_eval.h>
+#include <Collection/strings.h>
 #include <stdlib.h>
 
 // a list of token parsers that can be used to parse a regex into different tokens
