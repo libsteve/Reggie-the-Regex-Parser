@@ -59,7 +59,7 @@ state_id automata_addState(automata a, state s) {
 }
 
 transition_id automata_addTransition(automata a, transition t) {
-	state s = automata_findState(a, t->src);
+	state s = automata_findState(a, t->src->id);
 	if (s != NULL) {
 		t->id = a->next_transition_id;
 		a->next_transition_id += 1;
