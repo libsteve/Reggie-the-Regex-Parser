@@ -84,6 +84,7 @@ state_id nfa_initialState(NFA nfa) {
 state_id nfa_addState(NFA nfa) {
 	NFAState s = calloc(1, sizeof(struct nfa_state));
 	s = nfa_state_initialize(s, false, _nfa_state_destroy);
+    automata_addState(&nfa->automata, &s->state);
 	return s->state.id;
 }
 
@@ -136,13 +137,17 @@ void nfa_removeTransition(NFA nfa, transition_id tid) {
 
 void nfa_print(NFA a) {
 	printf("Intital: %d\n", 0);
-	state_print(list_getFrom(a->automata.states, 0));
+    FOREACH(it, a->automata.states) {
+        state_print(container_of(VALUE(it), struct nfa_state, state));
+    }
 }
 
 void state_print(NFAState s) {
 	char* terminal = s->state.isTerminal ? "!" : "";
 	printf("%d:\t%s\n", s->state.id, terminal);
-	list_foreach(s->state.transitions, (foreach_func)&transition_print);
+    FOREACH(it, s->state.transitions) {
+        transition_print(container_of(VALUE(it), struct nfa_transition, transition));
+    }
 }
 
 void transition_print(NFATransition t) {

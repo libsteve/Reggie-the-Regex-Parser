@@ -1,40 +1,33 @@
 #include <Reggie/nfa_copy.h>
+#include <Reggie/automata_copy.h>
 #include <Collection/list_sort.h>
 
-int state_sorter(state a, state b) {
-	if (a->id <= b->id)
-		return 1;
-	return 0;
+automata nfa_copy_create() {
+	NFA n = nfa_create();
+	return &n->automata;
+}
+
+state_id nfa_copy_copyState(automata destination, state s) {
+	NFA nfa_dst = container_of(destination, struct nfa, automata);
+	//NFAState nfa_state = container_of(s, struct nfa_state, state);
+	state_id new = nfa_addState(nfa_dst);
+	if (s->isTerminal) {
+		nfa_state_makeTerminal(nfa_dst, new);
+	} else {
+		nfa_state_makeNonTerminal(nfa_dst, new);
+	}
+	return new;
+}
+
+transition_id nfa_copy_copyTransition(automata dest, transition t, state_id newSrc, state_id newDst) {
+	NFA nfa = container_of(dest, struct nfa, automata);
+	NFATransition nfa_t = container_of(t, struct nfa_transition, transition);
+	transition_id new = nfa_addTransition(nfa, newSrc, newDst, nfa_t->transition_string);
+	return new;
 }
 
 // create a copy of an nfa from a given nfa
 NFA nfa_copy(NFA nfa) {
-	NFA copy = nfa_create();
-	nfa->automata.next_state_id = 1;
-	state_id initial = 0;
-
-	// for each state in the nfa, copy it
-	// make copies of each transition and attach them to the correct copied states
-	list sortedStates = list_sort(nfa->automata.states, (sort_fn)&state_sorter);
-
-	FOREACH(it, sortedStates) {
-		state s = VALUE(it);
-		if (s->id != initial) {
-			state_id i = nfa_addState(copy);
-			if (s->isTerminal) nfa_state_makeTerminal(copy, i);
-		}
-	}
-
-	FOREACH(it, sortedStates) {
-		state s = VALUE(it);
-		FOREACH(t_it, s->transitions) {
-			transition t = VALUE(t_it);
-			NFATransition nfat = container_of(t, struct nfa_transition, transition);
-			state d = t->dst;
-			nfa_addTransition(copy, s->id, d->id, nfat->transition_string);
-		}
-	}
-
-	list_destroy(sortedStates);
-	return copy;
+	automata a = automata_copy(&nfa->automata, (automata_copy_creation){nfa_copy_create, nfa_copy_copyState, nfa_copy_copyTransition});
+	return container_of(a, struct nfa, automata);
 }

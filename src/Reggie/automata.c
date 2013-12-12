@@ -54,12 +54,18 @@ void automata_uninitialize(automata a) {
 state_id automata_addState(automata a, state s) {
 	s->id = a->next_state_id;
 	a->next_state_id += 1;
+	list_push(a->states, s);
 	return s->id;
 }
 
 transition_id automata_addTransition(automata a, transition t) {
-	t->id = a->next_transition_id;
-	a->next_transition_id += 1;
+	state s = automata_findState(a, t->src);
+	if (s != NULL) {
+		t->id = a->next_transition_id;
+		a->next_transition_id += 1;
+		list_push(a->transitions, t);
+		list_push(s->transitions, t);
+	}
 	return t->id;
 }
 
