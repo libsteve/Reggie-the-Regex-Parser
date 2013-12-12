@@ -15,7 +15,7 @@ automata automata_copy(automata a, automata_copy_creation acc) {
 
 	FOREACH(it, a->transitions) {
 		transition t = VALUE(it);
-		acc.copyTransition(copy, t, (state_id)map_get(state_map, (void *)t->src), (state_id)map_get(state_map, (void *)t->dst));
+		acc.copyTransition(copy, t, (state_id)map_get(state_map, (void *)t->src->id), (state_id)map_get(state_map, (void *)t->dst->id));
 	}
 
 	map_destroy(state_map);
