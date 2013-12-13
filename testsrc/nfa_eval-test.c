@@ -251,6 +251,48 @@ result test_nfa_eval_ABA_Failing() {
 	return (result){passed, description};
 }
 
+result test_nfa_eval_complicated() {
+	int passed = 0;
+	char *description = "nfa_eval(NFA, char*) : (a|b)c(d|e) *COMPLICATED* CASE";
+
+	NFA n = nfa_create();
+	state_id s0 = nfa_initialState(n);
+	state_id s1 = nfa_addState(n);
+	state_id s2 = nfa_addState(n);
+	state_id s3 = nfa_addState(n);
+	state_id s4 = nfa_addState(n);
+	state_id s5 = nfa_addState(n);
+	state_id s6 = nfa_addState(n);
+	state_id s7 = nfa_addState(n);
+	nfa_addTransition(n, s0, s1, "");
+	nfa_addTransition(n, s0, s2, "");
+	nfa_addTransition(n, s1, s3, "a");
+	nfa_addTransition(n, s2, s3, "b");
+	nfa_addTransition(n, s3, s4, "c");
+	nfa_addTransition(n, s4, s5, "");
+	nfa_addTransition(n, s4, s6, "");
+	nfa_addTransition(n, s5, s7, "d");
+	nfa_addTransition(n, s6, s7, "e");
+	nfa_state_makeTerminal(n, s7);
+
+	passed = is_false(nfa_eval(n, "a")) &&
+			is_false(nfa_eval(n, "b")) &&
+			is_false(nfa_eval(n, "c")) &&
+			is_false(nfa_eval(n, "d")) &&
+			is_false(nfa_eval(n, "e")) &&
+			is_false(nfa_eval(n, "ab")) &&
+			is_false(nfa_eval(n, "bc")) &&
+			is_false(nfa_eval(n, "cd")) &&
+			is_false(nfa_eval(n, "de")) &&
+			is_false(nfa_eval(n, "abcde")) &&
+			is_true(nfa_eval(n, "acd")) &&
+			is_true(nfa_eval(n, "bce")) &&
+			is_true(nfa_eval(n, "ace")) &&
+			is_true(nfa_eval(n, "bcd"));
+
+	return (result){passed, description};
+}
+
 ////
 // main function and test list definition
 
@@ -270,6 +312,8 @@ static tests TESTS = {
 	&test_nfa_eval_ABA_PASSING,
 	&test_nfa_eval_ABA_PASSINGWithEpsilons,
 	&test_nfa_eval_ABA_Failing,
+
+	&test_nfa_eval_complicated,
 	
 	0
 };
