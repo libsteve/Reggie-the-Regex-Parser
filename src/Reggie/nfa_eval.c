@@ -28,7 +28,7 @@ bool nfa_evalstrear_closed(evalstream *stream) {
 bool nfa_eval(NFA nfa, char *input) {
 	struct nfa_evalstream est;
 	est.stream.fastforward = nfa_evalstream_fastforward;
-	est.stream.fastforward = nfa_evalstream_rewind;
+	est.stream.rewind = nfa_evalstream_rewind;
 	est.stream.closed = nfa_evalstrear_closed;
 	est.string = input;
 	return automata_eval(&nfa->automata, &(est.stream));
@@ -37,7 +37,7 @@ bool nfa_eval(NFA nfa, char *input) {
 int nfa_parsing_eval(NFA nfa, char* input) {
 	struct nfa_evalstream est;
 	est.stream.fastforward = nfa_evalstream_fastforward;
-	est.stream.fastforward = nfa_evalstream_rewind;
+	est.stream.rewind = nfa_evalstream_rewind;
 	est.stream.closed = nfa_evalstrear_closed;
 	est.string = input;
 	return automata_parsing_eval(&nfa->automata, &(est.stream));

@@ -29,11 +29,10 @@ NFA aUb_nfa() {
 	nfa_state_makeTerminal(mold, c);
 	nfa_state_makeTerminal(mold, d);
 
-	nfa_addTransition(mold, nfa_initialState(mold), "", a);
-	nfa_addTransition(mold, nfa_initialState(mold), "", b);
-	nfa_addTransition(mold, a, "b", c);
-	nfa_addTransition(mold, b, "b", d);
-	nfa_addTransition(mold, b, "a", c);
+	nfa_addTransition(mold, nfa_initialState(mold), a, "");
+	nfa_addTransition(mold, nfa_initialState(mold), b, "");
+	nfa_addTransition(mold, a, c, "b");
+	nfa_addTransition(mold, b, d, "a");
 
 	return mold;
 }
@@ -85,3 +84,4 @@ static tests TESTS = {
 int main(int argc, char** argv) {
 	return run_tests(TESTS);
 }
+

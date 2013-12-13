@@ -5,6 +5,7 @@
 
 typedef struct {
 	automata (*create)();
+    state_id (*initialState)(automata a);
     state_id (*copyState)(automata destination, state s);
 	transition_id (*copyTransition)(automata destination, transition t, state_id newSrc, state_id newDest);
 } automata_copy_creation;

@@ -9,7 +9,7 @@ automata automata_copy(automata a, automata_copy_creation acc) {
 	FOREACH(it, a->states) {
 		state s = VALUE(it);
 		state_id old = s->id;
-		state_id new = acc.copyState(copy, s);
+		state_id new = (old == acc.initialState(a)) ? acc.initialState(copy) : acc.copyState(copy, s);
 		map_set(state_map, (void *)old, (void *)new);
 	}
 
