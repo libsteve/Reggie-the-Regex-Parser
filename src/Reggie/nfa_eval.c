@@ -42,3 +42,4 @@ int nfa_parsing_eval(NFA nfa, char* input) {
 	est.string = input;
 	return automata_parsing_eval(&nfa->automata, &(est.stream));
 }
+
