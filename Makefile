@@ -19,7 +19,7 @@ TEST_PRG = $(addprefix test/, $(notdir $(TEST_SRC:.c=)))
 ###
 # Compiler Flags
 
-CFLAGS = -I ./include -std=c11 -Wall
+CFLAGS = -I ./include -std=c11 -Wall -g
 LFLAGS = 
 
 ###
