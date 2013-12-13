@@ -13,7 +13,7 @@ NFA aba_nfa() {
 	state_id q3 = nfa_addState(nfa);
 	nfa_state_makeTerminal(nfa, q3);
 
-	nfa_addTransition(nfa, nfa_initialState(nfa), q1, "a");
+	nfa_addTransition(nfa, q0, q1, "a");
 	nfa_addTransition(nfa, q1, q2, "b");
 	nfa_addTransition(nfa, q2, q3, "a");
 
@@ -27,12 +27,12 @@ result test_state_parsing_eval_Empty_PASSING() {
 	int passed = 0;
 	char* description = "state_parsing_eval(State, char*) : \"\" passing terminal CASE";
 
-	NFA s = nfa_create();
-	nfa_state_makeTerminal(nfa_initialState(s));
+	NFA n = nfa_create();
+	nfa_state_makeTerminal(n, nfa_initialState(n));
 
-	passed = is_nonfalse(nfa_parsing_eval(s, ""));
+	passed = is_equal(nfa_parsing_eval(n, ""), 0);
 
-	nfa_destroy(s);
+	nfa_destroy(n);
 
 	return (result){passed, description};
 }
@@ -41,12 +41,12 @@ result test_state_parsing_eval_s_PassingOnEmptyStringTerminal() {
 	int passed = 0;
 	char* description = "state_parsing_eval(State, char*) : \"s\" passing on empty string terminal CASE";
 
-	NFA s = nfa_create();
-	nfa_state_makeTerminal(nfa_initialState(s));
+	NFA n = nfa_create();
+	nfa_state_makeTerminal(n, nfa_initialState(n));
 
-	passed = is_nonfalse(nfa_parsing_eval(s, "s"));
+	passed = is_equal(nfa_parsing_eval(n, "s"), 0);
 
-	nfa_destroy(s);
+	nfa_destroy(n);
 
 	return (result){passed, description};
 }
@@ -57,7 +57,7 @@ result test_state_parsing_eval_EmptyString_FailingNonTerminal() {
 
 	NFA s = nfa_create();
 
-	passed = is_false(nfa_parsing_eval(s, ""));
+	passed = is_equal(nfa_parsing_eval(s, ""), -1);
 
 	nfa_destroy(s);
 
@@ -74,7 +74,7 @@ result test_state_parsing_eval_a_PassingWithTransition() {
 	nfa_addTransition(n, s0, s1, "a");
 	nfa_state_makeTerminal(n, s1);
 
-	passed = is_nonfalse(nfa_parsing_eval(n, "a"));
+	passed = is_equal(nfa_parsing_eval(n, "a"), 1);
 
 	nfa_destroy(n);
 
@@ -91,7 +91,7 @@ result test_state_parsing_eval_aa_PassingLenght1WithTransition() {
 	nfa_addTransition(n, s0, s1, "a");
 	nfa_state_makeTerminal(n, s1);
 
-	passed = is_nonfalse(nfa_parsing_eval(n, "aa"));
+	passed = is_equal(nfa_parsing_eval(n, "aa"), 1);
 
 	nfa_destroy(n);
 
@@ -109,7 +109,7 @@ result test_state_parsing_eval_a_PassingWithSecondTransition() {
 	nfa_addTransition(n, s0, s1, "b");
 	nfa_state_makeTerminal(n, s1);
 
-	passed = is_nonfalse(nfa_parsing_eval(n, "a"));
+	passed = is_equal(nfa_parsing_eval(n, "a"), 1);
 
 	nfa_destroy(n);
 
@@ -130,7 +130,7 @@ result test_state_parsing_eval_aa_PassingWithEpsilonTransition() {
 	nfa_addTransition(n, s1, s2, "");
 	nfa_addTransition(n, s2, s3, "a");
 
-	passed = is_nonfalse(nfa_parsing_eval(q1, "aa"));
+	passed = is_equal(nfa_parsing_eval(n, "aa"), 2);
 
 	nfa_destroy(n);
 
@@ -147,7 +147,7 @@ result test_state_parsing_eval_aa_FailingWithSecondTransition() {
 	nfa_addTransition(n, s0, s1, "b");
 	nfa_addTransition(n, s0, s1, "c");
 
-	passed = is_false(state_parsing_eval(n, "aa"));
+	passed = is_equal(nfa_parsing_eval(n, "aa"), -1);
 
 	nfa_destroy(n);
 
@@ -163,7 +163,7 @@ result test_nfa_parsing_eval_ABA_PASSING() {
 
 	NFA nfa = aba_nfa();
 
-	passed = is_nonfalse(nfa_parsing_eval(nfa, "aba"));
+	passed = is_equal(nfa_parsing_eval(nfa, "aba"), 3);
 
 	nfa_destroy(nfa);
 
@@ -189,7 +189,7 @@ result test_nfa_parsing_eval_ABA_Failing() {
 
 	NFA nfa = aba_nfa();
 
-	passed = is_false(nfa_parsing_eval(nfa, "aaa"));
+	passed = is_equal(nfa_parsing_eval(nfa, "aaa"), -1);
 
 	nfa_destroy(nfa);
 
