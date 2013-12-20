@@ -59,7 +59,6 @@ state_id nfa_initialState(NFA nfa);
 // add a state to the NFA's state list
 // returns -1 if failure
 state_id nfa_addState(NFA nfa);
-#define nfa_makeState(nfa) nfa_addState(nfa)
 void nfa_removeState(NFA nfa, state_id sid);
 
 bool nfa_state_isTerminal(NFA nfa, state_id sid);
@@ -79,3 +78,4 @@ void state_print(NFAState s);
 void transition_print(NFATransition t);
 
 #endif
+
