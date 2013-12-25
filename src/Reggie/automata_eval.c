@@ -70,17 +70,35 @@ int state_parsing_eval(automata a, state s, evalstream *input) {
 	return failure;
 }
 
+void _automata_evaldata_destroy(evaldata ff, evaldata rw) {
+	if (ff.data == rw.data) {
+		if (ff.data && ff.destroy)
+			ff.destroy(ff.data);
+	} else {
+		if (ff.data && ff.destroy)
+			ff.destroy(ff.data);
+		if (rw.data && rw.destroy)
+			rw.destroy(rw.data);
+	}
+}
+
 int transition_parsing_eval(automata a, transition t, evalstream *input) {
-	int result = t->func(a, t, input);
-	if (result != failure) {
-		input = input->fastforward(input, result);
-		int success = state_parsing_eval(a, t->dst, input);
-		if (success != -1) {
-			return success + result;
-		} else {
-			input->rewind(input, result);
-			return failure;
+	evaldata ff = t->func(a, t, input);
+	if (ff.data != NULL) {
+		evaldata rw = input->fastforward(input, ff);
+		if (rw.data != NULL) {
+			int success = state_parsing_eval(a, t->dst, input);
+			if (success != failure) {
+				_automata_evaldata_destroy(ff, rw);
+				return success + result;
+			} else {
+				input->rewind(input, rw);
+				_automata_evaldata_destroy(ff, rw);
+				return failure;
+			}
 		}
+		_automata_evaldata_destroy(ff, rw);
 	}
 	return failure;
 }
+

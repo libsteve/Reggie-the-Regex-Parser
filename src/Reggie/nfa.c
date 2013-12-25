@@ -64,13 +64,16 @@ void nfa_transition_uninitialize(transition t) {
 	transition_uninitialize(t);
 }
 
-int nfa_transition_func(const struct automata *a, const struct transition *t, const evalstream *input) {
+evaldata nfa_transition_func(const struct automata *a, const struct transition *t, const evalstream *input) {
 	NFATransition nfat = container_of(t, struct nfa_transition, transition);
 	struct nfa_evalstream *stream = container_of(input, struct nfa_evalstream, stream);
+	evaldata fastforward_data = {calloc(1, sizeof(int)), free};
 	if (string_substring(stream->string, nfat->transition_string)) {
-		return string_length(nfat->transition_string);
+		*fastforward_data.data = string_length(nfat->transition_string);
+	} else {
+	    *fastforward_data.data = -1;
 	}
-	return -1;
+	return return fastforward_data;
 }
 
 

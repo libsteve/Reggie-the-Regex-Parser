@@ -23,14 +23,21 @@ typedef struct automata 	*automata;
 typedef unsigned int 		state_id;
 typedef unsigned int 		transition_id;
 
+typedef struct evaldata {
+    void *data;                   // data to return. NULL is a failure
+    void (*destroy)(void *data);  // function to destroy/free data
+} evaldata;
+
 typedef struct evalstream {
-	struct evalstream *(*fastforward)(struct evalstream *stream, int amount);
-	struct evalstream *(*rewind)(struct evalstream *stream, int amount);
+	// return NULL data if failure, otherwise returns data to pass to an evalstream rewind function
+	evaldata (*fastforward)(struct evalstream *stream, evaldata fastforward_data);
+	bool (*rewind)(struct evalstream *stream, evaldata rewind_data);
+	// return true if the evalstream is closed and finished, otherwise return false
 	bool (*closed)(struct evalstream *stream);
 } evalstream;
 
-// returns -1 if failure, otherwise returns the length of a success
-typedef int (*transition_func)(const struct automata *a, const struct transition *t, const evalstream *input);
+// returns NULL data if failure, otherwise returns data to pass to an evalstream fastforward function
+typedef evaldata (*transition_func)(const struct automata *a, const struct transition *t, const evalstream *input);
 
 typedef void (*state_destroy)(struct state *s);
 typedef void (*transition_destroy)(struct transition *t);

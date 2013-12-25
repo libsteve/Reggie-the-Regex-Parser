@@ -1,4 +1,6 @@
 #include <Reggie/pda.h>
+#include <Reggie/nfa_eval.h>
+#include <Reggie/pda_eval.h>
 #include <Collection/strings.h>
 
 //////
@@ -56,12 +58,58 @@ void _pda_token_destory(PDAToken token) {
     free(token);
 };
 
+void _pda_evaldata_destroy(void *d) {
+    struct pda_evaldata data = *(struct pda_evaldata *)d;
+    if (data.popped_stack) {
+        FOREACH(it, data.popped_stack) {
+            PDAToken t = VALUE(it);
+            _pda_token_destroy(t);
+        }
+        list_destroy(data.popped_stack);
+    }
+    if (data.pushed_stack) {
+        list_destroy(data.pushed_stack);
+        FOREACH(it, data.popped_stack) {
+            PDAToken t = VALUE(it);
+            _pda_token_destroy(t);
+        }
+    }
+    free(d);
+}
+
 // returns -1 if failure, otherwise returns the length of a success
-int pda_transition_func(const struct automata *a, const struct transition *t, const evalstream *input) {
+evaldata pda_transition_func(const struct automata *a, const struct transition *t, const evalstream *input) {
     PDA pda = container_of(a, struct pda, automata);
     PDATransition transition = container_of(t, struct pda_transition, transition);
-    _
-    return _;
+    struct pda_evalstream *stream = container_of(input, struct pda_evalstream, stream);
+    struct evaldata result_data = {calloc(1, sizeof(struct pda_evaldata)), _pda_evaldata_destroy};
+    struct pda_evaldata *data = result_data.data;
+
+    // TODO: implement transition execution
+    if (transition->type != PDA_TRANSITION_TYPE_APPLICATION) {
+        data.length = -1;
+        switch (transition->type) {
+        case PDA_TRANSITION_TYPE_STRING:
+            if (string_substring(stream->string, nfat->transition_string)) {
+                data.length = string_length(nfat->transition_string);
+            }
+            break;
+
+        case PDA_TRANSITION_TYPE_NFA:
+            data.length = nfa_parsing_eval(transition->nfa, stream->string);
+            break;
+
+        case PDA_TRANSITION_TYPE_PDA:
+            data.length = nfa_parsing_eval(transition->pda, stream->string);
+            break;
+        }
+
+        if (transition->pop_token == )
+    } else {
+        data.length = 0;
+    }
+    
+    return result_data;
 }
 
 //////

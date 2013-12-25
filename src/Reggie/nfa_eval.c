@@ -5,22 +5,26 @@
 //////
 // nfa_evalstream functions
 
-struct evalstream *nfa_evalstream_fastforward(evalstream *stream, int amount) {
+#define nfa_evalstream_amount(data_pointer) (*((int *)(data_pointer)))
+
+void *nfa_evalstream_fastforward(evalstream *stream, evaldata fastforward_data) {
 	struct nfa_evalstream *s = container_of(stream, struct nfa_evalstream, stream);
-	s->string += amount;
-	return stream;
+	s->string += nfa_evalstream_amount(fastforward_data.data);
+	return fastforward_data;
 }
 
-struct evalstream *nfa_evalstream_rewind(evalstream *stream, int amount) {
+bool nfa_evalstream_rewind(evalstream *stream, evaldata rewind_data) {
 	struct nfa_evalstream *s = container_of(stream, struct nfa_evalstream, stream);
-	s->string -= amount;
-	return stream;
+	s->string -= nfa_evalstream_amount(rewind_data.data);
+	return true;
 }
 
 bool nfa_evalstrear_closed(evalstream *stream) {
 	struct nfa_evalstream *s = container_of(stream, struct nfa_evalstream, stream);
 	return string_length(s->string) == 0;
 }
+
+#undef nfa_evalstream_amount
 
 //////
 // evaluation functions

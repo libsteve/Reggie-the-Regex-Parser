@@ -47,6 +47,12 @@ typedef struct pda_transition {
     unsigned int push_token;
 } *PDATransition;
 
+struct pda_evaldata {
+    int length;
+    list popped_stack;
+    list pushed_stack;
+}
+
 #define pda_dont_pop    ((unsigned int)-1)
 #define pda_dont_push   ((unsigned int)-1)
 #define pda_stack_empty ((unsigned int)-2)
