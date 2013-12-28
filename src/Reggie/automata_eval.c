@@ -1,5 +1,17 @@
 #include <Reggie/automata_eval.h>
 
+void _automata_evaldata_destroy(evaldata ff, evaldata rw) {
+	if (ff.data == rw.data) {
+		if (ff.data && ff.destroy)
+			ff.destroy(ff.data);
+	} else {
+		if (ff.data && ff.destroy)
+			ff.destroy(ff.data);
+		if (rw.data && rw.destroy)
+			rw.destroy(rw.data);
+	}
+}
+
 //////
 // total evaluations of automata
 
@@ -27,16 +39,33 @@ bool state_eval(automata a, state s, evalstream *input) {
 }
 
 bool transition_eval(automata a, transition t, evalstream *input) {
-	int result = t->func(a, t, input);
-	if (result != -1) {
-		input = input->fastforward(input, result);
-		bool success = state_eval(a, t->dst, input);
-		if (success) {
-			return success;
-		} else {
-			input->rewind(input, result);
-			return false;
+//	int result = t->func(a, t, input);
+//	if (result != -1) {
+//		input = input->fastforward(input, a, result);
+//		bool success = state_eval(a, t->dst, input);
+//		if (success) {
+//			return success;
+//		} else {
+//			input->rewind(input, a, result);
+//			return false;
+//		}
+//	}
+//	return false;
+	evaldata ff = t->func(a, t, input);
+	if (ff.data != NULL) {
+		evaldata rw = input->fastforward(input, a, ff);
+		if (rw.data != NULL) {
+			int success = state_parsing_eval(a, t->dst, input);
+			if (success != failure) {
+				_automata_evaldata_destroy(ff, rw);
+				return true;
+			} else {
+				input->rewind(input, a, rw);
+				_automata_evaldata_destroy(ff, rw);
+				return false;
+			}
 		}
+		_automata_evaldata_destroy(ff, rw);
 	}
 	return false;
 }
@@ -70,29 +99,17 @@ int state_parsing_eval(automata a, state s, evalstream *input) {
 	return failure;
 }
 
-void _automata_evaldata_destroy(evaldata ff, evaldata rw) {
-	if (ff.data == rw.data) {
-		if (ff.data && ff.destroy)
-			ff.destroy(ff.data);
-	} else {
-		if (ff.data && ff.destroy)
-			ff.destroy(ff.data);
-		if (rw.data && rw.destroy)
-			rw.destroy(rw.data);
-	}
-}
-
 int transition_parsing_eval(automata a, transition t, evalstream *input) {
 	evaldata ff = t->func(a, t, input);
 	if (ff.data != NULL) {
-		evaldata rw = input->fastforward(input, ff);
+		evaldata rw = input->fastforward(input, a, ff);
 		if (rw.data != NULL) {
 			int success = state_parsing_eval(a, t->dst, input);
 			if (success != failure) {
 				_automata_evaldata_destroy(ff, rw);
 				return success + result;
 			} else {
-				input->rewind(input, rw);
+				input->rewind(input, a, rw);
 				_automata_evaldata_destroy(ff, rw);
 				return failure;
 			}

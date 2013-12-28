@@ -30,8 +30,8 @@ typedef struct evaldata {
 
 typedef struct evalstream {
 	// return NULL data if failure, otherwise returns data to pass to an evalstream rewind function
-	evaldata (*fastforward)(struct evalstream *stream, evaldata fastforward_data);
-	bool (*rewind)(struct evalstream *stream, evaldata rewind_data);
+	evaldata (*fastforward)(struct evalstream *stream, struct automata *a, evaldata fastforward_data);
+	bool (*rewind)(struct evalstream *stream, struct automata *a, evaldata rewind_data);
 	// return true if the evalstream is closed and finished, otherwise return false
 	bool (*closed)(struct evalstream *stream);
 } evalstream;

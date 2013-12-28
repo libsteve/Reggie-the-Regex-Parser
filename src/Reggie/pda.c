@@ -60,24 +60,34 @@ void _pda_token_destory(PDAToken token) {
 
 void _pda_evaldata_destroy(void *d) {
     struct pda_evaldata data = *(struct pda_evaldata *)d;
-    if (data.popped_stack) {
-        FOREACH(it, data.popped_stack) {
-            PDAToken t = VALUE(it);
-            _pda_token_destroy(t);
+    switch (data.type) {
+    case PDA_EVALDATA_MATCH:
+        if (data.popped_token) {
+            data.popped_token->destroy(data.popped_token);
         }
-        list_destroy(data.popped_stack);
-    }
-    if (data.pushed_stack) {
-        list_destroy(data.pushed_stack);
-        FOREACH(it, data.popped_stack) {
-            PDAToken t = VALUE(it);
-            _pda_token_destroy(t);
+        if (data.pushed_token) {
+            // we don't want to deallocate anything pushed to the stack
         }
+        break;
+
+    case PDA_EVALDATA_APPLICATION:
+        if (data.popped_stack) {
+            FOREACH(it, data.popped_stack) {
+                PDAToken t = VALUE(it);
+                _pda_token_destroy(t);
+            }
+            list_destroy(data.popped_stack);
+        }
+        if (data.pushed_stack) {
+            // we don't want to deallocate anything pushed to the stack
+            list_destroy(data.pushed_stack);
+        }
+        break;
     }
     free(d);
 }
 
-// returns -1 if failure, otherwise returns the length of a success
+// returns {NULL, NULL} if failure, otherwise returns an instance of evaldata
 evaldata pda_transition_func(const struct automata *a, const struct transition *t, const evalstream *input) {
     PDA pda = container_of(a, struct pda, automata);
     PDATransition transition = container_of(t, struct pda_transition, transition);
@@ -85,28 +95,36 @@ evaldata pda_transition_func(const struct automata *a, const struct transition *
     struct evaldata result_data = {calloc(1, sizeof(struct pda_evaldata)), _pda_evaldata_destroy};
     struct pda_evaldata *data = result_data.data;
 
-    // TODO: implement transition execution
     if (transition->type != PDA_TRANSITION_TYPE_APPLICATION) {
-        data.length = -1;
+        data->type = PDA_EVALDATA_MATCH;
+        data->length = -1;
         switch (transition->type) {
         case PDA_TRANSITION_TYPE_STRING:
             if (string_substring(stream->string, nfat->transition_string)) {
-                data.length = string_length(nfat->transition_string);
+                data->length = string_length(nfat->transition_string);
             }
             break;
 
         case PDA_TRANSITION_TYPE_NFA:
-            data.length = nfa_parsing_eval(transition->nfa, stream->string);
+            data->length = nfa_parsing_eval(transition->nfa, stream->string);
             break;
 
         case PDA_TRANSITION_TYPE_PDA:
-            data.length = nfa_parsing_eval(transition->pda, stream->string);
+            data->length = nfa_parsing_eval(transition->pda, stream->string);
             break;
         }
 
-        if (transition->pop_token == )
+        data->pop_token = transition->pop_token;
+        data->push_token = transition->push_token;
+
+        data->popped_token = NULL;
+        data->pushed_token = NULL;
     } else {
-        data.length = 0;
+        data->type = PDA_EVALDATA_APPLICATION;
+        data->popped_tokens = NULL;
+        data->pushed_tokens = NULL;
+        data->apply = transition->apply;
+        data->revoke = transition->revoke;
     }
     
     return result_data;

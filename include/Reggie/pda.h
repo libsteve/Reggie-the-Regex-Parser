@@ -48,10 +48,30 @@ typedef struct pda_transition {
 } *PDATransition;
 
 struct pda_evaldata {
-    int length;
-    list popped_stack;
-    list pushed_stack;
+    enum {
+        PDA_EVALDATA_MATCH,
+        PDA_EVALDATA_APPLICATION
+    } type;
+    union {
+        struct {
+            int length;
+            unsigned int pop_token;
+            unsigned int push_token;
+            PDAToken popped_token;
+            PDAToken pushed_token;
+        };
+        struct {
+            list popped_stack;
+            list pushed_stack;
+            pda_transition_apply_func apply;
+            pda_transition_revoke_func revoke;
+        };
+    };
 }
+#define pda_evaldata_pushed_stack(d) \
+    ((d->type == PDA_EVALDATA_APPLICATION) ? d->pushed_stack : NULL)
+#define pda_evaldata_popped_stack(d) \
+    ((d->type == PDA_EVALDATA_APPLICATION) ? d->popped_stack : NULL)
 
 #define pda_dont_pop    ((unsigned int)-1)
 #define pda_dont_push   ((unsigned int)-1)
