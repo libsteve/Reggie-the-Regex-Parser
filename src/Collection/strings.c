@@ -43,6 +43,19 @@ char* string_copy(char* str) {
 	return new;
 }
 
+char* string_copy_substring(cahr *str, int length) {
+	int len = string_length(str);
+	len = (length > len) ? len : length;
+	char* new = calloc(len+1, sizeof(char));
+
+	for (int i = 0; i < len; i++) {
+		new[i] = str[i];
+	}
+	new[len] = '\0';
+
+	return new;
+}
+
 char* string_concat(char* a, char* b) {
 	int len_a = string_length(a);
 	int len_b = string_length(b);
