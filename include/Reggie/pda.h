@@ -9,6 +9,7 @@ struct pda;
 struct pda_state;
 struct pda_transition;
 struct pda_evalstream;
+struct pda_evaldata;
 struct pda_token;
 
 typedef list (*pda_transition_apply_func)(const struct pda *pda);
