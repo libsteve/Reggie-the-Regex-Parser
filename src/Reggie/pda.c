@@ -71,16 +71,12 @@ void _pda_evaldata_destroy(void *d) {
         break;
 
     case PDA_EVALDATA_APPLICATION:
-        if (data.popped_stack) {
+        if (data.popped_tokens) {
             FOREACH(it, data.popped_stack) {
                 PDAToken t = VALUE(it);
                 _pda_token_destroy(t);
             }
             list_destroy(data.popped_stack);
-        }
-        if (data.pushed_stack) {
-            // we don't want to deallocate anything pushed to the stack
-            list_destroy(data.pushed_stack);
         }
         break;
     }
@@ -110,7 +106,7 @@ evaldata pda_transition_func(const struct automata *a, const struct transition *
             break;
 
         case PDA_TRANSITION_TYPE_PDA:
-            data->length = nfa_parsing_eval(transition->pda, stream->string);
+            data->length = pda_parsing_eval(transition->pda, stream->string);
             break;
         }
 
@@ -122,7 +118,6 @@ evaldata pda_transition_func(const struct automata *a, const struct transition *
     } else {
         data->type = PDA_EVALDATA_APPLICATION;
         data->popped_tokens = NULL;
-        data->pushed_tokens = NULL;
         data->apply = transition->apply;
         data->revoke = transition->revoke;
     }
@@ -138,7 +133,6 @@ PDA pda_create() {
     PDA pda = calloc(1, sizeof(struct pda));
     automata a = automata_initialize(&pda->automata, _pda_destroy);
     if (a) {
-        pda->stack = list_create();
         return pda;
     }
     return NULL;

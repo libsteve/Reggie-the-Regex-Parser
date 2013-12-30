@@ -12,6 +12,7 @@ struct pda_evalstream;
 struct pda_evaldata;
 struct pda_token;
 
+// returns a stack of popped PDAToken instances
 typedef list (*pda_transition_apply_func)(const struct pda *pda);
 typedef void (*pda_transition_revoke_func)(const struct pda *pda, list popped_tokens);
 
@@ -62,17 +63,12 @@ struct pda_evaldata {
             PDAToken pushed_token;
         };
         struct {
-            list popped_stack;
-            list pushed_stack;
+            list popped_tokens;
             pda_transition_apply_func apply;
             pda_transition_revoke_func revoke;
         };
     };
 }
-#define pda_evaldata_pushed_stack(d) \
-    ((d->type == PDA_EVALDATA_APPLICATION) ? d->pushed_stack : NULL)
-#define pda_evaldata_popped_stack(d) \
-    ((d->type == PDA_EVALDATA_APPLICATION) ? d->popped_stack : NULL)
 
 #define pda_dont_pop    ((unsigned int)-1)
 #define pda_dont_push   ((unsigned int)-1)
@@ -98,8 +94,6 @@ typedef struct pda_token {
 struct pda_evalstream {
 	struct evalstream stream;
 	char *string;
-    char *next_token;
-    char *(*token)(struct pda_evalstream *evalstream);
 };
 
 
