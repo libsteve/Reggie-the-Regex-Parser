@@ -1,4 +1,5 @@
 #include <Reggie/pda.h>
+#include <Reggie/pda_copy.h>
 #include <Reggie/nfa_eval.h>
 #include <Reggie/pda_eval.h>
 #include <Collection/strings.h>
@@ -133,6 +134,7 @@ PDA pda_create() {
     PDA pda = calloc(1, sizeof(struct pda));
     automata a = automata_initialize(&pda->automata, _pda_destroy);
     if (a) {
+        state_id sid = pda_addState(pda);
         return pda;
     }
     return NULL;
@@ -143,6 +145,10 @@ void pda_destroy(PDA pda) {
     pda->automata.destroy(&pda->automata);
 }
 
+// get the initial state of the PDA
+state_id pda_initialState(PDA pda) {
+    return 0;
+}
 
 // add a state to the PDA's list
 // returns -1 if failure
@@ -189,7 +195,7 @@ transition_id pda_addNFATransition(PDA pda, state_id sid1, state_id sid2, NFA nf
     PDATransition transition = calloc(1, sizeof(struct pda_transition));
     transition t = transition_initialize(&transition->transition, sid1, sid2, pda_transition_func, _pda_transition_destroy);
     transition->type = PDA_TRANSITION_TYPE_NFA;
-    transition->nfa = nfa;
+    transition->nfa = nfa_copy(nfa);
     transition->pop_token = pop_token;
     transition->push_token = push_token;
     return automata_addTransition(&pda->automata, t);
@@ -199,7 +205,7 @@ transition_id pda_addPDATransition(PDA pda, state_id sid1, state_id sid2, PDA pd
     PDATransition transition = calloc(1, sizeof(struct pda_transition));
     transition t = transition_initialize(&transition->transition, sid1, sid2, pda_transition_func, _pda_transition_destroy);
     transition->type = PDA_TRANSITION_TYPE_PDA;
-    transition->pda = pda;
+    transition->pda = pda_copy(pda);
     transition->pop_token = pop_token;
     transition->push_token = push_token;
     return automata_addTransition(&pda->automata, t);

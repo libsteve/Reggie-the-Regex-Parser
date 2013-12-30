@@ -38,8 +38,8 @@ typedef struct pda_transition {
     } type;
     union {
         char *string;   // an allocated, null-terminated transition string
-        NFA nfa;        // a owned NFA
-        PDA pda;        // a owned PDA
+        NFA nfa;        // a copied NFA
+        PDA pda;        // a copied PDA
         struct {
             pda_transition_apply_func apply;
             pda_transition_revoke_func revoke;
@@ -106,6 +106,9 @@ PDA pda_create();
 // destroy a PDA instance
 void pda_destroy(PDA pda);
 
+// get the initial state of the PDA
+state_id pda_initialState(PDA pda);
+
 // add a state to the PDA's list
 // returns -1 if failure
 state_id pda_addState(PDA pda);
@@ -116,7 +119,7 @@ void pda_state_setIsTerminal(PDA pda, state_id sid, bool isTerminal);
 #define pda_state_makeTerminal(pda, sid) 	pda_state_setIsTerminal(pda, sid, true)
 #define pda_state_makeNonTerminal(pda, sid) pda_state_setIsTerminal(pda, sid, false)
 
-transition_id pda_addStringTransition(PDA pda, state_id sid1, state_id sid2, char *transition_string, unsigned int pop_token, unsgined int push_token);
+transition_id pda_addStringTransition(PDA pda, state_id sid1, state_id sid2, char *transition_string, unsigned int pop_token, unsigned int push_token);
 transition_id pda_addNFATransition(PDA pda, state_id sid1, state_id sid2, NFA nfa, unsigned int pop_token, unsigned int push_token);
 transition_id pda_addPDATransition(PDA pda, state_id sid1, state_id sid2, PDA pda, unsigned int pop_token, unsigned int push_token);
 transition_id pda_addApplicationTransition(PDA pda, state_id sid1, state_id sid2, pda_transition_apply_func apply, pda_transition_revoke_func revoke);
