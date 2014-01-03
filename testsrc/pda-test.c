@@ -16,7 +16,7 @@ result test_pda_addState() {
 	return (result){passed, description};
 }
 
-result test_pda_addStringTransition() {
+TEST_BEGIN(pda_addStringTransition, CASE : pda_addStringTransition() with "abc")
 	int passed = 0;
 	char* description = "CASE : pda_addStringTransition() with \"abc\"";
 
@@ -50,13 +50,10 @@ result test_pda_addStringTransition() {
 					);
 
 	pda_destroy(p);
+TEST_END(passed);
 
-	return (result){passed, description};
-}
-
-result test_pda_addNFATransition() {
-	int passed = 0;
-	char* description = "CASE : pda_addNFATransition() with (q0 - terminal)";
+TEST_BEGIN(pda_addNFATransition, CASE : pda_addNFATransition() with (q0 - terminal))
+    int passed = 0;
 
     NFA n = nfa_create();
     nfa_state_makeTerminal(nfa_initialState());
@@ -93,9 +90,7 @@ result test_pda_addNFATransition() {
 					);
 
 	pda_destroy(p);
-
-	return (result){passed, description};
-}
+TEST_END(passed)
 
 ////
 // test 
@@ -117,9 +112,9 @@ result test_pda_addNFATransition() {
 // main function and test list definition
 
 static tests TESTS = {
-	test_pda_addState,
-	test_pda_addStringTransition,
-    test_pda_addNFATransition,
+    TEST(pda_addState),
+	TEST(pda_addStringTransition),
+    TEST(pda_addNFATransition),
 	0
 };
 

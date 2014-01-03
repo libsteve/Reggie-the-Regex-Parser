@@ -40,6 +40,18 @@ int is_nonzero(int value);
 int is_equal(int x, int y);
 
 //////
+// TEST WRITING
+
+// used to get the function name of a test
+#define TEST(name) _test_ ## name
+
+// begin test code with the given name and description
+#define TEST_BEGIN(name, description) TEST(name) () { char *__desc = "TEST: " #name "; " #description "" ;
+
+// end test code with the given exit status
+#define TEST_END(passed) return (result){passed, __desc}; }
+
+//////
 // IMPLEMENTATION
 
 // execute a list of tests and print out how many passed
@@ -71,7 +83,7 @@ inline int run_tests(tests ts) {
 
 // a more readable way of writing x == 1
 inline int is_true(int value) {
-	return value == 1;
+	return !!value == 1;
 }
 
 // a more readable way of writing x == 0
