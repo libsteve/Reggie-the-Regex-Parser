@@ -86,15 +86,15 @@ int automata_parsing_eval(automata a, evalstream *input) {
 }
 
 int state_parsing_eval(automata a, state s, evalstream *input) {
-	if (s->isTerminal) {
-		return 0;
-	}
 	FOREACH(it, s->transitions) {
 		transition t = VALUE(it);
 		int result = transition_parsing_eval(a, t, input);
 		if (result != failure) {
 			return result;
 		}
+	}
+	if (s->isTerminal) {
+		return 0;
 	}
 	return failure;
 }
