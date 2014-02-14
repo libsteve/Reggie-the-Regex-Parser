@@ -43,7 +43,7 @@ char* string_copy(char* str) {
 	return new;
 }
 
-char* string_copy_substring(cahr *str, int length) {
+char* string_copy_substring(char *str, int length) {
 	int len = string_length(str);
 	len = (length > len) ? len : length;
 	char* new = calloc(len+1, sizeof(char));

@@ -26,7 +26,7 @@ char* string_copy(char* str);
 // copy a substring of the given null-terminated string
 // the resulting allocated string is at most the length provided
 // the resulting string must be freed
-char* string_copy_substring(cahr *str, int length);
+char* string_copy_substring(char *str, int length);
 
 // copy the input strings into one combined larger string
 // the resulting string must be freed
