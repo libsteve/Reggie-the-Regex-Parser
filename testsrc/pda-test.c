@@ -2,9 +2,8 @@
 #include <Reggie/pda.h>
 #include <Collection/strings.h>
 
-result test_pda_addState() {
+TEST_BEGIN(pda_addState, CASE : pda_addState())
 	int passed = 0;
-	char* description = "CASE : pda_addState()";
 
 	PDA p = pda_create();
 	pda_addState(p);
@@ -12,9 +11,7 @@ result test_pda_addState() {
 	passed = is_true(list_len(p->automata.states) == 2);
 
 	pda_destroy(p);
-
-	return (result){passed, description};
-}
+TEST_END(passed);
 
 TEST_BEGIN(pda_addStringTransition, CASE : pda_addStringTransition() with "abc")
 	int passed = 0;
