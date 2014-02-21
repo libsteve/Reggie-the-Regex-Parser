@@ -41,13 +41,7 @@ void nfa_state_uninitialize(state s);
 NFATransition nfa_transition_initialize(NFATransition t, state src, state dest, char *transition_string, transition_destroy destroy);
 void nfa_transition_uninitialize(transition t);
 
-evaldata nfa_transition_func(const struct automata *a, const struct transition *t, const evalstream *input); 
-
-// evalstream instance for nfa_transition_func
-struct nfa_evalstream {
-	struct evalstream stream;
-	char *string;
-};
+transition_result nfa_transition_func(const struct automata *a, const struct transition *t, const struct stream input); 
 
 
 //////

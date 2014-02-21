@@ -2,6 +2,7 @@
 #define REGGIE_AUTOMATA_H
 
 #include <Collection/list.h>
+#include <Collection/stream.h>
 #include <stddef.h>
 #include <stdbool.h>
 
@@ -23,21 +24,19 @@ typedef struct automata 	*automata;
 typedef unsigned int 		state_id;
 typedef unsigned int 		transition_id;
 
-typedef struct evaldata {
-    void *data;                   // data to return. NULL is a failure
-    void (*destroy)(void *data);  // function to destroy/free data
-} evaldata;
+// a structure to represent the result of a transition function
+typedef struct transition_result {
+	bool success;
+	union {
+		struct {} failure;
+		struct {
+			size_t length;
+			struct stream stream;
+		};
+	};
+} transition_result;
 
-typedef struct evalstream {
-	// return NULL data if failure, otherwise returns data to pass to an evalstream rewind function
-	evaldata (*fastforward)(struct evalstream *stream, struct automata *a, evaldata fastforward_data);
-	bool (*rewind)(struct evalstream *stream, struct automata *a, evaldata rewind_data);
-	// return true if the evalstream is closed and finished, otherwise return false
-	bool (*closed)(struct evalstream *stream);
-} evalstream;
-
-// returns NULL data if failure, otherwise returns data to pass to an evalstream fastforward function
-typedef evaldata (*transition_func)(const struct automata *a, const struct transition *t, const evalstream *input);
+typedef transition_result (*transition_func)(const struct automata *a, const struct transition *t, const struct stream s);
 
 typedef void (*state_destroy)(struct state *s);
 typedef void (*transition_destroy)(struct transition *t);

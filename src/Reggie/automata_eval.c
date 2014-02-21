@@ -1,21 +1,9 @@
 #include <Reggie/automata_eval.h>
 
-void _automata_evaldata_destroy(evaldata ff, evaldata rw) {
-	if (ff.data == rw.data) {
-		if (ff.data && ff.destroy)
-			ff.destroy(ff.data);
-	} else {
-		if (ff.data && ff.destroy)
-			ff.destroy(ff.data);
-		if (rw.data && rw.destroy)
-			rw.destroy(rw.data);
-	}
-}
-
 //////
 // total evaluations of automata
 
-bool automata_eval(automata a, evalstream *input) {
+bool automata_eval(automata a, struct stream input) {
 	FOREACH(it, a->states) {
 		state s = VALUE(it);
 		if (s->id == 0) {
@@ -25,8 +13,8 @@ bool automata_eval(automata a, evalstream *input) {
 	return false;
 }
 
-bool state_eval(automata a, state s, evalstream *input) {
-	if (s->isTerminal && input->closed(input)) {
+bool state_eval(automata a, state s, struct stream input) {
+	if (s->isTerminal && input.closed(input)) {
 		return true;
 	}
 	FOREACH(it, s->transitions) {
@@ -38,34 +26,10 @@ bool state_eval(automata a, state s, evalstream *input) {
 	return false;
 }
 
-bool transition_eval(automata a, transition t, evalstream *input) {
-//	int result = t->func(a, t, input);
-//	if (result != -1) {
-//		input = input->fastforward(input, a, result);
-//		bool success = state_eval(a, t->dst, input);
-//		if (success) {
-//			return success;
-//		} else {
-//			input->rewind(input, a, result);
-//			return false;
-//		}
-//	}
-//	return false;
-	evaldata ff = t->func(a, t, input);
-	if (ff.data != NULL) {
-		evaldata rw = input->fastforward(input, a, ff);
-		if (rw.data != NULL) {
-			int success = state_parsing_eval(a, t->dst, input);
-			if (success != failure) {
-				_automata_evaldata_destroy(ff, rw);
-				return true;
-			} else {
-				input->rewind(input, a, rw);
-				_automata_evaldata_destroy(ff, rw);
-				return false;
-			}
-		}
-		_automata_evaldata_destroy(ff, rw);
+bool transition_eval(automata a, transition t, struct stream input) {
+	transition_result result = t->func(a, t, input);
+	if (result.success) {
+		return state_eval(a, t->dst, result.stream);
 	}
 	return false;
 }
@@ -75,7 +39,7 @@ bool transition_eval(automata a, transition t, evalstream *input) {
 
 #define failure -1
 
-int automata_parsing_eval(automata a, evalstream *input) {
+int automata_parsing_eval(automata a, struct stream input) {
 	FOREACH(it, a->states) {
 		state s = VALUE(it);
 		if (s->id == 0) {
@@ -85,37 +49,29 @@ int automata_parsing_eval(automata a, evalstream *input) {
 	return failure;
 }
 
-int state_parsing_eval(automata a, state s, evalstream *input) {
+int state_parsing_eval(automata a, state s, struct stream input) {
+	int longest = failure;
+	if (s->isTerminal) {
+		longest = 0;
+	}
 	FOREACH(it, s->transitions) {
 		transition t = VALUE(it);
 		int result = transition_parsing_eval(a, t, input);
-		if (result != failure) {
-			return result;
+		if (result > longest) {
+			longest = result;
 		}
 	}
-	if (s->isTerminal) {
-		return 0;
+	return longest;
+}
+
+int transition_parsing_eval(automata a, transition t, struct stream input) {
+	transition_result result = t->func(a, t, input);
+	if (result.success) {
+		int length = state_parsing_eval(a, t->dst, result.stream);
+		if (length != failure) {
+			length += result.length;
+		}
+		return length;
 	}
 	return failure;
 }
-
-int transition_parsing_eval(automata a, transition t, evalstream *input) {
-	evaldata ff = t->func(a, t, input);
-	if (ff.data != NULL) {
-		evaldata rw = input->fastforward(input, a, ff);
-		if (rw.data != NULL) {
-			int success = state_parsing_eval(a, t->dst, input);
-			if (success != failure) {
-				_automata_evaldata_destroy(ff, rw);
-				return success + result;
-			} else {
-				input->rewind(input, a, rw);
-				_automata_evaldata_destroy(ff, rw);
-				return failure;
-			}
-		}
-		_automata_evaldata_destroy(ff, rw);
-	}
-	return failure;
-}
-
