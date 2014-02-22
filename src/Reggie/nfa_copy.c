@@ -21,6 +21,9 @@ state_id nfa_copy_copyState(automata destination, state s) {
 	} else {
 		nfa_state_makeNonTerminal(nfa_dst, new);
 	}
+	if (s->token) {
+		nfa_state_setToken(nfa_dst, new, s->token);
+	}
 	return new;
 }
 
@@ -36,4 +39,3 @@ NFA nfa_copy(NFA nfa) {
 	automata a = automata_copy(&nfa->automata, (automata_copy_creation){nfa_copy_create, nfa_copy_initialState, nfa_copy_copyState, nfa_copy_copyTransition});
 	return container_of(a, struct nfa, automata);
 }
-

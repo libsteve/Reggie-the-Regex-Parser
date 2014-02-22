@@ -6,5 +6,7 @@
 #include "Collection/map.h"
 #include "Collection/stream.h"
 #include "Collection/strings.h"
+#include "Collection/symbol.h"
+#include "Collection/vector.h"
 
 #endif

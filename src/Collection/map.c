@@ -1,5 +1,5 @@
-#include "Collection/map.h"
-#include "Collection/strings.h"
+#include <Collection/map.h>
+#include <Collection/strings.h>
 #include <stdlib.h>
 
 // create a new map_entry instance

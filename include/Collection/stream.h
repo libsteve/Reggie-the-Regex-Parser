@@ -3,7 +3,7 @@
 
 #include <stdlib.h>
 #include <stdbool.h>
-#include <Collection/strings.h>
+#include "strings.h"
 
 // a structure to represent a stream of data
 struct stream {

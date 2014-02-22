@@ -1,4 +1,4 @@
-#include "Collection/list_sort.h"
+#include <Collection/list_sort.h>
 
 list sortOne(list l, sort_fn sorter, int s, int e);
 list sortTwo(list l, sort_fn sorter, int s, int e);

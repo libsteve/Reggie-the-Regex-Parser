@@ -1,4 +1,4 @@
-#include "Collection/stream.h"
+#include <Collection/stream.h>
 
 // get a pointer to the next value in the stream
 static void *stream_peek(struct stream s) {
