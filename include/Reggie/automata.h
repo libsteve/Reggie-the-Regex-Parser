@@ -37,8 +37,23 @@ struct transition_result {
 	};
 };
 
+// a structure to represent a lexical token that can result from a terminal state
+struct lex_token {
+	// the identifier name of the token
+	char *token_name;
+
+	// optional data for the token
+	void *data;
+
+	// an optional destroy function for the data
+	// if destroy is NULL and data is not NULL, free() will be used
+	void (*destroy)(void *data);
+};
+
 typedef struct transition_result (*transition_apply)(const struct automata *a, const struct transition *t, const struct stream s);
 typedef void (*transition_revoke)(const struct automata *a, const struct transition *t);
+
+typedef struct lex_token (*lex_token_creator)(const vector lexed);
 
 typedef void (*state_destroy)(struct state *s);
 typedef void (*transition_destroy)(struct transition *t);
@@ -57,6 +72,7 @@ struct transition {
 struct state {
 	state_id id;
 	bool isTerminal;
+	lex_token_creator token; 
 	list transitions;
 	state_destroy destroy;
 };

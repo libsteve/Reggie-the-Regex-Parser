@@ -125,6 +125,21 @@ void nfa_state_setIsTerminal(NFA nfa, state_id sid, bool isTerminal) {
 	}
 }
 
+void nfa_state_setToken(NFA nfa, state_id sid, lex_token_creator token) {
+	state s = automata_findState(&nfa->automata, sid);
+	if (s) {
+		s->token = token;
+	}
+}
+
+lex_token_creator nfa_state_token(NFA nfa, state_id sid) {
+	state s = automata_findState(&nfa->automata, sid);
+	if (s) {
+		return s->token;
+	}
+	return NULL;
+}
+
 transition_id nfa_addTransition(NFA nfa, state_id sid1, state_id sid2, char *transition_string) {
 	state s1 = automata_findState(&nfa->automata, sid1);
 	state s2 = automata_findState(&nfa->automata, sid2);

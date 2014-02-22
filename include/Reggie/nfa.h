@@ -59,6 +59,8 @@ bool nfa_state_isTerminal(NFA nfa, state_id sid);
 void nfa_state_setIsTerminal(NFA nfa, state_id sid, bool isTerminal);
 #define nfa_state_makeTerminal(nfa, sid) 	nfa_state_setIsTerminal(nfa, sid, true)
 #define nfa_state_makeNonTerminal(nfa, sid) nfa_state_setIsTerminal(nfa, sid, false)
+void nfa_state_setToken(NFA nfa, state_id sid, lex_token_creator token);
+lex_token_creator nfa_state_token(NFA nfa, state_id sid);
 
 // returns -1 if failure
 transition_id nfa_addTransition(NFA nfa, state_id sid1, state_id sid2, char *transition_string);

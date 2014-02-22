@@ -104,7 +104,7 @@ vector vector_set(vector v, size_t index, void *value) {
 }
 
 // PRIVATE
-void *_new_array(vector v1, vector v2) {
+static void *_new_array(vector v1, vector v2) {
     void *new = calloc(v1->length + v2->length, v1->part_size);
     if (v1->array) memcpy(new, v1->array, v1->length * v1->part_size);
     if (v2->array) memcpy(new + (v1->length * v1->part_size), v2->array, v2->length * v2->part_size);

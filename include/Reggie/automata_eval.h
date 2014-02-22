@@ -30,8 +30,7 @@ struct tokenizing_result {
 	struct {
 		size_t length;
 		struct stream trailing;
-		void *token;
-		void (*destroy)(void *token);
+		struct lex_token token;
 	};
 };
 

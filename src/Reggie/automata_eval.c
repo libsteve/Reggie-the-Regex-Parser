@@ -95,16 +95,23 @@ struct tokenizing_result automata_tokenizing_eval(automata a, struct stream inpu
 }
 
 static void _destroy_result(struct tokenizing_result tr) {
-	if (tr.token) {
-		if (tr.destroy) tr.destroy(tr.token);
-		else free(tr.token);
+	if (tr.token.data) {
+		if (tr.token.destroy) tr.token.destroy(tr.token.data);
+		else free(tr.token.data);
 	}
 }
 
 struct tokenizing_result state_tokenizing_eval(automata a, state s, struct stream input, vector lexed) {
 	struct tokenizing_result longest;
 	if (s->isTerminal) {
-		longest = (struct tokenizing_result){.success = true, .length = 0, .trailing = input, .token = NULL, .destroy = NULL};
+		longest = (struct tokenizing_result){.success = true, 
+											 .length = 0, 
+											 .trailing = input, 
+											 .token.token_name = NULL, 
+											 .token.data = NULL};
+		if (s->token) {
+			longest.token = s->token(lexed);
+		}
 	} else {
 		longest = (struct tokenizing_result){.success = false};
 	}
