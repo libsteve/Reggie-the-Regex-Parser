@@ -1,7 +1,7 @@
 #include <Collection/stream.h>
 
 // get a pointer to the next value in the stream
-static void *stream_peek(struct stream s) {
+static const void *const stream_peek(struct stream s) {
 	if (!s.closed(s)) {
 		return s.data;
 	}
@@ -29,7 +29,7 @@ static bool stream_closed(struct stream s) {
 }
 
 // create a stream instance using the default functions
-struct stream stream(void *data, size_t part_size, size_t length) {
+struct stream stream(const void *const data, size_t part_size, size_t length) {
 	return (struct stream){ .peek = stream_peek, 
 							.advance = stream_advance, 
 							.closed = stream_closed, 
@@ -39,7 +39,7 @@ struct stream stream(void *data, size_t part_size, size_t length) {
 }
 
 // create a stream instance using the provided custom functions and data pointer
-struct stream customStream(peek_fn peek, peek_size_fn peek_size, advance_fn advance, closed_fn closed, void *data, size_t part_size) {
+struct stream customStream(peek_fn peek, peek_size_fn peek_size, advance_fn advance, closed_fn closed, const void *const data, size_t part_size) {
 	return (struct stream){ .peek = peek ?: stream_peek, 
 							.peek_size = peek_size ?: stream_peek_size,
 							.advance = advance ?: stream_advance, 

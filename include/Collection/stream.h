@@ -8,7 +8,7 @@
 // a structure to represent a stream of data
 struct stream {
 	// get a pointer to the next value in the stream
-	void *(*peek)(struct stream s);
+	const void *const (*peek)(struct stream s);
 
 	// get the size of the peek() function
 	size_t (*peek_size)(struct stream s);
@@ -33,17 +33,17 @@ struct stream {
 	const size_t length;
 };
 
-typedef void *(*peek_fn)(struct stream);
+typedef const void *const (*peek_fn)(struct stream);
 typedef size_t (*peek_size_fn)(struct stream);
 typedef struct stream (*advance_fn)(struct stream);
 typedef bool (*closed_fn)(struct stream);
 
 // create a stream instance using the default functions
-struct stream stream(void *data, size_t part_size, size_t length);
+struct stream stream(const void *const data, size_t part_size, size_t length);
 
 // create a stream instance using the provided custom functions and data pointer
 // a NULL or 0 value to any field will provide the default functionality if desired
-struct stream customStream(peek_fn peek, peek_size_fn peek_size, advance_fn advance, closed_fn closed, void *data, size_t part_size);
+struct stream customStream(peek_fn peek, peek_size_fn peek_size, advance_fn advance, closed_fn closed, const void *const data, size_t part_size);
 
 #define stringstream(string) (stream(string, sizeof(char), string_length(string)))
 
