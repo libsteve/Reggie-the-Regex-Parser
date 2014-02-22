@@ -53,7 +53,7 @@ void nfa_state_uninitialize(state s) {
 
 
 NFATransition nfa_transition_initialize(NFATransition t, state src, state dest, char *transition_string, transition_destroy destroy) {
-	transition_initialize(&t->transition, src, dest, nfa_transition_func, destroy);
+	transition_initialize(&t->transition, src, dest, nfa_transition_apply, NULL, destroy);
 	t->transition_string = string_copy(transition_string);
 	return t;
 }
@@ -64,19 +64,23 @@ void nfa_transition_uninitialize(transition t) {
 	transition_uninitialize(t);
 }
 
-transition_result nfa_transition_func(const struct automata *a, const struct transition *t, struct stream stream) {
+struct transition_result nfa_transition_apply(const struct automata *a, const struct transition *t, const struct stream input) {
 	NFATransition nfat = container_of(t, struct nfa_transition, transition);
+	struct stream stream = input;
 	size_t length = 0;
+	vector lexed = vector_createOf(char);
 	for (int i=0; i < string_length(nfat->transition_string); i++) {
 		char *c = NULL;
 		if ((!stream.closed(stream)) && (c = stream.peek(stream)) && (nfat->transition_string[i] == c[0])) {
 			length += 1;
+			vector_pushOf(lexed, char, *c);
 			stream = stream.advance(stream);
 		} else {
-			return (transition_result){.success = false};
+			vector_destroy(lexed);
+			return (struct transition_result){.success = false};
 		}
 	}
-	return (transition_result){.success = true, .length = length, .stream = stream};
+	return (struct transition_result){.success = true, .length = length, .stream = stream, .lexed = lexed};
 }
 
 

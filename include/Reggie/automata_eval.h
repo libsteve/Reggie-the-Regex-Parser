@@ -2,6 +2,7 @@
 #define REGGOE_AUTOMATA_EVAL_H
 
 #include <Reggie/automata.h>
+#include <Collection/vector.h>
 
 //////
 // total evaluations of automata
@@ -18,5 +19,24 @@ bool transition_eval(automata a, transition t, struct stream input);
 int automata_parsing_eval(automata a, struct stream input);
 int state_parsing_eval(automata a, state s, struct stream input);
 int transition_parsing_eval(automata a, transition t, struct stream input);
+
+//////
+// tokenizing evaluations of automata
+
+struct tokenizing_result {
+	bool success;
+	
+	// data during a success
+	struct {
+		size_t length;
+		struct stream trailing;
+		void *token;
+		void (*destroy)(void *token);
+	};
+};
+
+struct tokenizing_result automata_tokenizing_eval(automata a, struct stream input);
+struct tokenizing_result state_tokenizing_eval(automata a, state s, struct stream input, const vector lexed);
+struct tokenizing_result transition_tokenizing_eval(automata a, transition t, struct stream input, const vector lexed);
 
 #endif

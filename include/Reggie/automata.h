@@ -2,6 +2,7 @@
 #define REGGIE_AUTOMATA_H
 
 #include <Collection/list.h>
+#include <Collection/vector.h>
 #include <Collection/stream.h>
 #include <stddef.h>
 #include <stdbool.h>
@@ -25,18 +26,19 @@ typedef unsigned int 		state_id;
 typedef unsigned int 		transition_id;
 
 // a structure to represent the result of a transition function
-typedef struct transition_result {
+struct transition_result {
 	bool success;
-	union {
-		struct {} failure;
-		struct {
-			size_t length;
-			struct stream stream;
-		};
-	};
-} transition_result;
 
-typedef transition_result (*transition_func)(const struct automata *a, const struct transition *t, const struct stream s);
+	// data for a success	
+	struct {
+		size_t length;
+		struct stream stream;
+		vector lexed;
+	};
+};
+
+typedef struct transition_result (*transition_apply)(const struct automata *a, const struct transition *t, const struct stream s);
+typedef void (*transition_revoke)(const struct automata *a, const struct transition *t);
 
 typedef void (*state_destroy)(struct state *s);
 typedef void (*transition_destroy)(struct transition *t);
@@ -47,7 +49,8 @@ struct transition {
 	transition_id id;
 	struct state *src;
 	struct state *dst;
-	transition_func func;
+	transition_apply apply;
+	transition_revoke revoke;
 	transition_destroy destroy;
 };
 
@@ -67,7 +70,7 @@ struct automata {
 };
 
 
-transition 	transition_initialize(transition t, state src, state dest, transition_func func, transition_destroy destroy);
+transition 	transition_initialize(transition t, state src, state dest, transition_apply apply, transition_revoke revoke, transition_destroy destroy);
 void 		transition_uninitialize(transition t);
 
 state 		state_initialize(state s, bool isTerminal, state_destroy destroy);

@@ -1,10 +1,11 @@
 #include <Reggie/automata.h>
 
-transition transition_initialize(transition t, state src, state dst, transition_func func, transition_destroy destroy) {
+transition transition_initialize(transition t, state src, state dst, transition_apply apply, transition_revoke revoke, transition_destroy destroy) {
 	t->id = 0;
 	t->src = src;
 	t->dst = dst;
-	t->func = func;
+	t->apply = apply;
+	t->revoke = revoke;
 	t->destroy = destroy;
 	return t;
 }

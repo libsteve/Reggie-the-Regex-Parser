@@ -41,7 +41,7 @@ void nfa_state_uninitialize(state s);
 NFATransition nfa_transition_initialize(NFATransition t, state src, state dest, char *transition_string, transition_destroy destroy);
 void nfa_transition_uninitialize(transition t);
 
-transition_result nfa_transition_func(const struct automata *a, const struct transition *t, const struct stream input); 
+struct transition_result nfa_transition_apply(const struct automata *a, const struct transition *t, const struct stream input); 
 
 
 //////
