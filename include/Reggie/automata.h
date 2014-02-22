@@ -4,6 +4,7 @@
 #include <Collection/list.h>
 #include <Collection/vector.h>
 #include <Collection/stream.h>
+#include <Collection/symbol.h>
 #include <stddef.h>
 #include <stdbool.h>
 
@@ -40,7 +41,7 @@ struct transition_result {
 // a structure to represent a lexical token that can result from a terminal state
 struct lex_token {
 	// the identifier name of the token
-	char *token_name;
+	sym token_name;
 
 	// optional data for the token
 	void *data;
