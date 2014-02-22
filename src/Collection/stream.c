@@ -8,6 +8,11 @@ static void *stream_peek(struct stream s) {
 	return NULL;
 }
 
+// get the size of the peek() function
+size_t stream_peek_size(struct stream s) {
+	return s.part_size;
+}
+
 // advance the stream to the next value
 // returns a stream object that will be able to peek to the next value
 static struct stream stream_advance(struct stream s) {
@@ -34,11 +39,12 @@ struct stream stream(void *data, size_t part_size, size_t length) {
 }
 
 // create a stream instance using the provided custom functions and data pointer
-struct stream customStream(peek_fn peek, advance_fn advance, closed_fn closed, void *data) {
-	return (struct stream){ .peek = peek, 
-							.advance = advance, 
-							.closed = closed, 
+struct stream customStream(peek_fn peek, peek_size_fn peek_size, advance_fn advance, closed_fn closed, void *data, size_t part_size) {
+	return (struct stream){ .peek = peek ?: stream_peek, 
+							.peek_size = peek_size ?: stream_peek_size,
+							.advance = advance ?: stream_advance, 
+							.closed = closed ?: stream_closed, 
 							.data = data, 
-							.part_size = 0,
+							.part_size = part_size,
 							.length = 0};
 }
